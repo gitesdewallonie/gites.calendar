@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<import-steps>
+  <import-step id="gites.calendar.various"
+               version="20090828-01"
+               handler="gites.calendar.setuphandlers.setupgites"
+               title="gites calendar: miscellaneous import steps">
+    <dependency step="skins" />
+    Setup portal for gdw calendar
+  </import-step>
+</import-steps>

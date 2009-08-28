@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<object name="portal_skins" allow_any="False" cookie_persistence="False"
+   default_skin="GitesSkin">
+
+ <object name="gites_calendar"
+         meta_type="Filesystem Directory View"
+         directory="gites.calendar:skins/gites_calendar"/>
+
+ <skin-path name="GitesSkin"
+            based-on="Plone Default">
+  <layer name="gites_calendar"
+         insert-after="gites_templates"/>
+ </skin-path>
+
+</object>
