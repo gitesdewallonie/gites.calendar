@@ -1,2 +1,0 @@
-def initialize(context):
-    pass

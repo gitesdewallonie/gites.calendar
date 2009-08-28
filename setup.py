@@ -23,17 +23,10 @@ setup(name='gites.calendar',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          'affinitic.zamqp',
-          'zope.app.testing>=3.5',
           'setuptools',
-          'gites.skin',
-          'gites.core',
-          'affinitic.db',
-          'dateutil',
-          'simplejson',
+          # -*- Extra requirements: -*-
       ],
-      entry_points={
-            'console_scripts':
-                ['checkCalendarActivity = gites.calendar.scripts.activity:main',
-                 'exportCalendarEvents = gites.calendar.scripts.calendar:main',
-                 'importCalendarEventsFromWalhebCalendarDaemon = gites.calendar.scripts.calendarimport:main']})
+      entry_points="""
+      # -*- Entry points: -*-
+      """,
+      )
