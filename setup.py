@@ -24,7 +24,8 @@ setup(name='gites.calendar',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          # -*- Extra requirements: -*-
+          'gites.skin',
+          'gites.core'
       ],
       entry_points="""
       # -*- Entry points: -*-

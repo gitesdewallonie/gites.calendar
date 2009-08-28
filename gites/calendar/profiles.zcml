@@ -9,7 +9,7 @@
       name="default"
       title="gites.calendar"
       directory="profiles/default"
-      description='Extension profile for the "Gites calendar"'
+      description='Extension profile for the "Gites Skin" Plone theme.'
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
