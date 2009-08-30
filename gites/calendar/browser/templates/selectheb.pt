@@ -10,7 +10,8 @@
   <h1 tal:content="view/label">View Title</h1>
 </metal:slot>
 <div metal:fill-slot="main">
-    <span tal:replace="structure view/contents" />
+
+<metal:use use-macro="context/@@ploneform-macros/titlelessform" />
 </div><!--div metal-->
 </body>
 </html>

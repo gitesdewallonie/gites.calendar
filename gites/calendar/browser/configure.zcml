@@ -3,52 +3,9 @@
            xmlns:grok="http://namespaces.zope.org/grok"
            i18n_domain="gites">
 
-   <grok:grok package=".calendar"/>
    <grok:grok package=".configuration"/>
-   <grok:grok package=".messaging"/>
-
-   <include package="p4a.z2utils" />
-   <include package="dateable.chronos" />
-
-    <browser:resource
-        file="resources/timeframe.css"
-        name="timeframe.css"
-        />
-
-    <!-- Displaying the read-only calendar on hebergement detail -->
-    <browser:resource
-        file="resources/gitetimeframe.js"
-        name="gitetimeframe.js"
-        />
-
-    <browser:resource
-        file="resources/prototype.js"
-        name="prototype16.js"
-        />
-
-    <!-- Editing single calendar in member area -->
-    <browser:resource
-        file="resources/timeframe.js"
-        name="timeframe.js"
-        />
-
-    <!-- Editing multiple calendars in member area -->
-    <browser:page
-        name="multical.html"
-        for="dateable.chronos.interfaces.ICalendarEnhanced"
-        permission="dateable.chronos.ViewContent"
-        class=".month.MultiCalView"
-        template="templates/multical.pt"
-        />
-
-    <browser:resource
-        file="resources/multitimeframe.js"
-        name="multitimeframe.js"
-        />
-
-    <subscriber
-      handler=".calendar.notifyUpdate"
-      for=".interfaces.ICalendarUpdateEvent"/>
+   <grok:grok package=".selectheb"/>
+   <grok:grok package=".changedisponibilite"/>
 
 </configure>
 
