@@ -1,0 +1,17 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en"
+      lang="en"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="gites">
+
+<body>
+
+<metal:slot metal:fill-slot="header" i18n:domain="cmf_default">
+  <h1 tal:content="view/label">View Title</h1>
+</metal:slot>
+<div metal:fill-slot="main">
+
+<metal:use use-macro="context/@@ploneform-macros/titlelessform" />
+</div><!--div metal-->
+</body>
+</html>

@@ -23,7 +23,7 @@
          <dd class="portletItemSingle">
             <p>
                <a href=""
-                  tal:attributes="href string:$portal_url/zone-membre/calendrier/edit"
+                  tal:attributes="href string:$portal_url/zone-membre/calendrier/edit.html"
                   class="bouton-je-suis"><span><span><span>Editer</span></span></span>
                </a>
             </p>

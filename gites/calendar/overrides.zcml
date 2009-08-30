@@ -1,0 +1,23 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="gites">
+
+    <view
+        type="zope.publisher.interfaces.browser.IBrowserRequest"
+        for="zope.schema.interfaces.IDate"
+        provides="zope.app.form.interfaces.IInputWidget"
+        factory="zc.datetimewidget.datetimewidget.DateWidget"
+        permission="zope.Public"
+        />
+
+  <browser:page
+      name="month.html"
+      for="dateable.chronos.interfaces.ICalendarEnhanced"
+      permission="dateable.chronos.ViewContent"
+      class=".browser.month.CalMonthView"
+      template="browser/templates/month.pt"
+      />
+
+
+</configure>
+
