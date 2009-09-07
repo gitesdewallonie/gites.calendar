@@ -29,7 +29,6 @@ var Timeframe = Class.create({
     this.options = $H({ months: 12 }).merge(options || {});;
     this.months = this.options.get('months');
     this.selectionType = 'loue';
-
     this.weekdayNames = Locale.get('dayNames');
     this.monthNames   = Locale.get('monthNames');
     this.format       = this.options.get('format')     || Locale.get('format');
@@ -54,6 +53,7 @@ var Timeframe = Class.create({
     this.months.times(function(month) { this.createCalendar(month) }.bind(this));
 
     this.register().populate().refreshRange();
+    $('select_loue').addClassName('selectedType');
   },
 
   // Scaffolding
@@ -133,12 +133,10 @@ var Timeframe = Class.create({
   },
 
   changeSelectionType: function(event) {
-        var select = event.element();
-        if (select.selectedIndex >= 0){
-            selectedItem = select.options[select.selectedIndex];
-            select.style.backgroundcolor=selectedItem.style.backgroundcolor;
-            this.selectionType = selectedItem.type;
-        }
+        var selectedItem = event.element();
+        $('select_'+this.selectionType).removeClassName('selectedType');
+        this.selectionType = selectedItem.type;
+        selectedItem.addClassName('selectedType')
   },
 
   _buildButtons: function() {
@@ -156,16 +154,18 @@ var Timeframe = Class.create({
       }
     }.bind(this))
     if (buttonList.childNodes.length > 0) this.element.insert({ top: buttonList });
-      var select = new Element('select', { className: 'timeframe_button ', onclick: 'return false;' });
-      select.observe('change', this.changeSelectionType.bind(this));
-      var selectItem = new Element('option', {'id': 'select_loue'}).update('Loué');
+      var select = new Element('ul', { className: 'timeframe_button ', onclick: 'return false;' });
+      var selectItem = new Element('li', {'id': 'select_loue'}).update('Loué');
       selectItem.type = 'loue'
+      selectItem.observe('click', this.changeSelectionType.bind(this));
       select.insert(selectItem);
-      var selectItem = new Element('option', {'id':'select_indisp'}).update('Indisponible');
+      var selectItem = new Element('li', {'id':'select_indisp'}).update('Indisponible');
       selectItem.type = 'indisp'
+      selectItem.observe('click', this.changeSelectionType.bind(this));
       select.insert(selectItem);
-      var selectItem = new Element('option', {'id': 'libre'}).update('Libre');
+      var selectItem = new Element('li', {'id': 'select_libre'}).update('Libre');
       selectItem.type = 'libre'
+      selectItem.observe('click', this.changeSelectionType.bind(this));
       select.insert(selectItem);
       this.element.insert(select);
 

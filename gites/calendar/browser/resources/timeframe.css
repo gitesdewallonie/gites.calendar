@@ -173,14 +173,30 @@ div.timeframe_calendar table {
             background-image: url(../images/closebox_selected.png);
           }
 
-option#select_indisp {
+li#select_indisp {
+display:inline;
 background-color:red;
+padding:8px;
+cursor:pointer;
+margin-left:5px;
+margin-right:5px;
 }
-option#select_loue {
+li#select_loue {
+display:inline;
 background-color:orange;
+padding:8px;
+cursor:pointer;
 }
-option#select_libre {
-background-color:transparent;
+li#select_libre {
+display:inline;
+background-color:white;
+padding:8px;
+cursor:pointer;
+}
+
+.selectedType {
+font-weight:bold;
+border:2px solid black;
 }
 
 td.libre {
@@ -193,4 +209,9 @@ background-color:red;
 
 td.loue {
 background-color:orange;
+}
+
+.timeframe_button {
+clear:both;
+height:40px;
 }
