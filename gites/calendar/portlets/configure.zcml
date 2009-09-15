@@ -1,0 +1,17 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:plone="http://namespaces.plone.org/plone"
+           i18n_domain="gites">
+
+    <plone:portlet
+        name="gites.calendarmenu"
+        interface=".calendarmenu.ICalendarMenuPortlet"
+        assignment=".calendarmenu.Assignment"
+        view_permission="zope2.View"
+        edit_permission="cmf.ManagePortal"
+        renderer=".calendarmenu.Renderer"
+        addview=".calendarmenu.AddForm"
+        editview=".calendarmenu.EditForm"
+        />
+
+</configure>
+

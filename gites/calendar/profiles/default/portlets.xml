@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<portlets
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+    i18n:domain="plone">
+
+ <portlet
+   addview="gites.calendarmenu"
+   title="Calendar Menu"
+   description="A portlet which can render a menu">
+   <for interface="plone.app.portlets.interfaces.IColumn" />
+ </portlet>
+
+</portlets>

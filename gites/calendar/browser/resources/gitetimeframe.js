@@ -17,8 +17,7 @@ var Locale = $H({
 
 var Timeframes = [];
 var Rented = [];
-var RentedTypes = [];
-var Timeframe = Class.create({
+var GiteTimeframe = Class.create({
   Version: '0.2',
 
   initialize: function(element, options) {
@@ -26,18 +25,18 @@ var Timeframe = Class.create({
 
     this.element = $(element);
     this.element.addClassName('timeframe_calendar')
-    this.options = $H({ months: 12 }).merge(options || {});
+    this.options = $H({ months: 1 }).merge(options || {});
     this.months = this.options.get('months');
-    this.selectionType = 'loue';
     this.weekdayNames = Locale.get('dayNames');
     this.monthNames   = Locale.get('monthNames');
     this.format       = this.options.get('format')     || Locale.get('format');
     this.weekOffset   = this.options.get('weekOffset') || Locale.get('weekOffset');
+    this.hebPk        = this.options.get('hebPk');
     this.maxRange = 99999;
 
     this.buttons = $H({
       previous: $H({ label: '&larr;', element: $(this.options.get('previousButton')) }),
-      today:    $H({ label: 'T',      element: $(this.options.get('todayButton')) }),
+      today:    $H({ label: 'A',      element: $(this.options.get('todayButton')) }),
       next:     $H({ label: '&rarr;', element: $(this.options.get('nextButton')) })
     })
     //this.fields = $H({ start: $(this.options.get('startField')), end: $(this.options.get('endField')) });
@@ -52,7 +51,6 @@ var Timeframe = Class.create({
     this.months.times(function(month) { this.createCalendar(month) }.bind(this));
 
     this.register().populate().refreshRange();
-    $('select_loue').addClassName('selectedType');
   },
 
   // Scaffolding
@@ -131,13 +129,6 @@ var Timeframe = Class.create({
     return this;
   },
 
-  changeSelectionType: function(event) {
-        var selectedItem = event.element();
-        $('select_'+this.selectionType).removeClassName('selectedType');
-        this.selectionType = selectedItem.type;
-        selectedItem.addClassName('selectedType')
-  },
-
   _buildButtons: function() {
     var buttonList = new Element('ul', { id: this.element.id + '_menu', className: 'timeframe_menu' });
     this.buttons.each(function(pair) {
@@ -153,20 +144,6 @@ var Timeframe = Class.create({
       }
     }.bind(this))
     if (buttonList.childNodes.length > 0) this.element.insert({ top: buttonList });
-      var select = new Element('ul', { className: 'timeframe_button ', onclick: 'return false;' });
-      var selectItem = new Element('li', {'id': 'select_loue'}).update('Loué');
-      selectItem.type = 'loue'
-      selectItem.observe('click', this.changeSelectionType.bind(this));
-      select.insert(selectItem);
-      var selectItem = new Element('li', {'id':'select_indisp'}).update('Indisponible');
-      selectItem.type = 'indisp'
-      selectItem.observe('click', this.changeSelectionType.bind(this));
-      select.insert(selectItem);
-      var selectItem = new Element('li', {'id': 'select_libre'}).update('Libre');
-      selectItem.type = 'libre'
-      selectItem.observe('click', this.changeSelectionType.bind(this));
-      select.insert(selectItem);
-      this.element.insert(select);
 
     this.clearButton = new Element('span', { className: 'clear' }).update(new Element('span').update('X'));
     return this;
@@ -194,12 +171,8 @@ var Timeframe = Class.create({
 
   register: function() {
     this.element.observe('click', this.eventClick.bind(this));
-    this.element.observe('mousedown', this.eventMouseDown.bind(this));
-    this.element.observe('mouseover', this.eventMouseOver.bind(this));
-    document.observe('mouseup', this.eventMouseUp.bind(this));
-    document.observe('unload', this.unregister.bind(this));
     // mousemove listener for Opera in _disableTextSelection
-    return this._registerFieldObserver('start')._registerFieldObserver('end')._disableTextSelection();
+    return this._disableTextSelection();
   },
 
   unregister: function() {
@@ -280,18 +253,6 @@ var Timeframe = Class.create({
       this.handleButtonClick(event, el);
   },
 
-  eventMouseDown: function(event) {
-    if (!event.element().ancestors) return;
-    var el, em;
-    if (el = event.findElement('span.clear')) {
-      el.down('span').addClassName('active');
-      if (em = event.findElement('td.selectable'))
-        this.handleDateClick(em, true);
-    } else if (el = event.findElement('td.selectable'))
-      this.handleDateClick(el);
-    else return;
-  },
-
   handleButtonClick: function(event, element) {
     var el;
     var movement = this.months > 1 ? this.months - 1 : 1;
@@ -301,30 +262,7 @@ var Timeframe = Class.create({
       this.date.setMonth(this.date.getMonth() - movement);
     else if (element.hasClassName('today'))
       this.date = new Date();
-    else if (element.hasClassName('reset'))
-      this.reset();
     this.populate().refreshRange();
-  },
-
-  reset: function() {
-    //this.fields.get('start').value = this.fields.get('start').defaultValue || '';
-    //this.fields.get('end').value   = this.fields.get('end').defaultValue   || '';
-    this.date = new Date(this.initDate);
-    //this.parseField('start').refreshField('start').parseField('end').refreshField('end');
-  },
-
-  handleDateClick: function(element, couldClear) {
-    this.mousedown = this.dragging = true;
-    if (this.stuck) {
-      this.stuck = false;
-      return;
-    } else if (couldClear) {
-      if (!element.hasClassName('startrange')) return;
-    } else if (this.maxRange != 1) {
-      this.stuck = true;
-      setTimeout(function() { if (this.mousedown) this.stuck = false; }.bind(this), 200);
-    }
-    this.getPoint(element.date);
   },
 
   getPoint: function(date) {
@@ -344,9 +282,6 @@ var Timeframe = Class.create({
     if (!this.dragging)
       this.toggleClearButton(event);
     else if (event.findElement('span.clear span.active'));
-    else if (el = event.findElement('td.selectable'))
-      this.extendRange(el.date);
-    else this.toggleClearButton(event);
   },
 
   toggleClearButton: function(event) {
@@ -358,51 +293,6 @@ var Timeframe = Class.create({
       this.clearButton.show().select('span').first().removeClassName('active');
     } else
       this.clearButton.hide();
-  },
-
-  extendRange: function(date) {
-    var start, end;
-    this.clearButton.hide();
-    if (date > this.startdrag) {
-      start = this.startdrag;
-      end = date;
-    } else if (date < this.startdrag) {
-      start = date;
-      end = this.startdrag;
-    } else
-      start = end = date;
-    this.validateRange(start, end);
-    this.refreshRange();
-  },
-
-  validateRange: function(start, end) {
-    if (this.maxRange) {
-      var range = this.maxRange - 1;
-      var days = parseInt((end - start) / 86400000);
-      if (days > range) {
-        if (start == this.startdrag) {
-          end = new Date(this.startdrag);
-          end.setDate(end.getDate() + range);
-        } else {
-          start = new Date(this.startdrag);
-          start.setDate(start.getDate() - range);
-        }
-      }
-    }
-    this.range.set('start', start);
-    this.range.set('end', end);
-  },
-
-  addDateRange: function() {
-    new Ajax.Request(
-          'addRange',
-        {method: 'get',
-         asynchronous: true,
-         parameters: {'start': this.range.get('start').strftime('%Y-%m-%d'),
-                      'end': this.range.get('end').strftime('%Y-%m-%d'),
-                      'type': this.selectionType
-                      },
-         });
   },
 
   eventMouseUp: function(event) {
@@ -431,14 +321,15 @@ var Timeframe = Class.create({
           'selectedDays',
         {method: 'get',
          asynchronous: false,
-         parameters: {},
+         parameters: {hebPk:this.hebPk,
+                      month:this.date.getMonth()+1,
+                      year:this.date.getFullYear(),
+                      range:this.months},
          onSuccess: function(transport) {
               Rented.clear();
-              RentedTypes.clear();
               var json = transport.responseText.evalJSON();
               for (i=0;i<json.rented.length;++i){
                   Rented.push(json.rented[i]);
-                  RentedTypes.push(json.type[i]);
               };
          }});
   },
@@ -449,7 +340,6 @@ var Timeframe = Class.create({
       day.writeAttribute('class', day.baseClass);
       if (this.range.get('start') && this.range.get('end') && this.range.get('start') <= day.date && day.date <= this.range.get('end')) {
         var baseClass = day.hasClassName('beyond') ? 'beyond_' : day.hasClassName('today') ? 'today_' : null;
-        var state = this.stuck || this.mousedown ? 'stuck' : this.selectionType;
         if (baseClass) day.addClassName(baseClass + state);
         day.addClassName(state);
         var rangeClass = '';
@@ -458,8 +348,7 @@ var Timeframe = Class.create({
         if (rangeClass.length > 0) day.addClassName(rangeClass + 'range');
       }
       if (Rented.contains(day.date.strftime('%Y-%m-%d'))){
-        //day.addClassName('selected');
-        day.addClassName(RentedTypes[Rented.indexOf(day.date.strftime('%Y-%m-%d'))]);
+        day.addClassName('indisp');
       }
       if (Prototype.Browser.Opera) {
         day.unselectable = 'on'; // Trick Opera into refreshing the selection (FIXME)

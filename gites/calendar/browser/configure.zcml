@@ -15,6 +15,11 @@
         />
 
     <browser:resource
+        file="resources/gitetimeframe.js"
+        name="gitetimeframe.js"
+        />
+
+    <browser:resource
         file="resources/prototype.js"
         name="prototype16.js"
         />

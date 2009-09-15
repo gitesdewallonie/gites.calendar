@@ -1,0 +1,54 @@
+<html xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      i18n:domain="gites">
+<body>
+<div metal:define-macro="portlet">
+   <div id="portlet-boutique"
+        tal:define="portal_url context/@@plone_portal_state/portal_url">
+      <dl class="portlet">
+         <dt class="portletHeader"
+             tal:content="view/title">
+           La boutique
+         </dt>
+         <dd class="portletItemSingle">
+              <a href=""
+                  tal:attributes="href string:$portal_url/zone-membre/calendrier/configuration"
+                  class="tile"><span>Configuration</span>
+               </a>
+         </dd>
+
+         <dd class="portletItemSingle"
+             tal:repeat="gite view/getGitesForProprio">
+                    <a href="#"
+           class="tile"
+           tal:attributes="href string:${portal_url}/zone-membre/calendrier/month.html?pk=${gite/token};
+                           title gite/title">
+           <span tal:replace="gite/title">
+             Some Sejour
+            </span>
+            </a>
+         </dd>
+
+         <dd class="portletItemSingle">
+              <a href=""
+                  tal:attributes="href string:$portal_url/zone-membre/calendrier/transfert"
+                  class="tile"><span>Sur votre site</span>
+               </a>
+         </dd>
+
+         <dd class="portletItemSingle">
+             <a href=""
+                  tal:attributes="href string:$portal_url/zone-membre/calendrier/aide"
+                  class="tile"><span>Aide</span>
+               </a>
+         </dd>
+    <dd class="portletFooter">
+        &nbsp;
+    </dd>
+
+      </dl>
+   </div>
+
+</div>
+</body>
+</html>
