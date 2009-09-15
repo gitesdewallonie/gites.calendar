@@ -15,6 +15,11 @@ from z3c.sqlalchemy import getSAWrapper
 from sqlalchemy import select
 from time import strptime
 import datetime
+from dateutil.relativedelta import relativedelta
+from Products.CMFCore.utils import getToolByName
+from zope.app.schema.vocabulary import IVocabularyFactory
+from zope.component import getUtility
+
 grok.context(Interface)
 grok.templatedir('templates')
 
@@ -54,16 +59,58 @@ class CalendarAndDateRanges(grok.CodeView):
         if typeOfSelection == 'libre':
             return
         currentdate = start
+        hebPk = self.request.SESSION.get('cal-selected-heb')
+        pm = getToolByName(self.context, 'portal_membership')
+        gitesPkAvailables = [item.token for item in \
+                             getUtility(IVocabularyFactory,
+                                        name='proprio.hebergements')(self.context)]
+        assert(hebPk in gitesPkAvailables)
+        user = pm.getAuthenticatedMember()
+        userPk = user.getProperty('pk')
         while currentdate <= end:
             res = ReservationProprio()
             res.res_date = currentdate
-            res.heb_fk = 184
-            res.pro_fk = 231
+            res.heb_fk = hebPk
+            res.pro_fk = userPk
             res.res_type = typeOfSelection
             res.res_date_cre = datetime.datetime.now()
             session.add(res)
             currentdate += datetime.timedelta(days=1)
         session.flush()
+
+
+class GiteCalendarSelectedDays(grok.CodeView):
+    """
+    Configure calendar for proprio
+    """
+    grok.context(Interface)
+    grok.name('selectedDays')
+    grok.require('zope2.View')
+
+    def render(self):
+        return
+
+    def __call__(self):
+        hebPk = self.request.form.get('hebPk')
+        year = self.request.form.get('year')
+        month = self.request.form.get('month')
+        monthRange = self.request.form.get('range')
+        if hebPk == None or year == None or month == None or \
+           monthRange == None:
+            return
+        minDate = datetime.datetime(int(year), int(month), 1)
+        maxDate = minDate + relativedelta(months=+int(monthRange))
+        self.request.RESPONSE.setHeader('content-type', 'text/x-json')
+        wrapper = getSAWrapper('gites_wallons')
+        ReservationProprio = wrapper.getMapper('reservation_proprio')
+        session = wrapper.session
+        query = select([ReservationProprio.res_date])
+        query.append_whereclause(ReservationProprio.res_date.between(minDate, maxDate))
+        query.append_whereclause(ReservationProprio.heb_fk==int(hebPk))
+        dateList = []
+        for res in query.execute().fetchall():
+            dateList.append(res.res_date.strftime('%Y-%m-%d'))
+        return simplejson.dumps({'rented': dateList})
 
 
 class CalendarSelectedDays(grok.CodeView):
@@ -72,7 +119,7 @@ class CalendarSelectedDays(grok.CodeView):
     """
     grok.context(IProprioCalendar)
     grok.name('selectedDays')
-    grok.require('zope2.View')
+    grok.require('cmf.ListFolderContents')
 
     def render(self):
         return

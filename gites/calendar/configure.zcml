@@ -7,11 +7,10 @@
     <five:registerPackage package="." initialize=".initialize" />
 
     <include package=".browser"/>
+    <include package=".portlets"/>
     <include file="profiles.zcml" />
     <include file="skins.zcml" />
 
-    <adapter factory=".eventprovider.GitesCalendarEventProvider" />
-    <adapter factory=".eventprovider.GitesCalendarEventCreator" />
 
     <grok:grok package=".vocabulary"/>
 

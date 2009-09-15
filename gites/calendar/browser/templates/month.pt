@@ -9,15 +9,12 @@
       new Timeframe('calendars', {
             startField: 'start',
             endField: 'end',
-            resetButton: 'reset',
             weekOffset: 1,
             earliest: new Date()});}
     registerPloneFunction(calsetup);
     //]]>
   </script>
 
-    <style type="text/css" media="all"
-        tal:content="string:@import url(${context/absolute_url}/chronos.css);" />
 </metal:block>
 
 <metal:block fill-slot="body" tal:define="dummy view/calcInfo">
@@ -27,19 +24,11 @@
 <h1 class="documentFirstHeading" tal:content="view/title">
     Title
 </h1>
-    <div id="example">
-      <h4>Please select a date range below:</h4>
+    <div id="gitescal">
       <div id="calendars"></div>
       <div id="calendar_form">
         <div id="labels">
-          <label for="start">Embarkation</label> and <label for="end">return</label> (<a href="#" onclick="return false;" id="reset">reset</a>):
-        </div>
-        <div id="fields">
-          <span>
-            <input type="text" name="start" value="" id="start"/>
-            &ndash;
-            <input type="text" name="end" value="" id="end"/>
-          </span>
+          <label for="start"></label><label for="end"></label><a href="#" onclick="return false;" id="reset"></a>
         </div>
       </div>
     </div>

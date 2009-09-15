@@ -26,7 +26,7 @@ var Timeframe = Class.create({
 
     this.element = $(element);
     this.element.addClassName('timeframe_calendar')
-    this.options = $H({ months: 12 }).merge(options || {});;
+    this.options = $H({ months: 12 }).merge(options || {});
     this.months = this.options.get('months');
     this.selectionType = 'loue';
     this.weekdayNames = Locale.get('dayNames');
@@ -38,7 +38,6 @@ var Timeframe = Class.create({
     this.buttons = $H({
       previous: $H({ label: '&larr;', element: $(this.options.get('previousButton')) }),
       today:    $H({ label: 'T',      element: $(this.options.get('todayButton')) }),
-      reset:    $H({ label: 'R',      element: $(this.options.get('resetButton')) }),
       next:     $H({ label: '&rarr;', element: $(this.options.get('nextButton')) })
     })
     //this.fields = $H({ start: $(this.options.get('startField')), end: $(this.options.get('endField')) });
@@ -120,7 +119,7 @@ var Timeframe = Class.create({
           day.addClassName('unselectable');
         else
           day.addClassName('selectable');
-        if (iterator.toString() === new Date().neutral().toString()) day.addClassName('today');
+        //if (iterator.toString() === new Date().neutral().toString()) day.addClassName('today');
         day.baseClass = day.readAttribute('class');
 
         iterator.setDate(iterator.getDate() + 1);
