@@ -29,8 +29,9 @@ def setupCalendar(calendarFolder):
 def setupPortletsInZoneMembre(folder):
     manager = getManager(folder, 'left')
     assignments = getMultiAdapter((folder, manager), IPortletAssignmentMapping)
-    assignement = calendarmenu.Assignment('Calendrier')
-    assignments['calendarmenu'] = assignement
+    if 'calendarmenu' not in assignments:
+        assignement = calendarmenu.Assignment('Calendrier')
+        assignments['calendarmenu'] = assignement
 
 
 def setupgites(context):
