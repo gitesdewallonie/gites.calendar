@@ -126,6 +126,7 @@ class CalendarSelectedDays(grok.CodeView):
 
     def __call__(self):
         self.request.RESPONSE.setHeader('content-type', 'text/x-json')
+        self.request.RESPONSE.setHeader('Cache-Control', 'no-cache')
         wrapper = getSAWrapper('gites_wallons')
         ReservationProprio = wrapper.getMapper('reservation_proprio')
         session = wrapper.session
