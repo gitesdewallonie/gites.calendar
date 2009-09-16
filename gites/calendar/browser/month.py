@@ -23,7 +23,8 @@ class CalMonthView(MonthView):
             Hebergement = wrapper.getMapper('hebergement')
             session = wrapper.session
             hebergement = session.query(Hebergement).get(hebPk)
-            return u'Calendrier pour %s' % hebergement.heb_nom
+            return u'Calendrier pour %s - %s' % (hebergement.heb_pk,
+                                                 hebergement.heb_nom)
         else:
             return u'Calendrier'
 
