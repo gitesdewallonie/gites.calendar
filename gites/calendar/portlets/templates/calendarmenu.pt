@@ -10,12 +10,6 @@
              tal:content="view/title">
            La boutique
          </dt>
-         <dd class="portletItemSingle">
-              <a href=""
-                  tal:attributes="href string:$portal_url/zone-membre/calendrier/configuration"
-                  class="tile"><span>Configuration</span>
-               </a>
-         </dd>
 
          <dd class="portletItemSingle"
              tal:repeat="gite view/getGitesForProprio">
@@ -27,6 +21,13 @@
              Some Sejour
             </span>
             </a>
+         </dd>
+
+         <dd class="portletItemSingle">
+              <a href=""
+                  tal:attributes="href string:$portal_url/zone-membre/calendrier/configuration"
+                  class="tile"><span>Configuration</span>
+               </a>
          </dd>
 
          <dd class="portletItemSingle">
