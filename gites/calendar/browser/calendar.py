@@ -99,6 +99,9 @@ class GiteCalendarSelectedDays(grok.CodeView):
            monthRange == None:
             return
         minDate = datetime.datetime(int(year), int(month), 1)
+        now = datetime.datetime.now()
+        if minDate < now:
+            minDate = now
         maxDate = minDate + relativedelta(months=+int(monthRange))
         self.request.RESPONSE.setHeader('content-type', 'text/x-json')
         wrapper = getSAWrapper('gites_wallons')
