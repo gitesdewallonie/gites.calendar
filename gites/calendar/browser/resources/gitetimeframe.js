@@ -253,13 +253,28 @@ var GiteTimeframe = Class.create({
       this.handleButtonClick(event, el);
   },
 
+  truncateDate: function(date) {
+    date.setDate(1);
+    date.setHours(0, 0, 0, 0);
+  },
+
   handleButtonClick: function(event, element) {
     var el;
     var movement = this.months > 1 ? this.months - 1 : 1;
     if (element.hasClassName('next'))
       this.date.setMonth(this.date.getMonth() + movement);
-    else if (element.hasClassName('previous'))
-      this.date.setMonth(this.date.getMonth() - movement);
+    else if (element.hasClassName('previous')) {
+      firstDayOfThisMonth = new Date();
+      this.truncateDate(firstDayOfThisMonth);
+      newMonth = this.date.getMonth() - movement;
+      newDate = new Date(this.date);
+      newDate.setMonth(newMonth);
+      this.truncateDate(newDate);
+      if (newDate.equalsTo(firstDayOfThisMonth) || (newDate > firstDayOfThisMonth))
+        this.date.setMonth(newMonth);
+      else
+        return ;
+    }
     else if (element.hasClassName('today'))
       this.date = new Date();
     this.populate().refreshRange();
@@ -347,7 +362,7 @@ var GiteTimeframe = Class.create({
         if (this.range.get('end').toString() == day.date) rangeClass += 'end';
         if (rangeClass.length > 0) day.addClassName(rangeClass + 'range');
       }
-      if (Rented.contains(day.date.strftime('%Y-%m-%d'))){
+      if (Rented.indexOf(day.date.strftime('%Y-%m-%d')) > -1){
         day.addClassName('indisp');
       }
       if (Prototype.Browser.Opera) {
