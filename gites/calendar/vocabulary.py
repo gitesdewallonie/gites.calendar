@@ -14,21 +14,45 @@ from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from Products.CMFCore.utils import getToolByName
 
 
+CONFIG = {'actif': "Calendrier visible par tous (recherches et page d'hebergement)",
+          'searchactif': "Calendrier visible pour recherches uniquement",
+          'non actif': "Calendrier non activé"}
+
+
+def getHebergementsForProprio(context, session=None):
+    wrapper = getSAWrapper('gites_wallons')
+    if session is None:
+        session = wrapper.session
+    pm = getToolByName(context, 'portal_membership')
+    user = pm.getAuthenticatedMember()
+    userPk = user.getProperty('pk')
+    if userPk:
+        Proprio = wrapper.getMapper('proprio')
+        proprietaire = session.query(Proprio).get(int(userPk))
+        for heb in proprietaire.hebergements:
+            yield heb
+
+
+class CalendarConfiguration(grok.GlobalUtility):
+    grok.provides(IVocabularyFactory)
+    grok.name('proprio.calendarconfig')
+
+    def __call__(self, context):
+        items = []
+        for key, value in CONFIG.items():
+            items.append(SimpleTerm(key,
+                                    key,
+                                    value))
+        return SimpleVocabulary(items)
+
+
 class ProprioHebergements(grok.GlobalUtility):
     grok.provides(IVocabularyFactory)
     grok.name('proprio.hebergements')
 
     def __call__(self, context):
-        wrapper = getSAWrapper('gites_wallons')
-        session = wrapper.session
         items = []
-        pm = getToolByName(context, 'portal_membership')
-        user = pm.getAuthenticatedMember()
-        userPk = user.getProperty('pk')
-        if userPk:
-            Proprio = wrapper.getMapper('proprio')
-            proprietaire = session.query(Proprio).get(int(userPk))
-            for heb in proprietaire.hebergements:
+        for heb in getHebergementsForProprio(context):
                 items.append(SimpleTerm(heb.heb_pk,
                                         heb.heb_pk,
                                         u'%s - %s' % (heb.heb_pk, heb.heb_nom)))
