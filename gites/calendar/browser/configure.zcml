@@ -4,8 +4,7 @@
            i18n_domain="gites">
 
    <grok:grok package=".configuration"/>
-   <grok:grok package=".selectheb"/>
-   <grok:grok package=".changedisponibilite"/>
+   <!-- grok:grok package=".changedisponibilite"/ -->
 
    <grok:grok package=".calendar"/>
 
