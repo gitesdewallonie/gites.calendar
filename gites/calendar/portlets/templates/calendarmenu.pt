@@ -12,6 +12,7 @@
          </dt>
 
          <dd class="portletItemSingle"
+             tal:condition="view/hasActiveConfiguration"
              tal:repeat="gite view/getGitesForProprio">
                     <a href="#"
            class="tile"
