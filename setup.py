@@ -23,9 +23,12 @@ setup(name='gites.calendar',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
+          'zope.app.testing>=3.5',
           'setuptools',
           'gites.skin',
-          'gites.core'
+          'gites.core',
+          'affinitic.db',
+          'dateutil'
       ],
       entry_points="""
       # -*- Entry points: -*-
