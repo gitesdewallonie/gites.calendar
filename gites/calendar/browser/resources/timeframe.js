@@ -54,7 +54,6 @@ var Timeframe = Class.create({
 
     this.register().populate().refreshRange();
     $('select_loue').addClassName('selectedType');
-    alert('ok');
   },
 
   // Scaffolding
