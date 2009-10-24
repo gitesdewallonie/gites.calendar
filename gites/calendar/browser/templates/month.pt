@@ -15,7 +15,7 @@
     Title
 </h1>
 
-      <div id="calendar_form">
+      <div id="gitescal">
         <div id="calendars"></div>
           <input type="hidden" id="reset"/>
             <input type="hidden" name="start" value="" id="start"/>
