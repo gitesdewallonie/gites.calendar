@@ -2,18 +2,8 @@
 <metal:block fill-slot="style_slot">
   <link rel="stylesheet" href="++resource++timeframe.css" type="text/css" media="screen" title="timeframe" charset="utf-8"/>
   <script type="text/javascript" charset="utf-8" src="++resource++timeframe.js"></script>
-  <script type="text/javascript" charset="utf-8">
-    //<![CDATA[
-    calsetup = function() {
-      jQuery.noConflict();
-      new Timeframe('calendars', {
-            startField: 'start',
-            endField: 'end',
-            weekOffset: 1,
-            earliest: new Date()});}
-    registerPloneFunction(calsetup);
-    //]]>
-  </script>
+  <script type="text/javascript" charset="utf-8"
+          tal:content="view/calendarJS"/>
 
 </metal:block>
 

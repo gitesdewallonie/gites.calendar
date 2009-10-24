@@ -333,7 +333,7 @@ var GiteTimeframe = Class.create({
 
   checkSelectedDay: function() {
     new Ajax.Request(
-          'selectedDays',
+        '/selectedDays',
         {method: 'get',
          asynchronous: false,
          parameters: {hebPk:this.hebPk,
@@ -386,8 +386,22 @@ Object.extend(Date, {
     return (date == 'Invalid Date' || date == 'NaN') ? null : date.neutral();
   }
 });
+Date.prototype.equalsTo = function(date) {
+  return ((this.getFullYear() == date.getFullYear()) &&
+    (this.getMonth() == date.getMonth()) &&
+    (this.getDate() == date.getDate()) &&
+    (this.getHours() == date.getHours()) &&
+    (this.getMinutes() == date.getMinutes()));
+};
 
 Object.extend(Date.prototype, {
+  equalsTo: function(date) {
+  return ((this.getFullYear() == date.getFullYear()) &&
+    (this.getMonth() == date.getMonth()) &&
+    (this.getDate() == date.getDate()) &&
+    (this.getHours() == date.getHours()) &&
+    (this.getMinutes() == date.getMinutes()));
+  },
   // modified from http://alternateidea.com/blog/articles/2008/2/8/a-strftime-for-prototype
   strftime: function(format) {
     var day = this.getDay(), month = this.getMonth();
