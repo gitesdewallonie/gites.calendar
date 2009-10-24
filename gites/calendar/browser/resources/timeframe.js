@@ -31,6 +31,7 @@ var Timeframe = Class.create({
     this.selectionType = 'loue';
     this.weekdayNames = Locale.get('dayNames');
     this.monthNames   = Locale.get('monthNames');
+    this.hebPk        = this.options.get('hebPk');
     this.format       = this.options.get('format')     || Locale.get('format');
     this.weekOffset   = this.options.get('weekOffset') || Locale.get('weekOffset');
     this.maxRange = 99999;
@@ -431,7 +432,7 @@ var Timeframe = Class.create({
           'selectedDays',
         {method: 'get',
          asynchronous: false,
-         parameters: {},
+         parameters: {hebPk:this.hebPk},
          onSuccess: function(transport) {
               Rented.clear();
               RentedTypes.clear();

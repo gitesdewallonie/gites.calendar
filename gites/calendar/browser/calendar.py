@@ -132,9 +132,11 @@ class CalendarSelectedDays(grok.CodeView):
         self.request.RESPONSE.setHeader('Cache-Control', 'no-cache')
         wrapper = getSAWrapper('gites_wallons')
         ReservationProprio = wrapper.getMapper('reservation_proprio')
+        hebPk = self.request.SESSION.get('cal-selected-heb')
         session = wrapper.session
         query = select([ReservationProprio.res_date,
                         ReservationProprio.res_type])
+        query.append_whereclause(ReservationProprio.heb_fk==int(hebPk))
         dateList = []
         typeList = []
         for res in query.execute().fetchall():

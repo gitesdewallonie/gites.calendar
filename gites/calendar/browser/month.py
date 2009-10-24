@@ -16,6 +16,24 @@ from zope.component import getUtility
 
 class CalMonthView(MonthView):
 
+    def calendarJS(self):
+        """
+        Calendar javascript
+        """
+        return """
+        //<![CDATA[
+        calsetup = function() {
+          jQuery.noConflict();
+          new Timeframe('calendars', {
+                startField: 'start',
+                endField: 'end',
+                resetButton: 'reset',
+                weekOffset: 1,
+                hebPk: %s,
+                earliest: new Date()});}
+        registerPloneFunction(calsetup);
+        //]]>""" % self.request.SESSION.get('cal-selected-heb')
+
     def title(self):
         hebPk = self.request.SESSION.get('cal-selected-heb')
         if hebPk:
