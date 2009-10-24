@@ -54,6 +54,7 @@ var Timeframe = Class.create({
 
     this.register().populate().refreshRange();
     $('select_loue').addClassName('selectedType');
+    alert('ok');
   },
 
   // Scaffolding
@@ -135,7 +136,12 @@ var Timeframe = Class.create({
   changeSelectionType: function(event) {
         var selectedItem = event.element();
         $('select_'+this.selectionType).removeClassName('selectedType');
-        this.selectionType = selectedItem.type;
+        if (selectedItem.id == 'select_loue')
+            this.selectionType = 'loue';
+        else if (selectedItem.id == 'select_indisp')
+            this.selectionType = 'indisp';
+        else if (selectedItem.id == 'select_libre')
+            this.selectionType = 'libre';
         selectedItem.addClassName('selectedType')
   },
 
@@ -156,15 +162,15 @@ var Timeframe = Class.create({
     if (buttonList.childNodes.length > 0) this.element.insert({ top: buttonList });
       var select = new Element('ul', { className: 'timeframe_button ', onclick: 'return false;' });
       var selectItem = new Element('li', {'id': 'select_loue'}).update('Loué');
-      selectItem.type = 'loue'
+      //selectItem.type = 'loue';
       selectItem.observe('click', this.changeSelectionType.bind(this));
       select.insert(selectItem);
       var selectItem = new Element('li', {'id':'select_indisp'}).update('Indisponible');
-      selectItem.type = 'indisp'
+      //selectItem.type = 'indisp';
       selectItem.observe('click', this.changeSelectionType.bind(this));
       select.insert(selectItem);
       var selectItem = new Element('li', {'id': 'select_libre'}).update('Libre');
-      selectItem.type = 'libre'
+      //selectItem.type = 'libre';
       selectItem.observe('click', this.changeSelectionType.bind(this));
       select.insert(selectItem);
       this.element.insert(select);
@@ -395,17 +401,22 @@ var Timeframe = Class.create({
   },
 
   addDateRange: function() {
+  /*  start = this.range.get('start').strftime('%Y-%m-%d');
+    end = this.range.get('end').strftime('%Y-%m-%d');
+    selectionType = this.selectionType;
+    if (start && end && selectionType){
     new Ajax.Request(
           'addRange',
         {method: 'get',
          asynchronous: true,
-         parameters: {'start': this.range.get('start').strftime('%Y-%m-%d'),
-                      'end': this.range.get('end').strftime('%Y-%m-%d'),
-                      'type': this.selectionType
+         parameters: {'start': start,
+                      'end': end,
+                      'type': selectionType
                       },
          });
+    };*/
+    ;
   },
-
   eventMouseUp: function(event) {
     if (!this.dragging) {
         return;
@@ -420,13 +431,11 @@ var Timeframe = Class.create({
     this.checkSelectedDay();
     this.refreshRange();
   },
-
   clearRange: function() {
     this.clearButton.hide().select('span').first().removeClassName('active');
     this.range.set('start', this.range.set('end', null));
     this.refreshField('start').refreshField('end');
   },
-
   checkSelectedDay: function() {
     new Ajax.Request(
           'selectedDays',
