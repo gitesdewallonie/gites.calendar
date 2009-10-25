@@ -400,7 +400,7 @@ var Timeframe = Class.create({
   },
 
   addDateRange: function() {
-  /*  start = this.range.get('start').strftime('%Y-%m-%d');
+    start = this.range.get('start').strftime('%Y-%m-%d');
     end = this.range.get('end').strftime('%Y-%m-%d');
     selectionType = this.selectionType;
     if (start && end && selectionType){
@@ -413,8 +413,7 @@ var Timeframe = Class.create({
                       'type': selectionType
                       },
          });
-    };*/
-    ;
+    };
   },
   eventMouseUp: function(event) {
     if (!this.dragging) {
