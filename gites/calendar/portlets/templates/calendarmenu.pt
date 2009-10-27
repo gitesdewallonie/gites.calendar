@@ -32,12 +32,12 @@
                </a>
          </dd>
 
-         <dd class="portletItemSingle">
+         <!-- dd class="portletItemSingle">
               <a href=""
                   tal:attributes="href string:$portal_url/zone-membre/calendrier/transfert"
                   class="tile"><span>Sur votre site</span>
                </a>
-         </dd>
+         </dd -->
 
          <dd class="portletItemSingle">
              <a href=""
