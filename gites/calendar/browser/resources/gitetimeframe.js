@@ -135,8 +135,8 @@ var GiteTimeframe = Class.create({
       if (pair.value.get('element'))
         pair.value.get('element').addClassName('timeframe_button').addClassName(pair.key);
       else {
-        var item = new Element('li');
-        var button = new Element('a', { className: 'timeframe_button ' + pair.key, href: '#', onclick: 'return false;' }).update(pair.value.get('label'));
+        var item = new Element('li', { id: 'li_' + pair.key});
+        var button = new Element('a', { id: 'a_' + pair.key, className: 'timeframe_button ' + pair.key, href: '#', onclick: 'return false;' }).update(pair.value.get('label'));
         button.onclick = function() { return false; };
         pair.value.set('element', button);
         item.insert(button);
