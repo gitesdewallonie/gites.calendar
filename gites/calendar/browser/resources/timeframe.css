@@ -1,7 +1,9 @@
+/**** la div gitecal est dans gites.css elle porte le centragee***/
+
 div.timeframe_calendar {
-background-color:#ccc;
+background-color:transparent;                   /*#f9e7c6;*/
 display: inline-block;
-margin: 0;
+margin:0;
 padding: 0;
 text-align: center;
 text-shadow: none;
@@ -9,9 +11,11 @@ text-shadow: none;
 
 .timeframe_button {
 clear:both;
-height:50px;
 }
 
+#calendars_container {
+margin-top: 40px;
+}
 
 /* Menu */
 div.timeframe_calendar ul.timeframe_menu {
@@ -70,7 +74,6 @@ background: #024522;
 }
 
 div.timeframe_calendar ul.timeframe_menu li a.previous {
-border:2px solid #FF670D;
 /*  
 -webkit-border-top-left-radius:10px;
 -webkit-border-bottom-left-radius:10px;
@@ -80,7 +83,6 @@ border:2px solid #FF670D;
 }
 
 div.timeframe_calendar ul.timeframe_menu li a.next {
-border:2px solid #FF670D;
 /*-webkit-border-top-right-radius:     10px;
 -webkit-border-bottom-right-radius:  10px;
 -moz-border-radius-topright:         11px;
@@ -88,7 +90,48 @@ border:2px solid #FF670D;
 */
 }
 
-/* Calendar*/
+#li_previous, #li_today, #li_next{
+display:inline-block;
+} 
+
+#li_previous, #li_next{
+width:20px;
+height:20px;
+border:2px solid #FF670D;
+background-color:#fff;
+padding:2px 0 0;
+}
+
+#li_previous a {
+text-decoration:none;
+}
+
+#li_next a {
+text-decoration:none;
+}
+
+
+#li_today a {
+display:inline-block;
+width: 20px;
+height: 20px;
+border:2px solid #28553D;
+background: #468966;
+color: #eee;
+padding: 2px 0 0;
+text-decoration: none;
+}
+
+#li_today a:hover {
+border:2px solid #60DA96;
+}
+
+
+
+
+
+
+/**** CALENDAR ****/
 div.timeframe_calendar table {
 border-collapse: collapse;
 display: inline;
