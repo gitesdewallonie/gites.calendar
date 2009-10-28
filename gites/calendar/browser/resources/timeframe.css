@@ -132,7 +132,7 @@ background-color: #bbb;
 }
 
 div.timeframe_calendar tbody td.selected:hover, div.timeframe_calendar tbody td.stuck:hover {
-background-color: #e99a27;
+background-color: #3DA1CE;
 }
 
 /* Selected states */
@@ -141,7 +141,7 @@ background-color: #ffb03b;
 }
 
 div.timeframe_calendar tbody td.stuck {
-background-color: #e99a27;
+background-color: #3DA1CE;
 }
 
 /* Range markers */
