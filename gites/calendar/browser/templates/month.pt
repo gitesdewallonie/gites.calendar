@@ -9,8 +9,6 @@
 
 <metal:block fill-slot="body" tal:define="dummy view/calcInfo">
 
-<div tal:replace="structure provider:plone.abovecontenttitle" />
-
 <h1 class="documentFirstHeading" tal:content="view/title">
     Title
 </h1>
