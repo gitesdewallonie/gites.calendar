@@ -400,19 +400,24 @@ var Timeframe = Class.create({
   },
 
   addDateRange: function() {
+    var start;
+    var end;
+    var selectionType;
     start = this.range.get('start').strftime('%Y-%m-%d');
     end = this.range.get('end').strftime('%Y-%m-%d');
     selectionType = this.selectionType;
     if (start && end && selectionType){
-    new Ajax.Request(
-          'addRange',
-        {method: 'get',
-         asynchronous: true,
-         parameters: {'start': start,
+        var parameters;
+        parameters = {'start': start,
                       'end': end,
                       'type': selectionType
-                      },
-         });
+                      };
+        var request;
+        request = new Ajax.Request('addRange',
+                        {method: 'get',
+                         asynchronous: true,
+                         parameters: parameters
+                         });
     };
   },
   eventMouseUp: function(event) {
