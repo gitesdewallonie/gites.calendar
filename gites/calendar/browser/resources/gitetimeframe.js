@@ -35,9 +35,9 @@ var GiteTimeframe = Class.create({
     this.maxRange = 99999;
 
     this.buttons = $H({
-      previous: $H({ label: '&larr;', element: $(this.options.get('previousButton')) }),
-      today:    $H({ label: 'A',      element: $(this.options.get('todayButton')) }),
-      next:     $H({ label: '&rarr;', element: $(this.options.get('nextButton')) })
+      previous: $H({ label: '&nbsp;', element: $(this.options.get('previousButton')) }),
+      today:    $H({ label: '&nbsp;', element: $(this.options.get('todayButton')) }),
+      next:     $H({ label: '&nbsp;', element: $(this.options.get('nextButton')) })
     })
     //this.fields = $H({ start: $(this.options.get('startField')), end: $(this.options.get('endField')) });
 
@@ -130,12 +130,12 @@ var GiteTimeframe = Class.create({
   },
 
   _buildButtons: function() {
-    var buttonList = new Element('ul', { id: this.element.id + '_menu', className: 'timeframe_menu' });
+    var buttonList = new Element('div', { id: this.element.id + '_menu', className: 'timeframe_menu' });
     this.buttons.each(function(pair) {
       if (pair.value.get('element'))
         pair.value.get('element').addClassName('timeframe_button').addClassName(pair.key);
       else {
-        var item = new Element('li', { id: 'li_' + pair.key});
+        var item = new Element('span', { id: 'btn_' + pair.key});
         var button = new Element('a', { id: 'a_' + pair.key, className: 'timeframe_button ' + pair.key, href: '#', onclick: 'return false;' }).update(pair.value.get('label'));
         button.onclick = function() { return false; };
         pair.value.set('element', button);
