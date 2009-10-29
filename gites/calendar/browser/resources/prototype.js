@@ -391,7 +391,13 @@ Object.extend(String.prototype, {
   },
 
   evalScripts: function() {
-    return this.extractScripts().map(function(script) { return eval(script) });
+    try {
+      scripts = this.extractScripts();
+      return scripts.map(function(script) { return eval(script) });
+    }
+    catch(e) {
+      return null;  
+    } 
   },
 
   escapeHTML: function() {
