@@ -1,5 +1,5 @@
 /**** la div gitecal est dans gites.css elle porte le centragee***/
-
+''
 div.timeframe_calendar {
 background-color:transparent;                   /*#f9e7c6;*/
 display: inline-block;
@@ -28,102 +28,67 @@ width: 75px;
 }
 
 div.timeframe_calendar ul.timeframe_menu li {
-display: inline;
+/*display: inline;*/
 }
 
 div.timeframe_calendar ul.timeframe_menu li a {
-display: inline-block;
 height: 20px;
 padding: 2px 0 0;
 text-decoration: none;
 width: 20px;
 }
 
-div.timeframe_calendar ul.timeframe_menu li a.previous, div.timeframe_calendar ul.timeframe_menu li a.next {
-background: #fff;
-color: #468966;
-}
-
-div.timeframe_calendar ul.timeframe_menu li a.previous:hover, div.timeframe_calendar ul.timeframe_menu li a.next:hover {
-background: #ccc;
-}
-
-div.timeframe_calendar ul.timeframe_menu li a.previous:active, div.timeframe_calendar ul.timeframe_menu li a.next:active {
-background: #aaa;
-}
-
-div.timeframe_calendar ul.timeframe_menu li a.disabled, div.timeframe_calendar ul.timeframe_menu li a.disabled:hover, div.timeframe_calendar ul.timeframe_menu li a.disabled:active {
-background: #fff;
-color: #ccc;
-cursor: default;
-}
-
-div.timeframe_calendar ul.timeframe_menu li a.today {
-border:2px solid #28553D;
-background: #468966;
-color: #eee;
-}
-
-div.timeframe_calendar ul.timeframe_menu li a.today:hover {
-border:2px solid #60DA96;
-background: #246744;
-}
-
-div.timeframe_calendar ul.timeframe_menu li a.today:active {
-background: #024522;
-}
-
-div.timeframe_calendar ul.timeframe_menu li a.previous {
-/*  
--webkit-border-top-left-radius:10px;
--webkit-border-bottom-left-radius:10px;
--moz-border-radius-topleft:11px;
--moz-border-radius-bottomleft:11px;
-*/
-}
-
-div.timeframe_calendar ul.timeframe_menu li a.next {
-/*-webkit-border-top-right-radius:     10px;
--webkit-border-bottom-right-radius:  10px;
--moz-border-radius-topright:         11px;
--moz-border-radius-bottomright:      11px;
-*/
-}
 
 #li_previous, #li_today, #li_next{
 display:inline-block;
-} 
+margin-left:6px;
+margin-right:6px;
+}
 
-#li_previous, #li_next{
-width:20px;
-height:20px;
-border:2px solid #FF670D;
-background-color:#fff;
-padding:2px 0 0;
+#li_previous{ 
+width:29px;
+height:26px;
+background-image:url('btn_calendar_prev.png');
+padding:0;
+}
+
+#li_next{
+width:29px;
+height:26px;
+background-image:url('btn_calendar_next.png');
+padding:0;
+}
+
+#li_today{
+width:29px;
+height:26px;
+background-image:url('btn_calendar_today.png');
+padding:0;
 }
 
 #li_previous a {
+display:inline-block;
+width:29px;
+height:26px;
 text-decoration:none;
 }
 
 #li_next a {
+display:inline-block;
+width:29px;
+height:26px;
 text-decoration:none;
 }
 
 
 #li_today a {
 display:inline-block;
-width: 20px;
-height: 20px;
-border:2px solid #28553D;
-background: #468966;
-color: #eee;
-padding: 2px 0 0;
-text-decoration: none;
+width:29px;
+height:26px;
+padding:0;
 }
 
 #li_today a:hover {
-border:2px solid #60DA96;
 }
 
 

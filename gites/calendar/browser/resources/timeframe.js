@@ -37,9 +37,9 @@ var Timeframe = Class.create({
     this.maxRange = 99999;
 
     this.buttons = $H({
-      previous: $H({ label: '&larr;', element: $(this.options.get('previousButton')) }),
-      today:    $H({ label: 'T',      element: $(this.options.get('todayButton')) }),
-      next:     $H({ label: '&rarr;', element: $(this.options.get('nextButton')) })
+      previous: $H({ label: '&nbsp;', element: $(this.options.get('previousButton')) }),
+      today:    $H({ label: '&nbsp;',      element: $(this.options.get('todayButton')) }),
+      next:     $H({ label: '&nbsp;', element: $(this.options.get('nextButton')) })
     })
     //this.fields = $H({ start: $(this.options.get('startField')), end: $(this.options.get('endField')) });
 
