@@ -143,12 +143,12 @@ cursor: pointer;
 
 /* Hover states not available in IE */
 div.timeframe_calendar tbody td.selectable:hover {
-background-color: #bbb;
-}
+/*background-color: #bbb;
+*/}
 
 div.timeframe_calendar tbody td.selected:hover, div.timeframe_calendar tbody td.stuck:hover {
-background-color: #3DA1CE;
-}
+/*background-color: #3DA1CE;
+*/}
 
 /* Selected states */
 div.timeframe_calendar tbody td.selected {
@@ -161,8 +161,8 @@ background-color: #3DA1CE;
 
 /* Range markers */
 div.timeframe_calendar tbody td.startrange, div.timeframe_calendar tbody td.endrange, div.timeframe_calendar tbody td.startendrange {
-cursor: col-resize;
-}
+/*cursor: col-resize;
+*/}
 
 /*div.timeframe_calendar tbody td.startrange {
 background-image: url(../images/start.png);
