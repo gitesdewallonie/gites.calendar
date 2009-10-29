@@ -145,12 +145,13 @@ var Timeframe = Class.create({
   },
 
   _buildButtons: function() {
-    var buttonList = new Element('ul', { id: this.element.id + '_menu', className: 'timeframe_menu' });
+    //var buttonList = new Element('ul', { id: this.element.id + '_menu', className: 'timeframe_menu' });
+    var buttonList = new Element('div', { id: this.element.id + '_menu', className: 'timeframe_menu' });
     this.buttons.each(function(pair) {
       if (pair.value.get('element'))
         pair.value.get('element').addClassName('timeframe_button').addClassName(pair.key);
       else {
-        var item = new Element('li', { id: 'li_' + pair.key});
+        var item = new Element('span', { id: 'btn_' + pair.key});
         var button = new Element('a', { id: 'a_' + pair.key, className: 'timeframe_button ' + pair.key, href: '#', onclick: 'return false;' }).update(pair.value.get('label'));
         button.onclick = function() { return false; };
         pair.value.set('element', button);

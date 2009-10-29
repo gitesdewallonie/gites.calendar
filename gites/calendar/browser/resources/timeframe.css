@@ -18,6 +18,11 @@ margin-top: 40px;
 }
 
 /* Menu */
+
+#calendars_menu{
+margin-bottom:15px;
+}
+
 div.timeframe_calendar ul.timeframe_menu {
 list-style-type: none;
 font-weight: bold;
@@ -39,41 +44,41 @@ width: 20px;
 }
 
 
-#li_previous, #li_today, #li_next{
+#btn_previous, #btn_today, #btn_next{
 display:inline-block;
 margin-left:6px;
 margin-right:6px;
 }
 
-#li_previous{ 
+#btn_previous{ 
 width:29px;
 height:26px;
 background-image:url('btn_calendar_prev.png');
 padding:0;
 }
 
-#li_next{
+#btn_next{
 width:29px;
 height:26px;
 background-image:url('btn_calendar_next.png');
 padding:0;
 }
 
-#li_today{
+#btn_today{
 width:29px;
 height:26px;
 background-image:url('btn_calendar_today.png');
 padding:0;
 }
 
-#li_previous a {
+#btn_previous a {
 display:inline-block;
 width:29px;
 height:26px;
 text-decoration:none;
 }
 
-#li_next a {
+#btn_next a {
 display:inline-block;
 width:29px;
 height:26px;
@@ -81,14 +86,14 @@ text-decoration:none;
 }
 
 
-#li_today a {
+#btn_today a {
 display:inline-block;
 width:29px;
 height:26px;
 padding:0;
 }
 
-#li_today a:hover {
+#btn_today a:hover {
 }
 
 
