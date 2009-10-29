@@ -164,7 +164,7 @@ div.timeframe_calendar tbody td.startrange, div.timeframe_calendar tbody td.endr
 cursor: col-resize;
 }
 
-div.timeframe_calendar tbody td.startrange {
+/*div.timeframe_calendar tbody td.startrange {
 background-image: url(../images/start.png);
 }
 
@@ -175,11 +175,12 @@ background-image: url(../images/end.png);
 div.timeframe_calendar tbody td.startendrange {
 background-image: url(../images/startend.png);
 }
+*/
 
 /* Today */
 div.timeframe_calendar tbody td.today {
-background-color: #468966;
-color: #eee;
+color: #468966;
+font-weight: bold;
 }
 
 div.timeframe_calendar tbody td.today_selected {
