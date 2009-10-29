@@ -115,12 +115,14 @@ var Timeframe = Class.create({
 
       calendar.select('td').each(function(day) {
         day.date = new Date(iterator); // Is this expensive (we unload these later)? We could store the epoch time instead.
-        day.update(day.date.getDate()).writeAttribute('class', inactive || 'active');
+        day.update(day.date.getDate()).writeAttribute('class', '');
+        if (inactive) day.addClassName(inactive);
+        else day.addClassName('active');
         if ((this.earliest && day.date < this.earliest) || (this.latest && day.date > this.latest))
           day.addClassName('unselectable');
         else
           day.addClassName('selectable');
-        //if (iterator.toString() === new Date().neutral().toString()) day.addClassName('today');
+        if (iterator.toString() === new Date().neutral().toString()) day.addClassName('today');
         day.baseClass = day.readAttribute('class');
 
         iterator.setDate(iterator.getDate() + 1);
@@ -146,18 +148,6 @@ var Timeframe = Class.create({
 
   _buildButtons: function() {
     var buttonList = new Element('div', { id: this.element.id + '_menu', className: 'timeframe_menu' });
-    this.buttons.each(function(pair) {
-      if (pair.value.get('element'))
-        pair.value.get('element').addClassName('timeframe_button').addClassName(pair.key);
-      else {
-        var item = new Element('span', { id: 'btn_' + pair.key});
-        var button = new Element('a', { id: 'a_' + pair.key, className: 'timeframe_button ' + pair.key, href: '#', onclick: 'return false;' }).update(pair.value.get('label'));
-        button.onclick = function() { return false; };
-        pair.value.set('element', button);
-        item.insert(button);
-        buttonList.insert(item);
-      }
-    }.bind(this))
     if (buttonList.childNodes.length > 0) this.element.insert({ top: buttonList });
       var select = new Element('ul', { className: 'timeframe_button ', onclick: 'return false;' });
       var selectItem = new Element('li', {'id': 'select_loue'}).update('Loué');
@@ -327,8 +317,7 @@ var Timeframe = Class.create({
     } else if (couldClear) {
       if (!element.hasClassName('startrange')) return;
     } else if (this.maxRange != 1) {
-      this.stuck = true;
-      setTimeout(function() { if (this.mousedown) this.stuck = false; }.bind(this), 200);
+      this.stuck = false;
     }
     this.getPoint(element.date);
   },
@@ -459,12 +448,13 @@ var Timeframe = Class.create({
   refreshRange: function() {
     if (this.mousedown != true) this.checkSelectedDay();
     this.element.select('td').each(function(day) {
-      day.writeAttribute('class', day.baseClass);
+      day.writeAttribute('class', '');
+      day.addClassName(day.baseClass);
       if (this.range.get('start') && this.range.get('end') && this.range.get('start') <= day.date && day.date <= this.range.get('end')) {
         var baseClass = day.hasClassName('beyond') ? 'beyond_' : day.hasClassName('today') ? 'today_' : null;
         var state = this.stuck || this.mousedown ? 'stuck' : this.selectionType;
-        if (baseClass) day.addClassName(baseClass + state);
-        day.addClassName(state);
+        // if (baseClass) day.addClassName(baseClass + state);
+        day.addClassName(this.selectionType);
         var rangeClass = '';
         if (this.range.get('start').toString() == day.date) rangeClass += 'start';
         if (this.range.get('end').toString() == day.date) rangeClass += 'end';
