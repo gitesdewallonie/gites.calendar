@@ -92,6 +92,7 @@ display:inline-block;
 width:29px;
 height:26px;
 padding:0;
+text-decoration:none;
 }
 
 #btn_today a:hover {
