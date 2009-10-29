@@ -38,7 +38,7 @@ var Timeframe = Class.create({
 
     this.buttons = $H({
       previous: $H({ label: '&nbsp;', element: $(this.options.get('previousButton')) }),
-      today:    $H({ label: '',      element: $(this.options.get('todayButton')) }),
+      today:    $H({ label: '&nbsp;',      element: $(this.options.get('todayButton')) }),
       next:     $H({ label: '&nbsp;', element: $(this.options.get('nextButton')) })
     })
     //this.fields = $H({ start: $(this.options.get('startField')), end: $(this.options.get('endField')) });
