@@ -239,7 +239,6 @@ var Timeframe = Class.create({
     var date = Date.parseToObject(this.range.get(fieldName));
     this.date = date || new Date();
     if (populate && date) this.populate()
-    this.refreshRange();
     return this;
   },
 
@@ -331,7 +330,6 @@ var Timeframe = Class.create({
       else
         this.startdrag = this.range.set('start', this.range.set('end', date));
     }
-    this.refreshRange();
   },
 
   eventMouseOver: function(event) {
@@ -448,21 +446,30 @@ var Timeframe = Class.create({
   refreshRange: function() {
     if (this.mousedown != true) this.checkSelectedDay();
     this.element.select('td').each(function(day) {
-      day.writeAttribute('class', '');
-      day.addClassName(day.baseClass);
+      // day.writeAttribute('class', '');
+      // day.addClassName(day.baseClass);
+      if (Rented.contains(day.date.strftime('%Y-%m-%d'))){
+        if (!day.hasClassName(RentedTypes[Rented.indexOf(day.date.strftime('%Y-%m-%d'))])) {
+          day.addClassName(RentedTypes[Rented.indexOf(day.date.strftime('%Y-%m-%d'))]);
+        }
+      }
       if (this.range.get('start') && this.range.get('end') && this.range.get('start') <= day.date && day.date <= this.range.get('end')) {
         var baseClass = day.hasClassName('beyond') ? 'beyond_' : day.hasClassName('today') ? 'today_' : null;
-        var state = this.stuck || this.mousedown ? 'stuck' : this.selectionType;
+        // var state = this.stuck || this.mousedown ? 'stuck' : this.selectionType;
         // if (baseClass) day.addClassName(baseClass + state);
-        day.addClassName(this.selectionType);
+        if (!day.hasClassName(this.selectionType)) {
+          day.addClassName(this.selectionType);
+        }
+        for(var i = 0; i < RentedTypes.length; i++) {
+          var selection = RentedTypes[i];
+          if (selection != this.selectionType && day.hasClassName(selection)) {
+            day.removeClassName(selection);
+          }
+        }
         var rangeClass = '';
         if (this.range.get('start').toString() == day.date) rangeClass += 'start';
         if (this.range.get('end').toString() == day.date) rangeClass += 'end';
         if (rangeClass.length > 0) day.addClassName(rangeClass + 'range');
-      }
-      if (Rented.contains(day.date.strftime('%Y-%m-%d'))){
-        //day.addClassName('selected');
-        day.addClassName(RentedTypes[Rented.indexOf(day.date.strftime('%Y-%m-%d'))]);
       }
       if (Prototype.Browser.Opera) {
         day.unselectable = 'on'; // Trick Opera into refreshing the selection (FIXME)
