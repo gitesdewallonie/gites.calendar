@@ -7,6 +7,27 @@
 if (typeof Prototype == 'undefined' || parseFloat(Prototype.Version.substring(0, 3)) < 1.6)
   throw 'Timeframe requires Prototype version 1.6 or greater.';
 
+Array.prototype.contains = function(obj) {
+    var i = this.length;
+    while (i--) {
+        if (this[i] == obj) {
+            return true;
+        }
+    }
+    return false;
+}
+
+if(!Array.prototype.indexOf) {
+    Array.prototype.indexOf = function(needle) {
+        for(var i = 0; i < this.length; i++) {
+            if(this[i] === needle) {
+                return i;
+            }
+        }
+        return -1;
+    };
+}
+
 // Checks for localized Datejs before defaulting to 'en-US'
 var Locale = $H({
   format:     (typeof Date.CultureInfo == 'undefined' ? '%b %d, %Y' : Date.CultureInfo.formatPatterns.shortDate),
@@ -100,7 +121,6 @@ var GiteTimeframe = Class.create({
     this.calendars.each(function(calendar) {
       var caption = calendar.select('caption').first();
       caption.update(this.monthNames[month.getMonth()] + ' ' + month.getFullYear());
-
       var iterator = new Date(month);
       var offset = (iterator.getDay() - this.weekOffset) % 7;
       var inactive = offset > 0 ? 'pre beyond' : false;
@@ -133,8 +153,26 @@ var GiteTimeframe = Class.create({
 
   _buildButtons: function() {
     var buttonList = new Element('div', { id: this.element.id + '_menu', className: 'timeframe_menu' });
+    this.counter = 1;
+    this.buttons.each(function(pair) { 
+      if (pair.value.get('element')) 
+        pair.value.get('element').addClassName('timeframe_button').addClassName(pair.key); 
+      else { 
+        var item = new Element('span', { id: 'btn_' + pair.key}); 
+        var button = new Element('a', { id: 'a_' + pair.key, className: 'timeframe_button ' + pair.key, href: '#', onclick: 'return false;' }).update(pair.value.get('label')); 
+        button.onclick = function() { return false; }; 
+        switch(this.counter) { 
+          case 1: this.buttonPrevious = button;
+          case 2: this.buttonToday = button;
+          case 3: this.buttonNext = button;
+        }
+        this.counter += 1;
+        pair.value.set('element', button); 
+        item.insert(button); 
+        buttonList.insert(item); 
+      } 
+    }.bind(this)) 
     if (buttonList.childNodes.length > 0) this.element.insert({ top: buttonList });
-
     this.clearButton = new Element('span', { className: 'clear' }).update(new Element('span').update('X'));
     return this;
   },
@@ -159,8 +197,43 @@ var GiteTimeframe = Class.create({
 
   // Event registration
 
+  selectPreviousMonth: function() {
+    var movement = this.months > 1 ? this.months - 1 : 1;
+    firstDayOfThisMonth = new Date();
+    this.truncateDate(firstDayOfThisMonth);
+    newMonth = this.date.getMonth() - movement;
+    newDate = new Date(this.date);
+    newDate.setMonth(newMonth);
+    this.truncateDate(newDate);
+    if (newDate.equalsTo(firstDayOfThisMonth) || (newDate > firstDayOfThisMonth))
+      this.date.setMonth(newMonth);
+    else
+      return ;
+    this.populate().refreshRange();
+  },
+
+  selectToday: function() {
+    today = new Date();
+    month = today.getMonth();
+    existingMonth = this.date.getMonth();
+    if (month != existingMonth)
+      this.date = today;
+    else
+      return ;
+    this.populate().refreshRange();
+  },
+
+  selectNextMonth: function() {
+    var movement = this.months > 1 ? this.months - 1 : 1;
+    this.date.setMonth(this.date.getMonth() + movement);
+    this.populate().refreshRange();
+  },
+
   register: function() {
-    this.element.observe('click', this.eventClick.bind(this));
+    this.buttonPrevious.observe('click', this.selectPreviousMonth.bind(this));
+    this.buttonToday.observe('click', this.selectToday.bind(this));
+    this.buttonNext.observe('click', this.selectNextMonth.bind(this));
+
     // mousemove listener for Opera in _disableTextSelection
     return this._disableTextSelection();
   },
@@ -180,7 +253,7 @@ var GiteTimeframe = Class.create({
   _disableTextSelection: function() {
     if (Prototype.Browser.IE) {
       this.element.onselectstart = function(event) {
-        if (!/input|textarea/i.test(Event.element(event).tagName)) return false;
+        return false;
       };
     } else if (Prototype.Browser.Opera) {
       document.observe('mousemove', this.handleMouseMove.bind(this));
@@ -266,6 +339,7 @@ var GiteTimeframe = Class.create({
     }
     else if (element.hasClassName('today'))
       this.date = new Date();
+
     this.populate().refreshRange();
   },
 
@@ -343,27 +417,9 @@ var GiteTimeframe = Class.create({
       // day.writeAttribute('class', '');
       // day.addClassName(day.baseClass);
       if (Rented.contains(day.date.strftime('%Y-%m-%d'))){
-        if (!day.hasClassName(RentedTypes[Rented.indexOf(day.date.strftime('%Y-%m-%d'))])) {
-          day.addClassName(RentedTypes[Rented.indexOf(day.date.strftime('%Y-%m-%d'))]);
+        if (!day.hasClassName('indisp')) {
+          day.addClassName('indisp');
         }
-      }
-      if (this.range.get('start') && this.range.get('end') && this.range.get('start') <= day.date && day.date <= this.range.get('end')) {
-        var baseClass = day.hasClassName('beyond') ? 'beyond_' : day.hasClassName('today') ? 'today_' : null;
-        // var state = this.stuck || this.mousedown ? 'stuck' : this.selectionType;
-        // if (baseClass) day.addClassName(baseClass + state);
-        if (!day.hasClassName(this.selectionType)) {
-          day.addClassName(this.selectionType);
-        }
-        for(var i = 0; i < RentedTypes.length; i++) {
-          var selection = RentedTypes[i];
-          if (selection != this.selectionType && day.hasClassName(selection)) {
-            day.removeClassName(selection);
-          }
-        }
-        var rangeClass = '';
-        if (this.range.get('start').toString() == day.date) rangeClass += 'start';
-        if (this.range.get('end').toString() == day.date) rangeClass += 'end';
-        if (rangeClass.length > 0) day.addClassName(rangeClass + 'range');
       }
       if (Prototype.Browser.Opera) {
         day.unselectable = 'on'; // Trick Opera into refreshing the selection (FIXME)
