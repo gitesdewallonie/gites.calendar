@@ -7,6 +7,27 @@
 if (typeof Prototype == 'undefined' || parseFloat(Prototype.Version.substring(0, 3)) < 1.6)
   throw 'Timeframe requires Prototype version 1.6 or greater.';
 
+Array.prototype.contains = function(obj) {
+    var i = this.length;
+    while (i--) {
+        if (this[i] == obj) {
+            return true;
+        }
+    }
+    return false;
+}
+
+if(!Array.prototype.indexOf) {
+    Array.prototype.indexOf = function(needle) {
+        for(var i = 0; i < this.length; i++) {
+            if(this[i] === needle) {
+                return i;
+            }
+        }
+        return -1;
+    };
+}
+
 // Checks for localized Datejs before defaulting to 'en-US'
 var Locale = $H({
   format:     (typeof Date.CultureInfo == 'undefined' ? '%b %d, %Y' : Date.CultureInfo.formatPatterns.shortDate),
@@ -103,7 +124,6 @@ var Timeframe = Class.create({
     this.calendars.each(function(calendar) {
       var caption = calendar.select('caption').first();
       caption.update(this.monthNames[month.getMonth()] + ' ' + month.getFullYear());
-
       var iterator = new Date(month);
       var offset = (iterator.getDay() - this.weekOffset) % 7;
       var inactive = offset > 0 ? 'pre beyond' : false;
@@ -116,12 +136,20 @@ var Timeframe = Class.create({
       calendar.select('td').each(function(day) {
         day.date = new Date(iterator); // Is this expensive (we unload these later)? We could store the epoch time instead.
         day.update(day.date.getDate()).writeAttribute('class', '');
+
+        if (day.hasClassName('active')) day.removeClassName('active');
+        if (day.hasClassName('inactive')) day.removeClassName('inactive');
+        if (day.hasClassName('unselectable')) day.removeClassName('unselectable');
+        if (day.hasClassName('selectable')) day.removeClassName('selectable');
+        if (day.hasClassName('today')) day.removeClassName('today');
+        if (day.hasClassName('post')) day.removeClassName('post');
+        if (day.hasClassName('pre')) day.removeClassName('pre');
+        if (day.hasClassName('beyond')) day.removeClassName('beyond');
+        if (day.hasClassName('indisp')) day.removeClassName('indisp');
+        
         if (inactive) day.addClassName(inactive);
         else day.addClassName('active');
-        if ((this.earliest && day.date < this.earliest) || (this.latest && day.date > this.latest))
-          day.addClassName('unselectable');
-        else
-          day.addClassName('selectable');
+        day.addClassName('selectable');
         if (iterator.toString() === new Date().neutral().toString()) day.addClassName('today');
         day.baseClass = day.readAttribute('class');
 
@@ -148,8 +176,27 @@ var Timeframe = Class.create({
 
   _buildButtons: function() {
     var buttonList = new Element('div', { id: this.element.id + '_menu', className: 'timeframe_menu' });
+    this.counter = 1;
+    this.buttons.each(function(pair) { 
+      if (pair.value.get('element')) 
+        pair.value.get('element').addClassName('timeframe_button').addClassName(pair.key); 
+      else { 
+        var item = new Element('span', { id: 'btn_' + pair.key}); 
+        var button = new Element('a', { id: 'a_' + pair.key, className: 'timeframe_button ' + pair.key, href: '#', onclick: 'return false;' }).update(pair.value.get('label')); 
+        button.onclick = function() { return false; }; 
+        switch(this.counter) { 
+          case 1: this.buttonPrevious = button;
+          case 2: this.buttonToday = button;
+          case 3: this.buttonNext = button;
+        }
+        this.counter += 1;
+        pair.value.set('element', button); 
+        item.insert(button); 
+        buttonList.insert(item); 
+      } 
+    }.bind(this)) 
     if (buttonList.childNodes.length > 0) this.element.insert({ top: buttonList });
-      var select = new Element('ul', { className: 'timeframe_button ', onclick: 'return false;' });
+      var select = new Element('ul', {'id':'timeframe_ul', className: 'timeframe_button ', onclick: 'return false;' });
       var selectItem = new Element('li', {'id': 'select_loue'}).update('Loué');
       //selectItem.type = 'loue';
       selectItem.observe('click', this.changeSelectionType.bind(this));
@@ -188,8 +235,35 @@ var Timeframe = Class.create({
 
   // Event registration
 
+  selectPreviousMonth: function() {
+    var movement = this.months > 1 ? this.months : 1;
+    this.date.setMonth(this.date.getMonth() - movement);
+    this.populate().refreshRange();
+  },
+
+  selectToday: function() {
+    today = new Date();
+    month = today.getMonth();
+    year = today.getYear();
+    existingMonth = this.date.getMonth();
+    existingYear = this.date.getYear();
+    if (month != existingMonth || year != existingYear)
+      this.date = today;
+    else
+      return ;
+    this.populate().refreshRange();
+  },
+
+  selectNextMonth: function() {
+    var movement = this.months > 1 ? this.months : 1;
+    this.date.setMonth(this.date.getMonth() + movement);
+    this.populate().refreshRange();
+  },
+
   register: function() {
-    this.element.observe('click', this.eventClick.bind(this));
+    this.buttonPrevious.observe('click', this.selectPreviousMonth.bind(this));
+    this.buttonToday.observe('click', this.selectToday.bind(this));
+    this.buttonNext.observe('click', this.selectNextMonth.bind(this));
     this.element.observe('mousedown', this.eventMouseDown.bind(this));
     this.element.observe('mouseover', this.eventMouseOver.bind(this));
     document.observe('mouseup', this.eventMouseUp.bind(this));
@@ -213,7 +287,7 @@ var Timeframe = Class.create({
   _disableTextSelection: function() {
     if (Prototype.Browser.IE) {
       this.element.onselectstart = function(event) {
-        if (!/input|textarea/i.test(Event.element(event).tagName)) return false;
+        return false;
       };
     } else if (Prototype.Browser.Opera) {
       document.observe('mousemove', this.handleMouseMove.bind(this));
