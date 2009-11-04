@@ -13,6 +13,10 @@ text-shadow: none;
 clear:both;
 }
 
+#timeframe_ul {
+margin-top: 45px;
+}
+
 #calendars_container {
 margin-top: 40px;
 }
@@ -44,6 +48,65 @@ text-decoration: none;
 width: 20px;
 }
 
+
+/*  CALENDAR PUBLIC  */
+
+#btn_previous_public, #btn_today_public, #btn_next_public{
+display:inline-block;
+margin-left:6px;
+margin-right:6px;
+}
+
+#btn_previous_public{ 
+width:29px;
+height:26px;
+background-image:url('btn_calendar_prev_public.png');
+padding:0;
+}
+
+#btn_next_public{
+width:29px;
+height:26px;
+background-image:url('btn_calendar_next_public.png');
+padding:0;
+}
+
+#btn_today_public{
+width:29px;
+height:26px;
+background-image:url('btn_calendar_today_public.png');
+padding:0;
+}
+
+#btn_previous_public a {
+display:inline-block;
+width:29px;
+height:26px;
+text-decoration:none;
+}
+
+#btn_next_public a {
+display:inline-block;
+width:29px;
+height:26px;
+text-decoration:none;
+}
+
+
+#btn_today_public a {
+display:inline-block;
+width:29px;
+height:26px;
+padding:0;
+text-decoration:none;
+}
+
+#btn_today_public a:hover {
+}
+
+
+
+/*  CALENDAR PROPRIO  */
 
 #btn_previous, #btn_today, #btn_next{
 display:inline-block;
@@ -97,10 +160,6 @@ text-decoration:none;
 
 #btn_today a:hover {
 }
-
-
-
-
 
 
 /**** CALENDAR ****/

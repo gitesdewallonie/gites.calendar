@@ -133,13 +133,24 @@ var GiteTimeframe = Class.create({
       calendar.select('td').each(function(day) {
         day.date = new Date(iterator); // Is this expensive (we unload these later)? We could store the epoch time instead.
         day.update(day.date.getDate()).writeAttribute('class', '');
+
+        if (day.hasClassName('active')) day.removeClassName('active');
+        if (day.hasClassName('inactive')) day.removeClassName('inactive');
+        if (day.hasClassName('unselectable')) day.removeClassName('unselectable');
+        if (day.hasClassName('selectable')) day.removeClassName('selectable');
+        if (day.hasClassName('today')) day.removeClassName('today');
+        if (day.hasClassName('post')) day.removeClassName('post');
+        if (day.hasClassName('pre')) day.removeClassName('pre');
+        if (day.hasClassName('beyond')) day.removeClassName('beyond');
+        if (day.hasClassName('indisp')) day.removeClassName('indisp');
+        
         if (inactive) day.addClassName(inactive);
         else day.addClassName('active');
         if ((this.earliest && day.date < this.earliest) || (this.latest && day.date > this.latest))
           day.addClassName('unselectable');
         else
           day.addClassName('selectable');
-        if (iterator.toString() === new Date().neutral().toString()) day.addClassName('today');
+        if (iterator.toString() === new Date().neutral().toString()) day.addClassName('today');  
         day.baseClass = day.readAttribute('class');
 
         iterator.setDate(iterator.getDate() + 1);
@@ -158,7 +169,7 @@ var GiteTimeframe = Class.create({
       if (pair.value.get('element')) 
         pair.value.get('element').addClassName('timeframe_button').addClassName(pair.key); 
       else { 
-        var item = new Element('span', { id: 'btn_' + pair.key}); 
+        var item = new Element('span', { id: 'btn_' + pair.key + '_public'}); 
         var button = new Element('a', { id: 'a_' + pair.key, className: 'timeframe_button ' + pair.key, href: '#', onclick: 'return false;' }).update(pair.value.get('label')); 
         button.onclick = function() { return false; }; 
         switch(this.counter) { 
