@@ -31,9 +31,25 @@ if(!Array.prototype.indexOf) {
 // Checks for localized Datejs before defaulting to 'en-US'
 var Locale = $H({
   format:     (typeof Date.CultureInfo == 'undefined' ? '%b %d, %Y' : Date.CultureInfo.formatPatterns.shortDate),
-  monthNames: (typeof Date.CultureInfo == 'undefined' ? $w('Janvier Février Mars Avril Mai Juin Juillet Août Septembre Octobre Novembre Decembre') : Date.CultureInfo.monthNames),
+  monthNames: (typeof Date.CultureInfo == 'undefined' ? $w('Janvier Février Mars Avril Mai Juin Juillet Août Septembre Octobre Novembre Décembre') : Date.CultureInfo.monthNames),
   dayNames:   (typeof Date.CultureInfo == 'undefined' ? $w('Dimanche Lundi Mardi Mercredi Jeudi Vendredi Samedi') : Date.CultureInfo.dayNames),
   weekOffset: (typeof Date.CultureInfo == 'undefined' ? 0 : Date.CultureInfo.firstDayOfWeek)
+});
+
+var days = $H({
+  en: $w('Sunday Monday Tuesday Wednesday Thursday Friday Saturday'),
+  fr: $w('Dimanche Lundi Mardi Mercredi Jeudi Vendredi Samedi'),
+  it: $w('Domenica Lunedì Martedì Mercoledì Giovedì Venerdì Sabato'),
+  de: $w('Sonntag Montag Dienstag Mittwoch Donnerstag Freitag Samstag'),
+  nl: $w('Zondag Maandag Dinsdag Woensdag Donderdag Vrijdag Zaterdag"'),
+});
+
+var months = $H({
+  en: $w('January February March April May June July August September October November December'),
+  fr: $w('Janvier Février Mars Avril Mai Juin Juillet Août Septembre Octobre Novembre Décembre'),
+  it: $w('Gennaio Febbraio Marzo Aprile Maggio Giugno Luglio Agosto Settembre Ottobre Novembre Dicembre'),
+  de: $w('Januar Februar März April Mai Juni Juli August September Oktober November Dezember'),
+  nl: $w('Januari Februari Maart April Mei Juni Juli Augustus September Oktober November December'),
 });
 
 var Timeframes = [];
@@ -47,9 +63,10 @@ var GiteTimeframe = Class.create({
     this.element = $(element);
     this.element.addClassName('timeframe_calendar')
     this.options = $H({ months: 1 }).merge(options || {});
+    this.language     = this.options.get('language');
     this.months = this.options.get('months');
-    this.weekdayNames = Locale.get('dayNames');
-    this.monthNames   = Locale.get('monthNames');
+    this.weekdayNames = days.get(this.language);
+    this.monthNames   = months.get(this.language);
     this.format       = this.options.get('format')     || Locale.get('format');
     this.weekOffset   = this.options.get('weekOffset') || Locale.get('weekOffset');
     this.hebPk        = this.options.get('hebPk');
