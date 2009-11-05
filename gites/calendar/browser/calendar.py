@@ -35,18 +35,24 @@ class CalendarAndDateRanges(grok.CodeView):
     def render(self):
         return
 
-    def _removeSelection(self, start, end):
+    def _removeSelection(self, hebPk, start, end):
         wrapper = getSAWrapper('gites_wallons')
         session = wrapper.session
         ReservationProprio = wrapper.getMapper('reservation_proprio')
         subquery = select([ReservationProprio.res_id])
         subquery.append_whereclause(ReservationProprio.res_date.between(start,
                                                                         end))
+        subquery.append_whereclause(ReservationProprio.heb_fk == hebPk)
         query = session.query(ReservationProprio)
         query = query.filter(ReservationProprio.res_id.in_(subquery))
         query.delete()
 
     def __call__(self):
+        hebPk = self.request.SESSION.get('cal-selected-heb')
+        gitesPkAvailables = [item.token for item in \
+                             getUtility(IVocabularyFactory,
+                                        name='proprio.hebergements')(self.context)]
+        assert(hebPk in gitesPkAvailables)
         wrapper = getSAWrapper('gites_wallons')
         session = wrapper.session
         ReservationProprio = wrapper.getMapper('reservation_proprio')
@@ -55,16 +61,11 @@ class CalendarAndDateRanges(grok.CodeView):
         end = datetime.datetime(*strptime(self.request.get('end'),
                                    "%Y-%m-%d")[0:6])
         typeOfSelection = self.request.get('type')
-        self._removeSelection(start, end)
+        self._removeSelection(hebPk, start, end)
         if typeOfSelection == 'libre':
             return
         currentdate = start
-        hebPk = self.request.SESSION.get('cal-selected-heb')
         pm = getToolByName(self.context, 'portal_membership')
-        gitesPkAvailables = [item.token for item in \
-                             getUtility(IVocabularyFactory,
-                                        name='proprio.hebergements')(self.context)]
-        assert(hebPk in gitesPkAvailables)
         user = pm.getAuthenticatedMember()
         userPk = user.getProperty('pk')
         while currentdate <= end:
