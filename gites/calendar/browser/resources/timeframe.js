@@ -46,7 +46,7 @@ var Timeframe = Class.create({
     Timeframes.push(this);
 
     this.element = $(element);
-    this.element.addClassName('timeframe_calendar')
+    this.element.addClassName('timeframe_calendar');
     this.options = $H({ months: 12 }).merge(options || {});
     this.months = this.options.get('months');
     this.selectionType = 'loue';
@@ -61,7 +61,7 @@ var Timeframe = Class.create({
       previous: $H({ label: '&nbsp;', element: $(this.options.get('previousButton')) }),
       today:    $H({ label: '&nbsp;', element: $(this.options.get('todayButton')) }),
       next:     $H({ label: '&nbsp;', element: $(this.options.get('nextButton')) })
-    })
+    });
     //this.fields = $H({ start: $(this.options.get('startField')), end: $(this.options.get('endField')) });
 
    this.range = $H({});
@@ -71,7 +71,7 @@ var Timeframe = Class.create({
 
     this.calendars = [];
     this.element.insert(new Element('div', { id: this.element.id + '_container' }));
-    this.months.times(function(month) { this.createCalendar(month) }.bind(this));
+    this.months.times(function(month) { this.createCalendar(month); }.bind(this));
 
     this.register().populate().refreshRange();
     $('select_loue').addClassName('selectedType');
@@ -194,7 +194,7 @@ var Timeframe = Class.create({
         item.insert(button); 
         buttonList.insert(item); 
       } 
-    }.bind(this)) 
+    }.bind(this));
     if (buttonList.childNodes.length > 0) this.element.insert({ top: buttonList });
       var select = new Element('ul', {'id':'timeframe_ul', className: 'timeframe_button ', onclick: 'return false;' });
       var selectItem = new Element('li', {'id': 'select_loue'}).update('Loué');
@@ -312,7 +312,7 @@ var Timeframe = Class.create({
       field.addClassName('error');*/
     var date = Date.parseToObject(this.range.get(fieldName));
     this.date = date || new Date();
-    if (populate && date) this.populate()
+    if (populate && date) this.populate();
     return this;
   },
 
