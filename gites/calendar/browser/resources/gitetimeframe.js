@@ -41,7 +41,7 @@ var days = $H({
   fr: $w('Dimanche Lundi Mardi Mercredi Jeudi Vendredi Samedi'),
   it: $w('Domenica Lunedì Martedì Mercoledì Giovedì Venerdì Sabato'),
   de: $w('Sonntag Montag Dienstag Mittwoch Donnerstag Freitag Samstag'),
-  nl: $w('Zondag Maandag Dinsdag Woensdag Donderdag Vrijdag Zaterdag'),
+  nl: $w('Zondag Maandag Dinsdag Woensdag Donderdag Vrijdag Zaterdag')
 });
 
 var months = $H({
@@ -49,7 +49,7 @@ var months = $H({
   fr: $w('Janvier Février Mars Avril Mai Juin Juillet Août Septembre Octobre Novembre Décembre'),
   it: $w('Gennaio Febbraio Marzo Aprile Maggio Giugno Luglio Agosto Settembre Ottobre Novembre Dicembre'),
   de: $w('Januar Februar März April Mai Juni Juli August September Oktober November Dezember'),
-  nl: $w('Januari Februari Maart April Mei Juni Juli Augustus September Oktober November December'),
+  nl: $w('Januari Februari Maart April Mei Juni Juli Augustus September Oktober November December')
 });
 
 var Timeframes = [];
@@ -61,7 +61,7 @@ var GiteTimeframe = Class.create({
     Timeframes.push(this);
 
     this.element = $(element);
-    this.element.addClassName('timeframe_calendar')
+    this.element.addClassName('timeframe_calendar');
     this.options = $H({ months: 1 }).merge(options || {});
     this.language     = this.options.get('language');
     this.months = this.options.get('months');
@@ -76,7 +76,7 @@ var GiteTimeframe = Class.create({
       previous: $H({ label: '&nbsp;', element: $(this.options.get('previousButton')) }),
       today:    $H({ label: '&nbsp;', element: $(this.options.get('todayButton')) }),
       next:     $H({ label: '&nbsp;', element: $(this.options.get('nextButton')) })
-    })
+    });
     //this.fields = $H({ start: $(this.options.get('startField')), end: $(this.options.get('endField')) });
 
    this.range = $H({});
@@ -86,7 +86,7 @@ var GiteTimeframe = Class.create({
 
     this.calendars = [];
     this.element.insert(new Element('div', { id: this.element.id + '_container' }));
-    this.months.times(function(month) { this.createCalendar(month) }.bind(this));
+    this.months.times(function(month) { this.createCalendar(month); }.bind(this));
 
     this.register().populate().refreshRange();
   },
@@ -199,7 +199,7 @@ var GiteTimeframe = Class.create({
         item.insert(button); 
         buttonList.insert(item); 
       } 
-    }.bind(this)) 
+    }.bind(this));
     if (buttonList.childNodes.length > 0) this.element.insert({ top: buttonList });
     this.clearButton = new Element('span', { className: 'clear' }).update(new Element('span').update('X'));
     return this;
@@ -306,7 +306,7 @@ var GiteTimeframe = Class.create({
       field.addClassName('error');*/
     var date = Date.parseToObject(this.range.get(fieldName));
     this.date = date || new Date();
-    if (populate && date) this.populate()
+    if (populate && date) this.populate();
     return this;
   },
 
@@ -384,9 +384,7 @@ var GiteTimeframe = Class.create({
 
   eventMouseOver: function(event) {
     var el;
-    if (!this.dragging)
-      this.toggleClearButton(event);
-    else if (event.findElement('span.clear span.active'));
+    if (!this.dragging) this.toggleClearButton(event);
   },
 
   toggleClearButton: function(event) {
