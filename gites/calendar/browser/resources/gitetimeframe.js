@@ -41,7 +41,7 @@ var days = $H({
   fr: $w('Dimanche Lundi Mardi Mercredi Jeudi Vendredi Samedi'),
   it: $w('Domenica Lunedì Martedì Mercoledì Giovedì Venerdì Sabato'),
   de: $w('Sonntag Montag Dienstag Mittwoch Donnerstag Freitag Samstag'),
-  nl: $w('Zondag Maandag Dinsdag Woensdag Donderdag Vrijdag Zaterdag"'),
+  nl: $w('Zondag Maandag Dinsdag Woensdag Donderdag Vrijdag Zaterdag'),
 });
 
 var months = $H({
