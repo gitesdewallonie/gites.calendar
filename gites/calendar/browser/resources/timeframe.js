@@ -146,6 +146,7 @@ var Timeframe = Class.create({
         if (day.hasClassName('pre')) day.removeClassName('pre');
         if (day.hasClassName('beyond')) day.removeClassName('beyond');
         if (day.hasClassName('indisp')) day.removeClassName('indisp');
+        if (day.hasClassName('loue')) day.removeClassName('loue');
         
         if (inactive) day.addClassName(inactive);
         else day.addClassName('active');
