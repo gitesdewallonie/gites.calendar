@@ -3,12 +3,12 @@
       i18n:domain="gites">
 <body>
 <div metal:define-macro="portlet">
-   <div id="portlet-boutique"
+   <div id="portlet-calendrier"
         tal:define="portal_url context/@@plone_portal_state/portal_url">
       <dl class="portlet">
          <dt class="portletHeader"
              tal:content="view/title">
-           La boutique
+           Calendrier
          </dt>
 
          <dd class="portletItemSingle"
@@ -20,7 +20,7 @@
            tal:attributes="href string:${portal_url}/zone-membre/calendrier/month.html?pk=${gite/token};
                            title gite/title">
            <b tal:replace="gite/title">
-             Some Sejour
+             Hebergement
             </b>
             </a></b>
          </dd>
@@ -32,22 +32,15 @@
                </a>
          </dd>
 
-         <!-- dd class="portletItemSingle">
-              <a href=""
-                  tal:attributes="href string:$portal_url/zone-membre/calendrier/transfert"
-                  class="tile"><span>Sur votre site</span>
-               </a>
-         </dd -->
-
          <dd class="portletItemSingle">
              <a href=""
                   tal:attributes="href string:$portal_url/zone-membre/calendrier/aide"
                   class="tile"><span>Aide</span>
                </a>
          </dd>
-    <dd class="portletFooter">
-        &nbsp;
-    </dd>
+         <dd class="portletFooter">
+            &nbsp;
+         </dd>
 
       </dl>
    </div>
