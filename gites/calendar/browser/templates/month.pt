@@ -16,9 +16,24 @@
       <div id="gitescal">
         <div id="calendars"></div>
           <input type="hidden" id="reset"/>
-            <input type="hidden" name="start" value="" id="start"/>
-            <input type="hidden" name="end" value="" id="end"/>
+          <input type="hidden" name="start" value="" id="start"/>
+          <input type="hidden" name="end" value="" id="end"/>
       </div>
+
+<div id="extern-help">
+    <h2>Ce calendrier sur votre site ?</h2>
+    <img src="extern-calendar.png">
+    <p>
+        Insérez simplement les lignes suivantes sur la page de votre site
+        (dans le code HTML), à l'endroit où vous le désirez,
+        pour y faire apparaître ce calendrier de disponibilité.<br/>
+        N'hésitez pas à contacter votre développeur Web pour toute question.
+        <pre>&lt;iframe id=&quot;calframe&quot;
+        src=&quot;http://www.gitesdewallonie.be/extern-calendar?pk=<span tal:replace="python: request.get('pk')" />&quot;
+        width=&quot;185&quot; height=&quot;230&quot;
+        scrolling=&quot;auto&quot; frameborder=&quot;0&quot; allowtransparency=&quot;true&quot;&gt;
+&lt;/iframe&gt;</pre>
+    </p>
+</div>
 </metal:block>
 </html>
-

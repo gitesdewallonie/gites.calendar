@@ -333,3 +333,24 @@ background-color:red;
 td.loue {
 background-color:orange;
 }
+
+#extern-help {
+background-color:#FFFFFF;
+margin-top:25px;
+margin-bottom:15px;
+margin-left:auto;
+margin-right:auto;
+padding:10px;
+width:800px;
+height:265px;
+border:1px solid #000000;
+}
+
+#extern-help img {
+float:left;
+margin-right:20px;
+}
+
+#extern-help p {
+margin-top:12px;
+}
