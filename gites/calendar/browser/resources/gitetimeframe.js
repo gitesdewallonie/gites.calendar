@@ -73,9 +73,11 @@ var GiteTimeframe = Class.create({
     this.maxRange = 99999;
 
     this.buttons = $H({
-      previous: $H({ label: '&nbsp;', element: $(this.options.get('previousButton')) }),
-      today:    $H({ label: '&nbsp;', element: $(this.options.get('todayButton')) }),
-      next:     $H({ label: '&nbsp;', element: $(this.options.get('nextButton')) })
+      previousYear: $H({ label: '&nbsp;', element: $(this.options.get('previousYearButton')) }),
+      previous:     $H({ label: '&nbsp;', element: $(this.options.get('previousButton')) }),
+      today:        $H({ label: '&nbsp;', element: $(this.options.get('todayButton')) }),
+      next:         $H({ label: '&nbsp;', element: $(this.options.get('nextButton')) }),
+      nextYear:     $H({ label: '&nbsp;', element: $(this.options.get('nextYearButton')) })
     });
     //this.fields = $H({ start: $(this.options.get('startField')), end: $(this.options.get('endField')) });
 
@@ -190,9 +192,11 @@ var GiteTimeframe = Class.create({
         var button = new Element('a', { id: 'a_' + pair.key, className: 'timeframe_button ' + pair.key, href: '#', onclick: 'return false;' }).update(pair.value.get('label')); 
         button.onclick = function() { return false; }; 
         switch(this.counter) { 
-          case 1: this.buttonPrevious = button;
-          case 2: this.buttonToday = button;
-          case 3: this.buttonNext = button;
+          case 1: this.buttonPreviousYear = button;
+          case 2: this.buttonPrevious = button;
+          case 3: this.buttonToday = button;
+          case 4: this.buttonNext = button;
+          case 5: this.buttonNextYear = button;
         }
         this.counter += 1;
         pair.value.set('element', button); 
@@ -225,6 +229,20 @@ var GiteTimeframe = Class.create({
 
   // Event registration
 
+  selectPreviousYear: function() {
+    firstDayOfThisMonth = new Date();
+    this.truncateDate(firstDayOfThisMonth);
+    newYear = this.date.getFullYear() - 1
+    newDate = new Date(this.date);
+    newDate.setYear(newYear);
+    this.truncateDate(newDate);
+    if (newDate.equalsTo(firstDayOfThisMonth) || (newDate > firstDayOfThisMonth))
+      this.date.setYear(newYear);
+    else
+      return ;
+    this.populate().refreshRange();
+  },
+
   selectPreviousMonth: function() {
     var movement = this.months > 1 ? this.months - 1 : 1;
     firstDayOfThisMonth = new Date();
@@ -243,8 +261,10 @@ var GiteTimeframe = Class.create({
   selectToday: function() {
     today = new Date();
     month = today.getMonth();
+    year = today.getFullYear();
     existingMonth = this.date.getMonth();
-    if (month != existingMonth)
+    existingYear = this.date.getFullYear();
+    if (month != existingMonth || year != existingYear)
       this.date = today;
     else
       return ;
@@ -257,10 +277,17 @@ var GiteTimeframe = Class.create({
     this.populate().refreshRange();
   },
 
+  selectNextYear: function() {
+    this.date.setYear(this.date.getFullYear() + 1);
+    this.populate().refreshRange();
+  },
+
   register: function() {
     this.buttonPrevious.observe('click', this.selectPreviousMonth.bind(this));
+    this.buttonPreviousYear.observe('click', this.selectPreviousYear.bind(this));
     this.buttonToday.observe('click', this.selectToday.bind(this));
     this.buttonNext.observe('click', this.selectNextMonth.bind(this));
+    this.buttonNextYear.observe('click', this.selectNextYear.bind(this));
 
     // mousemove listener for Opera in _disableTextSelection
     return this._disableTextSelection();
