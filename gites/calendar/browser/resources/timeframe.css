@@ -51,52 +51,79 @@ width: 20px;
 
 /*  CALENDAR PUBLIC  */
 
-#btn_previous_public, #btn_today_public, #btn_next_public{
+#btn_previousYear_public, #btn_previous_public, #btn_today_public, #btn_next_public, #btn_nextYear_public{
 display:inline-block;
 margin-left:6px;
 margin-right:6px;
 }
 
+#btn_previousYear_public{
+width:19px;
+height:19px;
+background-image:url('btn_calendar_prev_year_public.png');
+padding:0;
+}
+
 #btn_previous_public{ 
-width:29px;
-height:26px;
+width:19px;
+height:19px;
 background-image:url('btn_calendar_prev_public.png');
 padding:0;
 }
 
 #btn_next_public{
-width:29px;
-height:26px;
+width:19px;
+height:19px;
 background-image:url('btn_calendar_next_public.png');
 padding:0;
 }
 
+#btn_nextYear_public{
+width:19px;
+height:19px;
+background-image:url('btn_calendar_next_year_public.png');
+padding:0;
+}
+
 #btn_today_public{
-width:29px;
-height:26px;
+width:19px;
+height:19px;
 background-image:url('btn_calendar_today_public.png');
 padding:0;
 }
 
 #btn_previous_public a {
 display:inline-block;
-width:29px;
-height:26px;
+width:19px;
+height:19px;
+text-decoration:none;
+}
+
+#btn_previousYear_public a {
+display:inline-block;
+width:19px;
+height:19px;
 text-decoration:none;
 }
 
 #btn_next_public a {
 display:inline-block;
-width:29px;
-height:26px;
+width:19px;
+height:19px;
 text-decoration:none;
 }
 
+#btn_nextYear_public a {
+display:inline-block;
+width:19px;
+height:19px;
+text-decoration:none;
+}
 
 #btn_today_public a {
 display:inline-block;
-width:29px;
-height:26px;
+width:19px;
+height:19px;
 padding:0;
 text-decoration:none;
 }
