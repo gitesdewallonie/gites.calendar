@@ -232,12 +232,12 @@ var GiteTimeframe = Class.create({
   selectPreviousYear: function() {
     firstDayOfThisMonth = new Date();
     this.truncateDate(firstDayOfThisMonth);
-    newYear = this.date.getFullYear() - 1
+    newMonth = this.date.getMonth() - 12;
     newDate = new Date(this.date);
-    newDate.setYear(newYear);
+    newDate.setMonth(newMonth);
     this.truncateDate(newDate);
     if (newDate.equalsTo(firstDayOfThisMonth) || (newDate > firstDayOfThisMonth))
-      this.date.setYear(newYear);
+      this.date.setMonth(newMonth);
     else
       return ;
     this.populate().refreshRange();
@@ -278,7 +278,7 @@ var GiteTimeframe = Class.create({
   },
 
   selectNextYear: function() {
-    this.date.setYear(this.date.getFullYear() + 1);
+    this.date.setMonth(this.date.getMonth() + 12);
     this.populate().refreshRange();
   },
 
