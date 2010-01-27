@@ -77,8 +77,8 @@ class CalendarActivity(object):
         body = FIRST_MAIL
         server = smtplib.SMTP('localhost')
 
-        headers = "From: %s\r\nTo: %s\r\nBcc: %s\r\nSubject: %s\r\nX-Mailer: GDW\r\n\r\n" % \
-                  (mailFrom, proprioMail, mailFrom, subject)
+        headers = "From: %s\r\nTo: %s\r\nSubject: %s\r\nX-Mailer: GDW\r\n\r\n" % \
+                  (mailFrom, proprioMail, subject)
         server.sendmail(mailFrom, proprioMail, headers+body)
         server.quit()
         print 'Sending warning mail to %s %s (%s)' % (proprio.pro_prenom1,
@@ -97,8 +97,8 @@ class CalendarActivity(object):
         body = BLOCKING_MAIL
         server = smtplib.SMTP('localhost')
 
-        headers = "From: %s\r\nTo: %s\r\nBcc: %s\r\nSubject: %s\r\nX-Mailer: GDW\r\n\r\n" % \
-                  (mailFrom, proprioMail, mailFrom, subject)
+        headers = "From: %s\r\nTo: %s\r\nSubject: %s\r\nX-Mailer: GDW\r\n\r\n" % \
+                  (mailFrom, proprioMail, subject)
         server.sendmail(mailFrom, proprioMail, headers+body)
         server.quit()
         print 'Sending blocking mail to %s %s (%s)' % (proprio.pro_prenom1,
