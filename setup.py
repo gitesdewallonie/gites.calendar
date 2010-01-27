@@ -30,7 +30,7 @@ setup(name='gites.calendar',
           'affinitic.db',
           'dateutil'
       ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
-      )
+      entry_points={
+            'console_scripts':[
+                'checkCalendarActivity = gites.calendar.scripts.activity:main',]}
+    )

@@ -70,7 +70,7 @@ class Renderer(base.Renderer):
         """
         cal = self.request.get('form.widgets.calendarConfig')
         if cal is not None:
-            if cal == ['non actif']:
+            if cal == ['non actif'] or cal == ['bloque']:
                 return False
             else:
                 return True
@@ -78,6 +78,18 @@ class Renderer(base.Renderer):
         session = wrapper.session
         for heb in getHebergementsForProprio(self.context, session):
             return (heb.heb_calendrier_proprio != 'non actif')
+
+    def isBlocked(self):
+        """
+        See if proprio calendars are blocked (due to 40 days delay)
+        """
+        cal = self.request.get('form.widgets.calendarConfig')
+        if cal is not None:
+            return (cal == ['bloque'])
+        wrapper = getSAWrapper('gites_wallons')
+        session = wrapper.session
+        for heb in getHebergementsForProprio(self.context, session):
+            return (heb.heb_calendrier_proprio == 'bloque')
 
     @memoize
     def getGitesForProprio(self):
