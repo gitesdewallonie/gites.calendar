@@ -9,7 +9,7 @@ import unittest
 from datetime import datetime
 from sqlalchemy import create_engine
 
-from gites.db.content import Proprio, Hebergement
+from gites.db.content import Proprio, ReservationProprio, Hebergement
 from gites.calendar.scripts.pg import PGDB
 
 
@@ -62,40 +62,55 @@ class BaseTestCase(unittest.TestCase):
         h1.heb_site_public = True
         h1.heb_calendrier_proprio = 'actif'
         h1.heb_nom = 'Heb 1'
-        h1.heb_calendrier_proprio_date_maj = datetime(2010, 1, 1)
         h2 = Hebergement()
         h2.heb_pk = 2
         h2.heb_pro_fk = 2
         h2.heb_site_public = False
         h2.heb_calendrier_proprio = 'actif'
         h2.heb_nom = 'Heb 2'
-        h2.heb_calendrier_proprio_date_maj = datetime(2010, 2, 2)
         h3 = Hebergement()
         h3.heb_pk = 3
         h3.heb_pro_fk = 3
         h3.heb_site_public = True
         h3.heb_calendrier_proprio = 'searchactif'
         h3.heb_nom = 'Heb 3'
-        h3.heb_calendrier_proprio_date_maj = datetime(2010, 1, 2)
         h4 = Hebergement()
         h4.heb_pk = 4
         h4.heb_pro_fk = 4
         h4.heb_site_public = True
         h4.heb_calendrier_proprio = 'non actif'
         h4.heb_nom = 'Heb 4'
-        h4.heb_calendrier_proprio_date_maj = datetime(2010, 3, 2)
-        h5 = Hebergement()
-        h5.heb_pk = 5
-        h5.heb_pro_fk = 4
-        h5.heb_site_public = True
-        h5.heb_calendrier_proprio = 'bloque'
-        h5.heb_nom = 'Heb 5'
-        h5.heb_calendrier_proprio_date_maj = datetime(2010, 3, 2)
         session.add(h1)
         session.add(h2)
         session.add(h3)
         session.add(h4)
-        session.add(h5)
+        session.flush()
+
+        # Réservations
+        r1 = ReservationProprio()
+        r1.res_id = 1
+        r1.heb_fk = 1
+        r1.pro_fk = 1
+        r1.res_date_cre = datetime(2010, 1, 1)
+        r2 = ReservationProprio()
+        r2.res_id = 2
+        r2.heb_fk = 1
+        r2.pro_fk = 1
+        r2.res_date_cre = datetime(2010, 2, 2)
+        r3 = ReservationProprio()
+        r3.res_id = 3
+        r3.heb_fk = 3
+        r3.pro_fk = 3
+        r3.res_date_cre = datetime(2010, 1, 2)
+        r4 = ReservationProprio()
+        r4.res_id = 4
+        r4.heb_fk = 2
+        r4.pro_fk = 2
+        r4.res_date_cre = datetime(2010, 3, 2)
+        session.add(r1)
+        session.add(r2)
+        session.add(r3)
+        session.add(r4)
         session.flush()
 
     def tearDown(self):

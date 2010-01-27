@@ -12,7 +12,7 @@
          </dt>
 
          <dd class="portletItemSingle"
-             tal:condition="view/hasActiveConfiguration"
+             tal:condition="python: view.hasActiveConfiguration() and not view.isBlocked()"
              tal:repeat="gite view/getGitesForProprio">
               <b>
                     <a href="#"
@@ -27,9 +27,13 @@
 
          <dd class="portletItemSingle">
               <a href=""
+                  tal:condition="not: view/isBlocked"
                   tal:attributes="href string:$portal_url/zone-membre/calendrier/configuration"
                   class="tile"><span>Configuration</span>
                </a>
+               <span tal:condition="view/isBlocked">
+                   Votre calendrier est bloqué. Veuillez contacter les Gîtes de Wallonie.
+               </span>
          </dd>
 
          <dd class="portletItemSingle">

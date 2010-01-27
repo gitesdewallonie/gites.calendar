@@ -5,10 +5,10 @@ gites.calendar
 Licensed under the GPL license, see LICENCE.txt for more details.
 Copyright by Affinitic sprl
 """
-from datetime import date
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
-from gites.db.content import Hebergement
+from gites.db.content import ReservationProprio, Hebergement
 from gites.calendar.scripts.activity import CalendarActivity
 from gites.calendar.scripts.tests.base import BaseTestCase
 
@@ -20,35 +20,31 @@ class NotifyProprietairesTest(BaseTestCase):
         self.checker = CalendarActivity(self.pg)
         self.checker.connect()
         def now():
-            return date(2010, 1, 1)
+            return datetime(2010, 1, 1)
         self.checker.now = now
-        def sendMail(pk, majDate):
-            print 'Sending fake mail!'
+        def sendMail(pk):
+            print 'Sending fake mail ...'
         self.checker.sendFirstMail = sendMail
         self.checker.sendSecondMail = sendMail
 
     def tearDown(self):
         super(NotifyProprietairesTest, self).tearDown()
 
-    def testLastUpdate(self):
+    def testLastReservation(self):
         self._fillDB()
         calendars = self.checker.getActiveCalendars()
         self.assertEqual(len(calendars), 2)
         cal1 = calendars[0]
-        self.assertEqual(cal1.heb_calendrier_proprio_date_maj, \
-                         date(2010, 1, 1))
-        cal1 = calendars[1]
-        self.assertEqual(cal1.heb_calendrier_proprio_date_maj, \
-                         date(2010, 1, 2))
+        self.assertEqual(cal1.max_1, datetime(2010, 2, 2))
 
     def testOneMonthDelay(self):
         self._fillDB()
         session = self.checker.pg.session()
-        query = session.query(Hebergement)
-        query = query.filter(Hebergement.heb_pk == 3)
-        heb = query.one()
-        heb.heb_calendrier_proprio_date_maj = self.checker.now() + relativedelta(days=-29)
-        session.add(heb)
+        query = session.query(ReservationProprio)
+        query = query.filter(ReservationProprio.res_id == 3)
+        res = query.one()
+        res.res_date_cre = self.checker.now() + relativedelta(days=-29)
+        session.add(res)
         session.flush()
         calendars = self.checker.getActiveCalendars()
         cal2 = calendars[1]
@@ -58,11 +54,11 @@ class NotifyProprietairesTest(BaseTestCase):
         self.assertEqual(len(notified), 0)
         self.assertEqual(len(blocked), 0)
 
-        query = session.query(Hebergement)
-        query = query.filter(Hebergement.heb_pk == 3)
-        heb = query.one()
-        heb.heb_calendrier_proprio_date_maj = self.checker.now() + relativedelta(days=-30)
-        session.add(heb)
+        query = session.query(ReservationProprio)
+        query = query.filter(ReservationProprio.res_id == 3)
+        res = query.one()
+        res.res_date_cre = self.checker.now() + relativedelta(days=-30)
+        session.add(res)
         session.flush()
         calendars = self.checker.getActiveCalendars()
         cal2 = calendars[1]
@@ -72,11 +68,11 @@ class NotifyProprietairesTest(BaseTestCase):
         self.assertEqual(len(notified), 1)
         self.assertEqual(len(blocked), 0)
 
-        query = session.query(Hebergement)
-        query = query.filter(Hebergement.heb_pk == 3)
-        heb = query.one()
-        heb.heb_calendrier_proprio_date_maj = self.checker.now() + relativedelta(days=-31)
-        session.add(heb)
+        query = session.query(ReservationProprio)
+        query = query.filter(ReservationProprio.res_id == 3)
+        res = query.one()
+        res.res_date_cre = self.checker.now() + relativedelta(days=-31)
+        session.add(res)
         session.flush()
         calendars = self.checker.getActiveCalendars()
         cal2 = calendars[1]
@@ -89,11 +85,11 @@ class NotifyProprietairesTest(BaseTestCase):
     def testCalendarBlocking(self):
         self._fillDB()
         session = self.checker.pg.session()
-        query = session.query(Hebergement)
-        query = query.filter(Hebergement.heb_pk == 3)
-        heb = query.one()
-        heb.heb_calendrier_proprio_date_maj = self.checker.now() + relativedelta(days=-40)
-        session.add(heb)
+        query = session.query(ReservationProprio)
+        query = query.filter(ReservationProprio.res_id == 3)
+        res = query.one()
+        res.res_date_cre = self.checker.now() + relativedelta(days=-40)
+        session.add(res)
         session.flush()
         calendars = self.checker.getActiveCalendars()
         cal2 = calendars[1]
