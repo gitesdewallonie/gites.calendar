@@ -68,6 +68,10 @@ class CalendarActivity(object):
     def sendFirstMail(self, proprioPk):
         proprio = self.getProprio(proprioPk)
         proprioMail = proprio.pro_email
+        if not proprioMail:
+            print 'WARNING : %s %s has no email' % (proprio.pro_prenom1,
+                                                    proprio.pro_nom1)
+            return
         mailFrom = "info@gitesdewallonie.be"
         subject = "Votre calendrier sur le site des Gîtes de Wallonie"
         body = FIRST_MAIL
@@ -77,12 +81,17 @@ class CalendarActivity(object):
                   (mailFrom, proprioMail, mailFrom, subject)
         server.sendmail(mailFrom, proprioMail, headers+body)
         server.quit()
-        print 'Sending warning mail to %s %s' % (proprio.pro_prenom1,
-                                                 proprio.pro_nom1)
+        print 'Sending warning mail to %s %s (%s)' % (proprio.pro_prenom1,
+                                                      proprio.pro_nom1,
+                                                      proprioMail)
 
     def sendSecondMail(self, proprioPk):
         proprio = self.getProprio(proprioPk)
         proprioMail = proprio.pro_email
+        if not proprioMail:
+            print 'WARNING : %s %s has no email' % (proprio.pro_prenom1,
+                                                    proprio.pro_nom1)
+            return
         mailFrom = "info@gitesdewallonie.be"
         subject = "Désactivation de votre calendrier"
         body = BLOCKING_MAIL
@@ -92,8 +101,9 @@ class CalendarActivity(object):
                   (mailFrom, proprioMail, mailFrom, subject)
         server.sendmail(mailFrom, proprioMail, headers+body)
         server.quit()
-        print 'Sending blocking mail to %s %s' % (proprio.pro_prenom1,
-                                                  proprio.pro_nom1)
+        print 'Sending blocking mail to %s %s (%s)' % (proprio.pro_prenom1,
+                                                       proprio.pro_nom1,
+                                                       proprioMail)
 
     def mustBeNotified(self, calendar):
         lastReservation = calendar.max_1
