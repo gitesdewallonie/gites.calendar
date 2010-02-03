@@ -55,6 +55,14 @@ class CalendarAndDateRanges(grok.CodeView):
         assert(hebPk in gitesPkAvailables)
         wrapper = getSAWrapper('gites_wallons')
         session = wrapper.session
+        # mise à jour dernière date de modification du calendrier
+        Hebergement = wrapper.getMapper('hebergement')
+        query = session.query(Hebergement)
+        query = query.filter(Hebergement.heb_pk == hebPk)
+        heb = query.one()
+        heb.heb_calendrier_proprio_date_maj = datetime.date.today()
+        session.add(heb)
+        session.flush()
         ReservationProprio = wrapper.getMapper('reservation_proprio')
         start = datetime.datetime(*strptime(self.request.get('start'),
                                    "%Y-%m-%d")[0:6])
