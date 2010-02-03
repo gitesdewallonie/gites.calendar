@@ -7,6 +7,7 @@ Copyright by Affinitic sprl
 
 $Id: event.py 67630 2006-04-27 00:54:03Z jfroche $
 """
+from datetime import date
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from five import grok
 from gites.calendar.interfaces import IProprioCalendar
@@ -56,6 +57,8 @@ class CalendarConfigForm(z3cform.EditForm):
         config = data.get('calendarConfig')
         for heb in getHebergementsForProprio(self.context, session):
             heb.heb_calendrier_proprio = config
+            # mise à jour dernière date de modification du calendrier
+            heb.heb_calendrier_proprio_date_maj = date.today()
             session.add(heb)
         session.flush()
         session.clear()

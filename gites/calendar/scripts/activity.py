@@ -8,10 +8,11 @@ Copyright by Affinitic sprl
 
 import smtplib
 from sets import Set
-from datetime import datetime
-from sqlalchemy import select, func, and_
+from datetime import date
+from email.MIMEText import MIMEText
+from sqlalchemy import select, and_
 
-from gites.db.content import Proprio, ReservationProprio, Hebergement
+from gites.db.content import Proprio, Hebergement
 from gites.calendar.scripts.pg import PGDB
 
 FIRST_MAIL = """Madame, Monsieur,\n
@@ -51,19 +52,18 @@ class CalendarActivity(object):
         return proprio
 
     def getActiveCalendars(self):
-        query = select([ReservationProprio.pro_fk,
-                        func.max(ReservationProprio.res_date_cre)],
-                        and_(ReservationProprio.heb_fk == Hebergement.heb_pk,
-                             Hebergement.heb_site_public == '1',
+        query = select([Hebergement.heb_pro_fk,
+                        Hebergement.heb_calendrier_proprio_date_maj],
+                        and_(Hebergement.heb_site_public == '1',
                              Hebergement.heb_calendrier_proprio != 'non actif',
-                             ReservationProprio.heb_fk == Proprio.pro_pk,
+                             Hebergement.heb_pro_fk == Proprio.pro_pk,
                              Proprio.pro_etat == True),
-                        group_by=[ReservationProprio.pro_fk])
+                        order_by=[Hebergement.heb_pk])
         return query.execute().fetchall()
 
     def now(self):
         # Useful for tests
-        return datetime.now()
+        return date.today()
 
     def sendFirstMail(self, proprioPk):
         proprio = self.getProprio(proprioPk)
@@ -74,12 +74,15 @@ class CalendarActivity(object):
             return
         mailFrom = "info@gitesdewallonie.be"
         subject = "Votre calendrier sur le site des Gîtes de Wallonie"
-        body = FIRST_MAIL
-        server = smtplib.SMTP('localhost')
 
-        headers = "From: %s\r\nTo: %s\r\nSubject: %s\r\nX-Mailer: GDW\r\n\r\n" % \
-                  (mailFrom, proprioMail, subject)
-        server.sendmail(mailFrom, proprioMail, headers+body)
+        mail = MIMEText(FIRST_MAIL)
+        mail['From'] = mailFrom
+        mail['Subject'] = subject
+        mail['To'] = proprioMail
+        mail.set_charset('utf-8')
+
+        server = smtplib.SMTP('localhost')
+        server.sendmail(mailFrom, [proprioMail], mail.as_string())
         server.quit()
         print 'Sending warning mail to %s %s (%s)' % (proprio.pro_prenom1,
                                                       proprio.pro_nom1,
@@ -94,56 +97,71 @@ class CalendarActivity(object):
             return
         mailFrom = "info@gitesdewallonie.be"
         subject = "Désactivation de votre calendrier"
-        body = BLOCKING_MAIL
-        server = smtplib.SMTP('localhost')
 
-        headers = "From: %s\r\nTo: %s\r\nSubject: %s\r\nX-Mailer: GDW\r\n\r\n" % \
-                  (mailFrom, proprioMail, subject)
-        server.sendmail(mailFrom, proprioMail, headers+body)
+        mail = MIMEText(BLOCKING_MAIL)
+        mail['From'] = mailFrom
+        mail['Subject'] = subject
+        mail['To'] = proprioMail
+        mail.set_charset('utf-8')
+
+        server = smtplib.SMTP('localhost')
+        server.sendmail(mailFrom, [proprioMail], mail.as_string())
         server.quit()
         print 'Sending blocking mail to %s %s (%s)' % (proprio.pro_prenom1,
                                                        proprio.pro_nom1,
                                                        proprioMail)
 
     def mustBeNotified(self, calendar):
-        lastReservation = calendar.max_1
-        delta = self.now() - lastReservation
-        return (delta.days == 30)
+        lastUpdate = calendar.heb_calendrier_proprio_date_maj
+        delta = self.now() - lastUpdate
+        return (delta.days > 30 and delta.days < 37)
 
     def mustBeBlocked(self, calendar):
-        lastReservation = calendar.max_1
-        delta = self.now() - lastReservation
+        lastUpdate = calendar.heb_calendrier_proprio_date_maj
+        delta = self.now() - lastUpdate
         return (delta.days == 40)
+
+    def isActive(self, calendar):
+        lastUpdate = calendar.heb_calendrier_proprio_date_maj
+        delta = self.now() - lastUpdate
+        return (delta.days < 30)
 
     def blockCalendars(self, proprioPk):
         proprio = self.getProprio(proprioPk)
         for hebergement in proprio.hebergements:
             hebergement.heb_calendrier_proprio = u'bloque'
-            self.session.update(hebergement)
+            self.session.add(hebergement)
             self.session.flush()
 
     def checkCalendarActivity(self):
         calendars = self.getActiveCalendars()
         blockedProprios = Set()
         notifiedProprios = Set()
+        activeProprios = Set()
 
         for calendar in calendars:
-            if self.mustBeBlocked(calendar) and \
-               calendar.pro_fk not in blockedProprios:
-                blockedProprios.add(calendar.pro_fk)
-                if calendar.pro_fk in notifiedProprios:
-                    notifiedProprios.remove(calendar.pro_fk)
+            if self.isActive(calendar):
+                activeProprios.add(calendar.heb_pro_fk)
+            elif self.mustBeBlocked(calendar) and \
+               calendar.heb_pro_fk not in blockedProprios:
+                blockedProprios.add(calendar.heb_pro_fk)
+                if calendar.heb_pro_fk in notifiedProprios:
+                    notifiedProprios.remove(calendar.heb_pro_fk)
             elif self.mustBeNotified(calendar) and \
-                 calendar.pro_fk not in blockedProprios and \
-                 calendar.pro_fk not in notifiedProprios:
-                notifiedProprios.add(calendar.pro_fk)
+                 calendar.heb_pro_fk not in blockedProprios and \
+                 calendar.heb_pro_fk not in notifiedProprios:
+                notifiedProprios.add(calendar.heb_pro_fk)
+
+        notifiedProprios = notifiedProprios - activeProprios
+        blockedProprios = blockedProprios - activeProprios
 
         for proprio in notifiedProprios:
             self.sendFirstMail(proprio)
 
         for proprio in blockedProprios:
-            self.sendSecondMail(proprio)
-            self.blockCalendars(proprio)
+            pass
+            # self.sendSecondMail(proprio)
+            # self.blockCalendars(proprio)
 
         return notifiedProprios, blockedProprios
 
