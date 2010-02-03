@@ -114,7 +114,7 @@ class CalendarActivity(object):
     def mustBeNotified(self, calendar):
         lastUpdate = calendar.heb_calendrier_proprio_date_maj
         delta = self.now() - lastUpdate
-        return (delta.days > 30 and delta.days < 37)
+        return (delta.days == 30)
 
     def mustBeBlocked(self, calendar):
         lastUpdate = calendar.heb_calendrier_proprio_date_maj
