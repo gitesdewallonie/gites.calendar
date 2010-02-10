@@ -159,9 +159,8 @@ class CalendarActivity(object):
             self.sendFirstMail(proprio)
 
         for proprio in blockedProprios:
-            pass
-            # self.sendSecondMail(proprio)
-            # self.blockCalendars(proprio)
+            self.sendSecondMail(proprio)
+            self.blockCalendars(proprio)
 
         return notifiedProprios, blockedProprios
 
