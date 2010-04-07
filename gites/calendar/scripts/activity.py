@@ -12,7 +12,7 @@ from datetime import date
 from email.MIMEText import MIMEText
 from sqlalchemy import select, and_
 
-from gites.db.content import Proprio, Hebergement
+from gites.db.content import Proprio, Hebergement, HebergementBlockingHistory
 from gites.calendar.scripts.pg import PGDB
 
 FIRST_MAIL = """Madame, Monsieur,\n
@@ -131,6 +131,10 @@ class CalendarActivity(object):
         for hebergement in proprio.hebergements:
             hebergement.heb_calendrier_proprio = u'bloque'
             self.session.add(hebergement)
+            hebBlockHist = HebergementBlockingHistory()
+            hebBlockHist.heb_blockhistory_blocked_dte = date.today()
+            hebBlockHist.heb_blockhistory_heb_pk = hebergement.heb_pk
+            self.session.add(hebBlockHist)
             self.session.flush()
 
     def checkCalendarActivity(self):
