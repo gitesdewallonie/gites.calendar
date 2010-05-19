@@ -29,7 +29,9 @@ def getHebergementsForProprio(context, session=None):
     if userPk:
         Proprio = wrapper.getMapper('proprio')
         proprietaire = session.query(Proprio).get(int(userPk))
-        for heb in proprietaire.hebergements:
+        hebs = proprietaire.hebergements
+        hebs.sort(key=lambda x: x.heb_pk)
+        for heb in hebs:
             yield heb
 
 
