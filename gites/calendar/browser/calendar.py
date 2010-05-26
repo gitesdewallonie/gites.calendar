@@ -117,6 +117,9 @@ class GiteCalendarSelectedDays(grok.CodeView):
         ReservationProprio = wrapper.getMapper('reservation_proprio')
         session = wrapper.session
         query = select([ReservationProprio.res_date])
+        minDate = minDate + relativedelta(days=-1) # 'between' SQL clause is
+                                                   # exclusive, excluding
+                                                   # TODAY day
         query.append_whereclause(ReservationProprio.res_date.between(minDate, maxDate))
         query.append_whereclause(ReservationProprio.heb_fk==int(hebPk))
         dateList = []
