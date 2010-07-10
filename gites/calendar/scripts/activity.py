@@ -56,6 +56,7 @@ class CalendarActivity(object):
                         Hebergement.heb_calendrier_proprio_date_maj],
                         and_(Hebergement.heb_site_public == '1',
                              Hebergement.heb_calendrier_proprio != 'non actif',
+                             Hebergement.heb_calendrier_proprio != 'bloque',
                              Hebergement.heb_pro_fk == Proprio.pro_pk,
                              Proprio.pro_etat == True),
                         order_by=[Hebergement.heb_pk])
@@ -119,7 +120,7 @@ class CalendarActivity(object):
     def mustBeBlocked(self, calendar):
         lastUpdate = calendar.heb_calendrier_proprio_date_maj
         delta = self.now() - lastUpdate
-        return (delta.days == 40)
+        return (delta.days >= 40)
 
     def isActive(self, calendar):
         lastUpdate = calendar.heb_calendrier_proprio_date_maj
@@ -156,6 +157,8 @@ class CalendarActivity(object):
                  calendar.heb_pro_fk not in notifiedProprios:
                 notifiedProprios.add(calendar.heb_pro_fk)
 
+        # si un des hébergements du propriétaire a été mis à jour, on
+        # considère le propriétaire comme actif.
         notifiedProprios = notifiedProprios - activeProprios
         blockedProprios = blockedProprios - activeProprios
 
