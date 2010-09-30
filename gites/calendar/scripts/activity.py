@@ -147,14 +147,12 @@ class CalendarActivity(object):
         for calendar in calendars:
             if self.isActive(calendar):
                 activeProprios.add(calendar.heb_pro_fk)
-            elif self.mustBeBlocked(calendar) and \
-               calendar.heb_pro_fk not in blockedProprios:
+            elif self.mustBeBlocked(calendar):
                 blockedProprios.add(calendar.heb_pro_fk)
                 if calendar.heb_pro_fk in notifiedProprios:
                     notifiedProprios.remove(calendar.heb_pro_fk)
             elif self.mustBeNotified(calendar) and \
-                 calendar.heb_pro_fk not in blockedProprios and \
-                 calendar.heb_pro_fk not in notifiedProprios:
+                 calendar.heb_pro_fk not in blockedProprios:
                 notifiedProprios.add(calendar.heb_pro_fk)
 
         # si un des hébergements du propriétaire a été mis à jour, on

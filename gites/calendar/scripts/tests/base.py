@@ -84,10 +84,18 @@ class BaseTestCase(unittest.TestCase):
         h4.heb_calendrier_proprio = 'non actif'
         h4.heb_nom = 'Heb 4'
         h4.heb_calendrier_proprio_date_maj = datetime(2010, 3, 2)
+        h5 = Hebergement()
+        h5.heb_pk = 5
+        h5.heb_pro_fk = 4
+        h5.heb_site_public = True
+        h5.heb_calendrier_proprio = 'bloque'
+        h5.heb_nom = 'Heb 5'
+        h5.heb_calendrier_proprio_date_maj = datetime(2010, 3, 2)
         session.add(h1)
         session.add(h2)
         session.add(h3)
         session.add(h4)
+        session.add(h5)
         session.flush()
 
     def tearDown(self):
