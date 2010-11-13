@@ -7,10 +7,9 @@ Copyright by Affinitic sprl
 """
 
 import smtplib
-from sets import Set
 from datetime import date
 from email.MIMEText import MIMEText
-from sqlalchemy import select, and_
+from sqlalchemy import select, and_, func
 
 from gites.db.content import Proprio, Hebergement, HebergementBlockingHistory
 from gites.calendar.scripts.pg import PGDB
@@ -52,21 +51,24 @@ class CalendarActivity(object):
         return proprio
 
     def getActiveCalendars(self):
+        # On ne garde que la date de mise à jour la plus récente par proprio,
+        # les autres n'ont pas d'importance
         query = select([Hebergement.heb_pro_fk,
-                        Hebergement.heb_calendrier_proprio_date_maj],
+                        func.max(Hebergement.heb_calendrier_proprio_date_maj).label('heb_calendrier_proprio_date_maj')],
                         and_(Hebergement.heb_site_public == '1',
                              Hebergement.heb_calendrier_proprio != 'non actif',
                              Hebergement.heb_calendrier_proprio != 'bloque',
                              Hebergement.heb_pro_fk == Proprio.pro_pk,
                              Proprio.pro_etat == True),
-                        order_by=[Hebergement.heb_pk])
+                        order_by=[Hebergement.heb_pro_fk],
+                        group_by=[Hebergement.heb_pro_fk])
         return query.execute().fetchall()
 
     def now(self):
         # Useful for tests
         return date.today()
 
-    def sendFirstMail(self, proprioPk):
+    def sendFirstMail(self, proprioPk, majDate):
         proprio = self.getProprio(proprioPk)
         proprioMail = proprio.pro_email
         if not proprioMail:
@@ -85,11 +87,13 @@ class CalendarActivity(object):
         server = smtplib.SMTP('localhost')
         server.sendmail(mailFrom, [proprioMail], mail.as_string())
         server.quit()
-        print 'Sending warning mail to %s %s (%s)' % (proprio.pro_prenom1,
-                                                      proprio.pro_nom1,
-                                                      proprioMail)
+        print 'Sending warning mail to %s %s (%s) - last modification date : %s' % \
+                              (proprio.pro_prenom1,
+                               proprio.pro_nom1,
+                               proprioMail,
+                               majDate.strftime('%d-%m-%Y'))
 
-    def sendSecondMail(self, proprioPk):
+    def sendSecondMail(self, proprioPk, majDate):
         proprio = self.getProprio(proprioPk)
         proprioMail = proprio.pro_email
         if not proprioMail:
@@ -108,9 +112,11 @@ class CalendarActivity(object):
         server = smtplib.SMTP('localhost')
         server.sendmail(mailFrom, [proprioMail], mail.as_string())
         server.quit()
-        print 'Sending blocking mail to %s %s (%s)' % (proprio.pro_prenom1,
-                                                       proprio.pro_nom1,
-                                                       proprioMail)
+        print 'Sending blocking mail to %s %s (%s) - last modification date : %s' % \
+                              (proprio.pro_prenom1,
+                               proprio.pro_nom1,
+                               proprioMail,
+                               majDate.strftime('%d-%m-%Y'))
 
     def mustBeNotified(self, calendar):
         lastUpdate = calendar.heb_calendrier_proprio_date_maj
@@ -122,49 +128,35 @@ class CalendarActivity(object):
         delta = self.now() - lastUpdate
         return (delta.days >= 40)
 
-    def isActive(self, calendar):
-        lastUpdate = calendar.heb_calendrier_proprio_date_maj
-        delta = self.now() - lastUpdate
-        return (delta.days < 30)
-
     def blockCalendars(self, proprioPk):
         proprio = self.getProprio(proprioPk)
         for hebergement in proprio.hebergements:
             hebergement.heb_calendrier_proprio = u'bloque'
             self.session.add(hebergement)
             hebBlockHist = HebergementBlockingHistory()
-            hebBlockHist.heb_blockhistory_blocked_dte = date.today()
+            hebBlockHist.heb_blockhistory_blocked_dte = self.now()
             hebBlockHist.heb_blockhistory_heb_pk = hebergement.heb_pk
             self.session.add(hebBlockHist)
             self.session.flush()
 
     def checkCalendarActivity(self):
         calendars = self.getActiveCalendars()
-        blockedProprios = Set()
-        notifiedProprios = Set()
-        activeProprios = Set()
+        blockedProprios = []
+        notifiedProprios = []
 
         for calendar in calendars:
-            if self.isActive(calendar):
-                activeProprios.add(calendar.heb_pro_fk)
+            if self.mustBeNotified(calendar):
+                notifiedProprios.append([calendar.heb_pro_fk,
+                                         calendar.heb_calendrier_proprio_date_maj])
             elif self.mustBeBlocked(calendar):
-                blockedProprios.add(calendar.heb_pro_fk)
-                if calendar.heb_pro_fk in notifiedProprios:
-                    notifiedProprios.remove(calendar.heb_pro_fk)
-            elif self.mustBeNotified(calendar) and \
-                 calendar.heb_pro_fk not in blockedProprios:
-                notifiedProprios.add(calendar.heb_pro_fk)
+                blockedProprios.append([calendar.heb_pro_fk,
+                                        calendar.heb_calendrier_proprio_date_maj])
 
-        # si un des hébergements du propriétaire a été mis à jour, on
-        # considère le propriétaire comme actif.
-        notifiedProprios = notifiedProprios - activeProprios
-        blockedProprios = blockedProprios - activeProprios
+        for proprio, majDate in notifiedProprios:
+            self.sendFirstMail(proprio, majDate)
 
-        for proprio in notifiedProprios:
-            self.sendFirstMail(proprio)
-
-        for proprio in blockedProprios:
-            self.sendSecondMail(proprio)
+        for proprio, majDate in blockedProprios:
+            self.sendSecondMail(proprio, majDate)
             self.blockCalendars(proprio)
 
         return notifiedProprios, blockedProprios
