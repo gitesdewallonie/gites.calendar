@@ -24,9 +24,33 @@ grok.context(Interface)
 grok.templatedir('templates')
 
 
+class CalendarInfos(grok.View):
+    """
+    Get informations about calendars
+    """
+    grok.context(Interface)
+    grok.name('calendarInfo')
+    grok.require('zope2.View')
+
+    def render(self):
+        return
+
+    def getLastModification(self, hebPk):
+        """
+        Return heb last modification date
+        """
+        wrapper = getSAWrapper('gites_wallons')
+        session = wrapper.session
+        Hebergement = wrapper.getMapper('hebergement')
+        query = session.query(Hebergement)
+        query = query.filter(Hebergement.heb_pk == hebPk)
+        heb = query.one()
+        return heb.heb_calendrier_proprio_date_maj
+
+
 class CalendarAndDateRanges(grok.CodeView):
     """
-    Configure calendar for proprio
+    Change reservations (add / delete) in a calendar
     """
     grok.context(IProprioCalendar)
     grok.name('addRange')
@@ -90,7 +114,7 @@ class CalendarAndDateRanges(grok.CodeView):
 
 class GiteCalendarSelectedDays(grok.CodeView):
     """
-    Configure calendar for proprio
+    Get all busy days
     """
     grok.context(Interface)
     grok.name('selectedDays')
@@ -130,7 +154,7 @@ class GiteCalendarSelectedDays(grok.CodeView):
 
 class CalendarSelectedDays(grok.CodeView):
     """
-    Configure calendar for proprio
+    Get all busy days
     """
     grok.context(IProprioCalendar)
     grok.name('selectedDays')
