@@ -72,6 +72,8 @@ class CalendarConfigForm(z3cform.EditForm):
             session.add(heb)
             if oldConfig != config:
                 if config == u'non actif':
+                    # XXX Pourquoi insérer un HebergementBlockingHistory alors
+                    # qu'il est juste désactivé par le proprio ?
                     hebBlockHist = HebergementBlockingHistory()
                     hebBlockHist.heb_blockhistory_blocked_dte = date.today()
                     hebBlockHist.heb_blockhistory_heb_pk = heb.heb_pk

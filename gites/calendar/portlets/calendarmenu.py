@@ -89,7 +89,9 @@ class Renderer(base.Renderer):
         wrapper = getSAWrapper('gites_wallons')
         session = wrapper.session
         for heb in getHebergementsForProprio(self.context, session):
-            return (heb.heb_calendrier_proprio == 'bloque')
+            if heb.heb_calendrier_proprio == 'bloque':
+                return True
+        return False
 
     @memoize
     def getGitesForProprio(self):

@@ -12,13 +12,21 @@
 <h1 class="documentFirstHeading" tal:content="view/title">
     Title
 </h1>
+<div class="documentByLine" id="plone-document-byline">
+  <span class="documentModified"
+        tal:define="infoView nocall:context/@@calendarInfo">
+    <span>Dernière modification le </span>
+    <span tal:define="date python: infoView.getLastModification(request.get('pk'))"
+          tal:replace="python: date.strftime('%d/%m/%Y')" />
+  </span>
+</div>
 
-      <div id="gitescal">
-        <div id="calendars"></div>
-          <input type="hidden" id="reset"/>
-          <input type="hidden" name="start" value="" id="start"/>
-          <input type="hidden" name="end" value="" id="end"/>
-      </div>
+  <div id="gitescal">
+    <div id="calendars"></div>
+      <input type="hidden" id="reset"/>
+      <input type="hidden" name="start" value="" id="start"/>
+      <input type="hidden" name="end" value="" id="end"/>
+  </div>
 
 <div id="extern-help">
     <h2>Ce calendrier sur votre site ?</h2>
