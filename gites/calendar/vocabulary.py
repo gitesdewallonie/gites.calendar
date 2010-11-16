@@ -10,6 +10,7 @@ $Id: event.py 67630 2006-04-27 00:54:03Z jfroche $
 from five import grok
 from zope.app.schema.vocabulary import IVocabularyFactory
 from z3c.sqlalchemy import getSAWrapper
+from sqlalchemy import and_
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from Products.CMFCore.utils import getToolByName
 
@@ -28,11 +29,15 @@ def getHebergementsForProprio(context, session=None):
     userPk = user.getProperty('pk')
     if userPk:
         Proprio = wrapper.getMapper('proprio')
-        proprietaire = session.query(Proprio).get(int(userPk))
+        query = session.query(Proprio)
+        query = query.filter(and_(Proprio.pro_pk == int(userPk),
+                                  Proprio.pro_etat == True))
+        proprietaire = query.one()
         hebs = proprietaire.hebergements
         hebs.sort(key=lambda x: x.heb_pk)
         for heb in hebs:
-            yield heb
+            if heb.heb_site_public == '1':
+                yield heb
 
 
 class CalendarConfiguration(grok.GlobalUtility):
