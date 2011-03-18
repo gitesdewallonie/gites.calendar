@@ -19,6 +19,9 @@ from dateutil.relativedelta import relativedelta
 from Products.CMFCore.utils import getToolByName
 from zope.app.schema.vocabulary import IVocabularyFactory
 from zope.component import getUtility
+from zope.interface import implements
+from gites.calendar.browser.interfaces import ICalendarUpdateEvent
+from zope.event import notify
 
 grok.context(Interface)
 grok.templatedir('templates')
@@ -46,6 +49,16 @@ class CalendarInfos(grok.View):
         query = query.filter(Hebergement.heb_pk == hebPk)
         heb = query.one()
         return heb.heb_calendrier_proprio_date_maj
+
+
+class CalendarUpdateEvent(object):
+    implements(ICalendarUpdateEvent)
+
+    def __init__(self, hebPk, start, end, typeOfSelection):
+        self.hebPk = hebPk
+        self.start = start
+        self.end = end
+        self.typeOfSelection = typeOfSelection
 
 
 class CalendarAndDateRanges(grok.CodeView):
@@ -83,9 +96,8 @@ class CalendarAndDateRanges(grok.CodeView):
         Hebergement = wrapper.getMapper('hebergement')
         query = session.query(Hebergement)
         query = query.filter(Hebergement.heb_pk == hebPk)
-        heb = query.one()
-        heb.heb_calendrier_proprio_date_maj = datetime.date.today()
-        session.add(heb)
+        query.update({"heb_calendrier_proprio_date_maj": datetime.date.today()},
+                     synchronize_session=False)
         session.flush()
         ReservationProprio = wrapper.getMapper('reservation_proprio')
         start = datetime.datetime(*strptime(self.request.get('start'),
@@ -94,6 +106,7 @@ class CalendarAndDateRanges(grok.CodeView):
                                    "%Y-%m-%d")[0:6])
         typeOfSelection = self.request.get('type')
         self._removeSelection(hebPk, start, end)
+        notify(CalendarUpdateEvent(hebPk, start, end, typeOfSelection))
         if typeOfSelection == 'libre':
             return
         currentdate = start
@@ -110,6 +123,21 @@ class CalendarAndDateRanges(grok.CodeView):
             session.add(res)
             currentdate += datetime.timedelta(days=1)
         session.flush()
+
+
+def notifyUpdate(event):
+    from affinitic.zamqp.interfaces import IPublisher
+    publisher = getUtility(IPublisher, name="walhebcalendar.gdw")
+    publisher._register()
+    wrapper = getSAWrapper('gites_wallons')
+    Hebergement = wrapper.getMapper('hebergement')
+    query = select([Hebergement.heb_code_cgt])
+    query.append_whereclause(Hebergement.heb_pk == event.hebPk)
+    cgtId = query.execute().fetchone().heb_code_cgt
+    if cgtId:
+        infos = event.__dict__
+        infos['cgtId'] = cgtId
+        publisher.send(infos)
 
 
 class GiteCalendarSelectedDays(grok.CodeView):
@@ -135,17 +163,16 @@ class GiteCalendarSelectedDays(grok.CodeView):
         now = datetime.datetime.now()
         if minDate < now:
             minDate = now
-        maxDate = minDate + relativedelta(months=+int(monthRange))
+        maxDate = minDate + relativedelta(months=int(monthRange))
         self.request.RESPONSE.setHeader('content-type', 'text/x-json')
         wrapper = getSAWrapper('gites_wallons')
         ReservationProprio = wrapper.getMapper('reservation_proprio')
-        session = wrapper.session
         query = select([ReservationProprio.res_date])
         minDate = minDate + relativedelta(days=-1) # 'between' SQL clause is
                                                    # exclusive, excluding
                                                    # TODAY day
         query.append_whereclause(ReservationProprio.res_date.between(minDate, maxDate))
-        query.append_whereclause(ReservationProprio.heb_fk==int(hebPk))
+        query.append_whereclause(ReservationProprio.heb_fk == int(hebPk))
         dateList = []
         for res in query.execute().fetchall():
             dateList.append(res.res_date.strftime('%Y-%m-%d'))
@@ -169,10 +196,9 @@ class CalendarSelectedDays(grok.CodeView):
         wrapper = getSAWrapper('gites_wallons')
         ReservationProprio = wrapper.getMapper('reservation_proprio')
         hebPk = self.request.SESSION.get('cal-selected-heb')
-        session = wrapper.session
         query = select([ReservationProprio.res_date,
                         ReservationProprio.res_type])
-        query.append_whereclause(ReservationProprio.heb_fk==int(hebPk))
+        query.append_whereclause(ReservationProprio.heb_fk == int(hebPk))
         dateList = []
         typeList = []
         for res in query.execute().fetchall():
