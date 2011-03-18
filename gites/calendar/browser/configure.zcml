@@ -3,9 +3,9 @@
            xmlns:grok="http://namespaces.zope.org/grok"
            i18n_domain="gites">
 
-   <grok:grok package=".configuration"/>
-
    <grok:grok package=".calendar"/>
+   <grok:grok package=".configuration"/>
+   <grok:grok package=".messaging"/>
 
     <browser:resource
         file="resources/timeframe.css"
@@ -26,6 +26,10 @@
         file="resources/timeframe.js"
         name="timeframe.js"
         />
+
+    <subscriber
+      handler=".calendar.notifyUpdate"
+      for=".interfaces.ICalendarUpdateEvent"/>
 
 </configure>
 
