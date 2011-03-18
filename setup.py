@@ -23,6 +23,7 @@ setup(name='gites.calendar',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
+          'affinitic.zamqp',
           'zope.app.testing>=3.5',
           'setuptools',
           'gites.skin',
@@ -31,6 +32,5 @@ setup(name='gites.calendar',
           'dateutil'
       ],
       entry_points={
-            'console_scripts':[
-                'checkCalendarActivity = gites.calendar.scripts.activity:main',]}
-    )
+            'console_scripts':
+                ['checkCalendarActivity = gites.calendar.scripts.activity:main']})
