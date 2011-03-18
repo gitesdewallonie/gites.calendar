@@ -13,31 +13,42 @@ from z3c.sqlalchemy import getSAWrapper
 from sqlalchemy import and_
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from Products.CMFCore.utils import getToolByName
-
+from gites.core.memcached import cache
 
 CONFIG = {'actif': "Calendrier visible par tous (recherches et page d'hebergement)",
           'searchactif': "Calendrier visible pour recherches uniquement",
           'non actif': "Calendrier non activé"}
 
 
-def getHebergementsForProprio(context, session=None):
+def cacheKey(meth, propioPk, session):
+    return (propioPk,)
+
+
+@cache(cacheKey, lifetime=3600)
+def getHebergementsForProprioId(proprioPk, session):
     wrapper = getSAWrapper('gites_wallons')
     if session is None:
         session = wrapper.session
+    Proprio = wrapper.getMapper('proprio')
+    query = session.query(Proprio)
+    query = query.filter(and_(Proprio.pro_pk == int(proprioPk),
+                              Proprio.pro_etat == True))
+    proprietaire = query.one()
+    hebs = proprietaire.hebergements
+    hebs.sort(key=lambda x: x.heb_pk)
+    publicHebs = []
+    for heb in hebs:
+        if heb.heb_site_public == '1':
+            publicHebs.append(heb)
+    return publicHebs
+
+
+def getHebergementsForProprio(context, session=None):
     pm = getToolByName(context, 'portal_membership')
     user = pm.getAuthenticatedMember()
     userPk = user.getProperty('pk')
     if userPk:
-        Proprio = wrapper.getMapper('proprio')
-        query = session.query(Proprio)
-        query = query.filter(and_(Proprio.pro_pk == int(userPk),
-                                  Proprio.pro_etat == True))
-        proprietaire = query.one()
-        hebs = proprietaire.hebergements
-        hebs.sort(key=lambda x: x.heb_pk)
-        for heb in hebs:
-            if heb.heb_site_public == '1':
-                yield heb
+        return getHebergementsForProprioId(userPk, session)
 
 
 class CalendarConfiguration(grok.GlobalUtility):
