@@ -128,13 +128,12 @@ class CalendarAndDateRanges(grok.CodeView):
 def notifyUpdate(event):
     from affinitic.zamqp.interfaces import IPublisher
     publisher = getUtility(IPublisher, name="walhebcalendar.gdw")
-    publisher._register()
     wrapper = getSAWrapper('gites_wallons')
     Hebergement = wrapper.getMapper('hebergement')
     query = select([Hebergement.heb_code_cgt])
     query.append_whereclause(Hebergement.heb_pk == event.hebPk)
     cgtId = query.execute().fetchone().heb_code_cgt
-    if cgtId:
+    if cgtId and event.start >= datetime.datetime.now():
         infos = event.__dict__
         infos['cgtId'] = cgtId
         publisher.send(infos)
