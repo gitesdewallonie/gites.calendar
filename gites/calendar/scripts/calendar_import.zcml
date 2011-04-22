@@ -11,8 +11,4 @@
   <grok:grok package="gites.db.pg"/>
   <grok:grok package="gites.calendar.browser.messaging"/>
 
-  <subscriber for="affinitic.db.interfaces.IMetadata
-                   affinitic.db.interfaces.IPGDBInitialized"
-              handler=".calendarimport.setPGMappers"/>
-
 </configure>
