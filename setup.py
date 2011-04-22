@@ -29,8 +29,10 @@ setup(name='gites.calendar',
           'gites.skin',
           'gites.core',
           'affinitic.db',
-          'dateutil'
+          'dateutil',
+          'simplejson',
       ],
       entry_points={
             'console_scripts':
-                ['checkCalendarActivity = gites.calendar.scripts.activity:main']})
+                ['checkCalendarActivity = gites.calendar.scripts.activity:main',
+                 'exportCalendarEvents = gites.calendar.scripts.calendar:main']})
