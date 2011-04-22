@@ -1,0 +1,14 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:grok="http://namespaces.zope.org/grok"
+           i18n_domain="gites.calendar">
+
+
+  <include package="zope.component" file="meta.zcml"/>
+  <include package="zope.component"/>
+  <include package="grokcore.component" file="meta.zcml"/>
+  <include package="zope.component"/>
+
+  <grok:grok package="gites.db.pg"/>
+  <grok:grok package="gites.calendar.browser.messaging"/>
+
+</configure>

@@ -35,4 +35,5 @@ setup(name='gites.calendar',
       entry_points={
             'console_scripts':
                 ['checkCalendarActivity = gites.calendar.scripts.activity:main',
-                 'exportCalendarEvents = gites.calendar.scripts.calendar:main']})
+                 'exportCalendarEvents = gites.calendar.scripts.calendar:main',
+                 'importCalendarEventsFromWalhebCalendarDaemon = gites.calendar.scripts.calendarimport:main']})
