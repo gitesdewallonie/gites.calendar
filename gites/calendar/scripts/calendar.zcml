@@ -11,9 +11,4 @@
       handler="gites.calendar.browser.calendar.notifyUpdate"
       for="gites.calendar.browser.interfaces.ICalendarUpdateEvent"/>
 
-  <utility
-      name="GitesMappings"
-      factory="gites.db.initializer.GitesModel"
-      provides="z3c.sqlalchemy.interfaces.IModelProvider"
-      />
 </configure>

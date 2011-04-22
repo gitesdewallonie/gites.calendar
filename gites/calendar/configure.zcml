@@ -15,4 +15,3 @@
     <grok:grok package=".vocabulary"/>
 
 </configure>
-

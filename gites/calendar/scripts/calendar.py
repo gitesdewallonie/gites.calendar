@@ -12,7 +12,6 @@ from gites.db.content import ReservationProprio
 from gites.calendar.zcml import parseZCML
 from gites.calendar.scripts.pg import PGDB
 from gites.calendar.browser.calendar import CalendarUpdateEvent
-from z3c.sqlalchemy import createSAWrapper
 
 
 class ExportCalendarActivity(object):
@@ -57,15 +56,7 @@ class ExportCalendarActivity(object):
 def main():
     import gites.calendar.scripts
     parseZCML(gites.calendar.scripts, 'calendar.zcml')
-    pg = PGDB('jfroche', 'xxxxxxx', 'localhost', 5432, 'gites_wallons')
-    connString = 'postgres://jfroche:xxxxxxxxx@localhost/gites_wallons'
-    createSAWrapper(connString,
-                        forZope=True,
-                        engine_options = {'convert_unicode': True,
-                                          'encoding': 'utf-8'},
-                        encoding='utf-8',
-                        name='gites_wallons',
-                        model='GitesMappings')
+    pg = PGDB('zope', 'zope', 'localhost', 5432, 'gites_wallons')
     exporter = ExportCalendarActivity(pg)
     exporter.connect()
     exporter.export()
