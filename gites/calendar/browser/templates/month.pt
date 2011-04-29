@@ -18,6 +18,7 @@
         tal:define="infoView nocall:context/@@calendarInfo">
     <span>Dernière modification le </span>
     <span tal:define="date python: infoView.getLastModification(request.get('pk'))"
+          tal:condition="date"
           tal:replace="python: date.strftime('%d/%m/%Y')" />
   </span>
 </div>

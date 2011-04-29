@@ -21,7 +21,7 @@ class WalhebCalendarImportConsumer(Consumer):
 
 def handleNewBookingFromWalhebCalendar(bookingInfo, msg):
     #XXX
-    pass
+    print bookingInfo
 
 
 def main():
