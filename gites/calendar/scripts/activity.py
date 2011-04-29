@@ -163,7 +163,7 @@ class CalendarActivity(object):
 
 
 def main():
-    pg = PGDB('zope', 'zope', 'localhost', 5432, 'gites_wallons')
+    pg = PGDB('jfroche', 'xxxxxx', 'localhost', 5432, 'gites_wallons')
     checker = CalendarActivity(pg)
     checker.connect()
     checker.checkCalendarActivity()
