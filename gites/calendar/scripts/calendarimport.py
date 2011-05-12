@@ -42,6 +42,16 @@ def setPGMappers(metadata, event):
     mapper(Hebergement, hebergementTable)
 
 
+def removeSelection(session, hebPk, start, end):
+    subquery = select([ReservationProprio.res_id])
+    subquery.append_whereclause(ReservationProprio.res_date.between(start,
+                                                                    end))
+    subquery.append_whereclause(ReservationProprio.heb_fk == hebPk)
+    query = session.query(ReservationProprio)
+    query = query.filter(ReservationProprio.res_id.in_(subquery))
+    query.delete()
+
+
 def handleNewBookingFromWalhebCalendar(bookingInfo, msg):
     print bookingInfo
     db = getUtility(IDatabase, 'postgres')
@@ -49,9 +59,11 @@ def handleNewBookingFromWalhebCalendar(bookingInfo, msg):
     query = select([Hebergement.heb_pk])
     query.append_whereclause(Hebergement.heb_code_cgt == bookingInfo.get('cgt_id'))
     result = query.execute().fetchone()
+    hebPk = result.heb_pk
     if result is not None:
         currentdate = bookingInfo['start_date']
         end = bookingInfo['end_date']
+        removeSelection(session, hebPk, currentdate, end)
         while currentdate <= end:
             reservation = ReservationProprio()
             if bookingInfo['booking_type'] == 'unavailable':
@@ -59,7 +71,7 @@ def handleNewBookingFromWalhebCalendar(bookingInfo, msg):
             else:
                 reservation.res_type = 'loue'
             reservation.res_date = currentdate
-            reservation.heb_fk = result.heb_pk
+            reservation.heb_fk = hebPk
             reservation.res_date_cre = datetime.now()
             session.add(reservation)
             currentdate += timedelta(days=1)
