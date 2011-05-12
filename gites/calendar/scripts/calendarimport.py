@@ -5,8 +5,17 @@ gites.calendar
 Licensed under the GPL license, see LICENCE.txt for more details.
 Copyright by Affinitic sprl
 """
+from datetime import datetime, timedelta
+from sqlalchemy import select
+from sqlalchemy.orm import mapper
+from zope.component import getUtility
 import grokcore.component as grok
+from affinitic.db.interfaces import IDatabase
 from affinitic.zamqp.consumer import Consumer
+from gites.db.tables import (getReservationProprio, getHebergementTable, getCommune,
+                             getProvinces, getMaisonTourisme, getTypeHebergementTable,
+                             getCharge, getProprio, getCivilite)
+from gites.db.content import ReservationProprio, Hebergement
 from gites.calendar.zcml import parseZCML
 
 
@@ -19,9 +28,44 @@ class WalhebCalendarImportConsumer(Consumer):
     connection_id = 'walhebcalendar'
 
 
+def setPGMappers(metadata, event):
+    reservationProprioTable = getReservationProprio(metadata)
+    getCommune(metadata)
+    getProvinces(metadata)
+    getMaisonTourisme(metadata)
+    getCharge(metadata)
+    getTypeHebergementTable(metadata)
+    getCivilite(metadata)
+    getProprio(metadata)
+    mapper(ReservationProprio, reservationProprioTable)
+    hebergementTable = getHebergementTable(metadata)
+    mapper(Hebergement, hebergementTable)
+
+
 def handleNewBookingFromWalhebCalendar(bookingInfo, msg):
-    #XXX
     print bookingInfo
+    db = getUtility(IDatabase, 'postgres')
+    session = db.session
+    query = select([Hebergement.heb_pk])
+    query.append_whereclause(Hebergement.heb_code_cgt == bookingInfo.get('cgt_id'))
+    result = query.execute().fetchone()
+    if result is not None:
+        currentdate = bookingInfo['start_date']
+        end = bookingInfo['end_date']
+        while currentdate <= end:
+            reservation = ReservationProprio()
+            if bookingInfo['booking_type'] == 'unavailable':
+                reservation.res_type = 'indisp'
+            else:
+                reservation.res_type = 'loue'
+            reservation.res_date = currentdate
+            reservation.heb_fk = result.heb_pk
+            reservation.res_date_cre = datetime.now()
+            session.add(reservation)
+            currentdate += timedelta(days=1)
+        session.flush()
+        session.commit()
+    msg.ack()
 
 
 def main():
