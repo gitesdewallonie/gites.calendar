@@ -68,6 +68,8 @@ def handleNewBookingFromWalhebCalendar(bookingInfo, msg):
             reservation = ReservationProprio()
             if bookingInfo['booking_type'] == 'unavailable':
                 reservation.res_type = 'indisp'
+            elif bookingInfo['booking_type'] == 'available':
+                break
             else:
                 reservation.res_type = 'loue'
             reservation.res_date = currentdate
