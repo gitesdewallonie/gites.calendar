@@ -59,8 +59,8 @@ def handleNewBookingFromWalhebCalendar(bookingInfo, msg):
     query = select([Hebergement.heb_pk])
     query.append_whereclause(Hebergement.heb_code_cgt == bookingInfo.get('cgt_id'))
     result = query.execute().fetchone()
-    hebPk = result.heb_pk
     if result is not None:
+        hebPk = result.heb_pk
         currentdate = bookingInfo['start_date']
         end = bookingInfo['end_date']
         removeSelection(session, hebPk, currentdate, end)
