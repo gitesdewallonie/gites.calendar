@@ -52,6 +52,13 @@ def removeSelection(session, hebPk, start, end):
     query.delete()
 
 
+def updateLastUpdateDate(session, hebPk):
+    query = session.query(Hebergement)
+    query = query.filter(Hebergement.heb_pk == hebPk)
+    query.update({"heb_calendrier_proprio_date_maj": datetime.date.today()},
+                 synchronize_session=False)
+
+
 def handleNewBookingFromWalhebCalendar(bookingInfo, msg):
     print bookingInfo
     db = getUtility(IDatabase, 'postgres')
@@ -64,6 +71,7 @@ def handleNewBookingFromWalhebCalendar(bookingInfo, msg):
         currentdate = bookingInfo['start_date']
         end = bookingInfo['end_date']
         removeSelection(session, hebPk, currentdate, end)
+        updateLastUpdateDate(session, hebPk)
         while currentdate <= end:
             reservation = ReservationProprio()
             if bookingInfo['booking_type'] == 'unavailable':
