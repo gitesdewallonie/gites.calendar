@@ -72,9 +72,7 @@ class CalendarAndDateRanges(grok.CodeView):
     def render(self):
         return
 
-    def _removeSelection(self, hebPk, start, end):
-        wrapper = getSAWrapper('gites_wallons')
-        session = wrapper.session
+    def _removeSelection(self, session, wrapper, hebPk, start, end):
         ReservationProprio = wrapper.getMapper('reservation_proprio')
         subquery = select([ReservationProprio.res_id])
         subquery.append_whereclause(ReservationProprio.res_date.between(start,
@@ -83,6 +81,7 @@ class CalendarAndDateRanges(grok.CodeView):
         query = session.query(ReservationProprio)
         query = query.filter(ReservationProprio.res_id.in_(subquery))
         query.delete()
+	session.flush()
 
     def __call__(self):
         hebPk = self.request.SESSION.get('cal-selected-heb')
@@ -105,7 +104,7 @@ class CalendarAndDateRanges(grok.CodeView):
         end = datetime.datetime(*strptime(self.request.get('end'),
                                    "%Y-%m-%d")[0:6])
         typeOfSelection = self.request.get('type')
-        self._removeSelection(hebPk, start, end)
+        self._removeSelection(session, wrapper, hebPk, start, end)
         notify(CalendarUpdateEvent(hebPk, start, end, typeOfSelection))
         if typeOfSelection == 'libre':
             return
