@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-KEY = 'k0z!'
+KEY = 'TOCHANGE'
 
 
 def xor(string):
