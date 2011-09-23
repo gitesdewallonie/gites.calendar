@@ -1,7 +1,6 @@
-# import operator
-# import sys
+# -*- coding: utf-8 -*-
 
-KEY = 'k0'
+KEY = 'k0z!'
 
 
 def xor(string):

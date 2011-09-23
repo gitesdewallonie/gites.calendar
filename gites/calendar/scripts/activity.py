@@ -17,8 +17,8 @@ from gites.calendar.scripts.pg import PGDB
 
 FIRST_MAIL = """Cher Membre,\n
 Nous avons constaté que le calendrier de disponibilités de votre hébergement sur www.gitesdewallonie.be n'a pas été modifié depuis 30 jours.\n
+Si aucune modification n'est intervenue depuis un mois, nous vous invitons simplement à cliquer sur ce lien pour nous le signaler : %s.\n
 S'il s'agit d'un simple oubli de votre part, nous vous remercions de le mettre à jour très rapidement.\n
-Si aucune modification n'est intervenue depuis un mois, nous vous invitons simplement à signaler à la Maison des Gîtes de Wallonie cette absence de modification soit par mail soit par téléphone de façon à éviter que votre calendrier ne soit désactivé.\n
 Le touriste qui recherche un hébergement pour une période déterminée désire, en effet, obtenir une information à jour. D'où l'importance de maintenir cette information précise. Nous souhaitons qu'à travers cette démarche que nous vous demandons, le touriste fasse entièrement confiance aux disponibilités qui s'offrent à lui et se réfèrent principalement à notre site pour la précision des informations qu'il en retire.\n
 Nous restons à votre entière disposition et nous vous remercions, cher Membre, de votre démarche.\n
 Les Gîtes de Wallonie.
@@ -26,7 +26,7 @@ Les Gîtes de Wallonie.
 
 BLOCKING_MAIL = """Madame, Monsieur,\n
 Malgré notre mail précédent, nous constatons qu’aucune mise à jour de votre calendrier de disponibilités sur www.gitesdewallonie.be n’a été réalisée.\n
-Afin de garantir une information correcte et à jour aux touristes utilisant notre site, nous sommes au regret de vous informer que votre calendrier a été désactivé.  Les touristes ne sont donc plus en mesure de trouver votre hébergement en effectuant une recherche par date.\n
+Afin de garantir une information correcte et à jour aux touristes utilisant notre site, nous sommes au regret de vous informer que votre calendrier a été désactivé. Cliquez sur ce lien pour le réactiver : %s.\n
 Nous restons à votre entière disposition pour tout renseignement complémentaire.\n
 Les Gîtes de Wallonie.
 """
