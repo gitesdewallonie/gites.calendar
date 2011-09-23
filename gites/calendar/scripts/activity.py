@@ -12,6 +12,7 @@ from email.MIMEText import MIMEText
 from sqlalchemy import select, and_, func
 
 from gites.db.content import Proprio, Hebergement, HebergementBlockingHistory
+from gites.calendar.crypt import encrypt
 from gites.calendar.scripts.pg import PGDB
 
 FIRST_MAIL = """Cher Membre,\n
@@ -78,7 +79,8 @@ class CalendarActivity(object):
         mailFrom = "info@gitesdewallonie.be"
         subject = "Votre calendrier sur le site des Gîtes de Wallonie"
 
-        mail = MIMEText(FIRST_MAIL)
+        encryptedPk = encrypt(proprioPk)
+        mail = MIMEText(FIRST_MAIL % encryptedPk)
         mail['From'] = mailFrom
         mail['Subject'] = subject
         mail['To'] = proprioMail
@@ -103,7 +105,8 @@ class CalendarActivity(object):
         mailFrom = "info@gitesdewallonie.be"
         subject = "Désactivation de votre calendrier"
 
-        mail = MIMEText(BLOCKING_MAIL)
+        encryptedPk = encrypt(proprioPk)
+        mail = MIMEText(BLOCKING_MAIL % encryptedPk)
         mail['From'] = mailFrom
         mail['Subject'] = subject
         mail['To'] = proprioMail
