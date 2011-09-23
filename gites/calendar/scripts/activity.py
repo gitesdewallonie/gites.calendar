@@ -80,7 +80,8 @@ class CalendarActivity(object):
         subject = "Votre calendrier sur le site des Gîtes de Wallonie"
 
         encryptedPk = encrypt(proprioPk)
-        mail = MIMEText(FIRST_MAIL % encryptedPk)
+        linkUrl = "http://www.gitesdewallonie.be/reactivation-calendrier?key=%s" % encryptedPk
+        mail = MIMEText(FIRST_MAIL % linkUrl)
         mail['From'] = mailFrom
         mail['Subject'] = subject
         mail['To'] = proprioMail
@@ -106,7 +107,8 @@ class CalendarActivity(object):
         subject = "Désactivation de votre calendrier"
 
         encryptedPk = encrypt(proprioPk)
-        mail = MIMEText(BLOCKING_MAIL % encryptedPk)
+        linkUrl = "http://www.gitesdewallonie.be/reactivation-calendrier?key=%s" % encryptedPk
+        mail = MIMEText(BLOCKING_MAIL % linkUrl)
         mail['From'] = mailFrom
         mail['Subject'] = subject
         mail['To'] = proprioMail
