@@ -12,7 +12,7 @@ from gites.calendar.interfaces import IProprioCalendar
 from zope.interface import Interface
 import simplejson
 from z3c.sqlalchemy import getSAWrapper
-from sqlalchemy import select
+from sqlalchemy import select, desc
 from time import strptime
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -20,8 +20,10 @@ from Products.CMFCore.utils import getToolByName
 from zope.app.schema.vocabulary import IVocabularyFactory
 from zope.component import getUtility
 from zope.interface import implements
-from gites.calendar.browser.interfaces import ICalendarUpdateEvent
 from zope.event import notify
+from gites.db.content import Proprio, HebergementBlockingHistory
+from gites.calendar.crypt import decrypt
+from gites.calendar.browser.interfaces import ICalendarUpdateEvent
 
 grok.context(Interface)
 grok.templatedir('templates')
@@ -49,6 +51,51 @@ class CalendarInfos(grok.View):
         query = query.filter(Hebergement.heb_pk == hebPk)
         heb = query.one()
         return heb.heb_calendrier_proprio_date_maj
+
+
+class CalendarReactivation(grok.View):
+    """
+    Allows to reactivate a calendar, directly from mails sent to proprios
+    """
+    grok.context(Interface)
+    grok.name('reactivation-calendrier')
+    grok.require('zope2.View')
+
+    def getBlockedInfo(self, session, heb_pk):
+        query = session.query(HebergementBlockingHistory)
+        query = query.filter_by(heb_blockhistory_heb_pk=heb_pk)
+        query = query.filter_by(heb_blockhistory_activated_dte=None)
+        query = query.order_by(desc(HebergementBlockingHistory.heb_blockhistory_blocked_dte))
+        return query.first()
+
+    def getProprio(self, session, proprioPk):
+        query = session.query(Proprio)
+        query = query.filter(Proprio.pro_pk == proprioPk)
+        proprio = query.one()
+        return proprio
+
+    def reactivateCalendars(self, encryptedPk):
+        """
+        Decrypt proprio pk and reactivate calendar
+        """
+        if not encryptedPk:
+            return
+        proprioPk = decrypt(encryptedPk)
+        wrapper = getSAWrapper('gites_wallons')
+        session = wrapper.session
+        proprio = self.getProprio(session, proprioPk)
+        for hebergement in proprio.hebergements:
+            hebergement.heb_calendrier_proprio_date_maj = datetime.date.today()
+            if hebergement.heb_calendrier_proprio == u'bloque':
+                hebergement.heb_calendrier_proprio = u'actif'
+            session.add(hebergement)
+            blockHist = self.getBlockedInfo(session, hebergement.heb_pk)
+            if blockHist is not None:
+                blockHist.heb_blockhistory_activated_dte = datetime.date.today()
+                blockedDate = blockHist.heb_blockhistory_activated_dte - blockHist.heb_blockhistory_blocked_dte
+                blockHist.heb_blockhistory_days = blockedDate.days
+                session.add(blockHist)
+        session.flush()
 
 
 class CalendarUpdateEvent(object):
@@ -81,7 +128,7 @@ class CalendarAndDateRanges(grok.CodeView):
         query = session.query(ReservationProprio)
         query = query.filter(ReservationProprio.res_id.in_(subquery))
         query.delete()
-	session.flush()
+        session.flush()
 
     def __call__(self):
         hebPk = self.request.SESSION.get('cal-selected-heb')
