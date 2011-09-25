@@ -11,8 +11,8 @@
 Réactivation du calendrier
 </h1>
 
-<div align="center" tal:define="encryptedPk request/key | nothing;
-                                reactivated python:view.reactivateCalendars(encryptedPk)">
+<div align="center" tal:define="key request/key | nothing;
+                                reactivated python:view.reactivateCalendars(key)">
       
     <br/>
     <h3><font color="Red">Votre calendrier a bien été réactivé !</font></h3>

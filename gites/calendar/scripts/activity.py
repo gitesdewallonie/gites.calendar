@@ -6,13 +6,14 @@ Licensed under the GPL license, see LICENCE.txt for more details.
 Copyright by Affinitic sprl
 """
 
+import string
+import random
 import smtplib
 from datetime import date
 from email.MIMEText import MIMEText
 from sqlalchemy import select, and_, func
 
 from gites.db.content import Proprio, Hebergement, HebergementBlockingHistory
-from gites.calendar.crypt import encrypt
 from gites.calendar.scripts.pg import PGDB
 
 FIRST_MAIL = """Cher Membre,\n
@@ -44,6 +45,17 @@ class CalendarActivity(object):
         self.pg.connect()
         self.pg.setMappers()
         self.session = self.pg.session()
+
+    def insertProprioHash(self, proprio):
+        # On récupère ou on génère un hash (dans Postgres) réutilisable par
+        # propriétaire sans référence à la pk pour plus de sécurité
+        if proprio.pro_reactivation_hash:
+            return proprio.pro_reactivation_hash
+        key = "".join([random.choice(string.letters+string.digits) for x in range(32)])
+        proprio.pro_reactivation_hash = key
+        self.session.add(proprio)
+        self.session.flush()
+        return key
 
     def getProprio(self, proprioPk):
         query = self.session.query(Proprio)
@@ -79,8 +91,8 @@ class CalendarActivity(object):
         mailFrom = "info@gitesdewallonie.be"
         subject = "Votre calendrier sur le site des Gîtes de Wallonie"
 
-        encryptedPk = encrypt(proprioPk)
-        linkUrl = "http://www.gitesdewallonie.be/reactivation-calendrier?key=%s" % encryptedPk
+        key = self.insertProprioHash(proprio)
+        linkUrl = "http://www.gitesdewallonie.be/reactivation-calendrier?key=%s" % key
         mail = MIMEText(FIRST_MAIL % linkUrl)
         mail['From'] = mailFrom
         mail['Subject'] = subject
@@ -90,11 +102,12 @@ class CalendarActivity(object):
         server = smtplib.SMTP('localhost')
         server.sendmail(mailFrom, [proprioMail], mail.as_string())
         server.quit()
-        print 'Sending warning mail to %s %s (%s) - last modification date : %s' % \
+        print 'Sending warning mail to %s %s (%s) - last modification date : %s - key : %s' % \
                               (proprio.pro_prenom1,
                                proprio.pro_nom1,
                                proprioMail,
-                               majDate.strftime('%d-%m-%Y'))
+                               majDate.strftime('%d-%m-%Y'),
+                               key)
 
     def sendSecondMail(self, proprioPk, majDate):
         proprio = self.getProprio(proprioPk)
@@ -106,8 +119,8 @@ class CalendarActivity(object):
         mailFrom = "info@gitesdewallonie.be"
         subject = "Désactivation de votre calendrier"
 
-        encryptedPk = encrypt(proprioPk)
-        linkUrl = "http://www.gitesdewallonie.be/reactivation-calendrier?key=%s" % encryptedPk
+        key = self.insertProprioHash(proprio)
+        linkUrl = "http://www.gitesdewallonie.be/reactivation-calendrier?key=%s" % key
         mail = MIMEText(BLOCKING_MAIL % linkUrl)
         mail['From'] = mailFrom
         mail['Subject'] = subject
@@ -117,11 +130,12 @@ class CalendarActivity(object):
         server = smtplib.SMTP('localhost')
         server.sendmail(mailFrom, [proprioMail], mail.as_string())
         server.quit()
-        print 'Sending blocking mail to %s %s (%s) - last modification date : %s' % \
+        print 'Sending blocking mail to %s %s (%s) - last modification date : %s - key : %s' % \
                               (proprio.pro_prenom1,
                                proprio.pro_nom1,
                                proprioMail,
-                               majDate.strftime('%d-%m-%Y'))
+                               majDate.strftime('%d-%m-%Y'),
+                               key)
 
     def mustBeNotified(self, calendar):
         lastUpdate = calendar.heb_calendrier_proprio_date_maj
