@@ -22,7 +22,6 @@ from zope.component import getUtility
 from zope.interface import implements
 from zope.event import notify
 from gites.db.content import Proprio, HebergementBlockingHistory
-from gites.calendar.crypt import decrypt
 from gites.calendar.browser.interfaces import ICalendarUpdateEvent
 
 grok.context(Interface)
@@ -68,22 +67,21 @@ class CalendarReactivation(grok.View):
         query = query.order_by(desc(HebergementBlockingHistory.heb_blockhistory_blocked_dte))
         return query.first()
 
-    def getProprio(self, session, proprioPk):
+    def getProprio(self, session, proprioHash):
         query = session.query(Proprio)
-        query = query.filter(Proprio.pro_pk == proprioPk)
+        query = query.filter(Proprio.pro_reactivation_hash == proprioHash)
         proprio = query.one()
         return proprio
 
-    def reactivateCalendars(self, encryptedPk):
+    def reactivateCalendars(self, key):
         """
-        Decrypt proprio pk and reactivate calendar
+        Find proprio (by Postgres hash) and reactivate calendar
         """
-        if not encryptedPk:
+        if not key:
             return
-        proprioPk = decrypt(encryptedPk)
         wrapper = getSAWrapper('gites_wallons')
         session = wrapper.session
-        proprio = self.getProprio(session, proprioPk)
+        proprio = self.getProprio(session, key)
         for hebergement in proprio.hebergements:
             hebergement.heb_calendrier_proprio_date_maj = datetime.date.today()
             if hebergement.heb_calendrier_proprio == u'bloque':
