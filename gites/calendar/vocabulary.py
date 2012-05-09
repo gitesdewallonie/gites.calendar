@@ -24,7 +24,7 @@ def cacheKey(meth, propioPk, session):
     return (propioPk,)
 
 
-@cache(cacheKey, lifetime=3600)
+@cache(cacheKey, lifetime=300)
 def getHebergementsForProprioId(proprioPk, session):
     wrapper = getSAWrapper('gites_wallons')
     if session is None:
