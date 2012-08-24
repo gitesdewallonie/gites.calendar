@@ -1,0 +1,25 @@
+<html metal:use-macro="context/@@standard_macros/page" i18n:domain="chronos">
+<metal:block fill-slot="style_slot">
+  <link rel="stylesheet" href="++resource++timeframe.css" type="text/css" media="screen" title="timeframe" charset="utf-8"/>
+  <script type="text/javascript" charset="utf-8" src="++resource++multitimeframe.js"></script>
+  <script type="text/javascript" charset="utf-8" src="++resource++prototype16.js"></script>
+  <script type="text/javascript" charset="utf-8"
+          tal:content="view/calendarJS"/>
+
+</metal:block>
+
+<metal:block fill-slot="body" tal:define="dummy view/calcInfo">
+
+<h1 class="documentFirstHeading">
+    Affichage mensuel de vos calendriers
+</h1>
+
+  <div id="gitescal" class="multical">
+    <div id="calendars"></div>
+      <input type="hidden" id="reset"/>
+      <input type="hidden" name="start" value="" id="start"/>
+      <input type="hidden" name="end" value="" id="end"/>
+  </div>
+
+</metal:block>
+</html>

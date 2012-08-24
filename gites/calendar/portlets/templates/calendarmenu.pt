@@ -26,6 +26,17 @@
          </dd>
 
          <dd class="portletItemSingle">
+             <b>
+                 <a href="#"
+                    class="tile"
+                    title="Affichage mensuel"
+                    tal:attributes="href string:${portal_url}/zone-membre/calendrier/multical.html">
+                     Affichage mensuel
+                 </a>
+             </b>
+         </dd>
+
+         <dd class="portletItemSingle">
               <a href=""
                   tal:condition="not: view/isBlocked"
                   tal:attributes="href string:$portal_url/zone-membre/calendrier/configuration"

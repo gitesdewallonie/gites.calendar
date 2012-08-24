@@ -382,3 +382,59 @@ margin-right:20px;
 #extern-help p {
 margin-top:12px;
 }
+
+/*  MULTI - CALENDAR  */
+#gitescal.multical {
+    width: 1300px;
+}
+
+.multicalendar #calendars_container {
+	margin-bottom: 40px;
+}
+
+#calendars_calendar_header {
+	border: 1px solid transparent;
+}
+
+#calendars_calendar_header caption {
+	margin-bottom: 5px;
+}
+
+.multicalendar #calendars_container .gitename{
+	display: block;
+	text-align: left;
+	font-style: italic;
+	color: #595133;
+}
+
+div.multicalendar table {
+    display: block;
+	margin-top: 0px;
+	margin-bottom: -1px;
+	border-color: #CDCDCD;
+	border-style: solid;
+}
+
+div.multicalendar thead th {
+    border-left: 2px solid gray;
+    padding: 0px;
+    width: 30px;
+	font-size: 80%;
+}
+
+div.multicalendar thead th.today {
+	background-color: #84B575;
+	color: #FFFFFF;
+}
+
+div.multicalendar tbody td {
+    border-left: 2px solid #CDCDCD;
+    padding: 0px;
+	height: 25px;
+    width: 30px;
+	font-size: 80%;
+}
+
+div.multicalendar thead th.newmonth {
+	border-left: 2px solid red !important;
+}
