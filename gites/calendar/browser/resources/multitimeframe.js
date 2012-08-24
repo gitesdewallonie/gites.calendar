@@ -37,8 +37,9 @@ var Locale = $H({
 });
 
 var Timeframes = [];
-var Rented = [];
-var RentedTypes = [];
+var Rented = new Hash();
+var RentedTypes = new Hash();
+
 var Timeframe = Class.create({
   Version: '0.2',
 
@@ -47,15 +48,18 @@ var Timeframe = Class.create({
 
     this.element = $(element);
     this.element.addClassName('timeframe_calendar');
+    this.element.addClassName('multicalendar');
     this.options = $H({ months: 12 }).merge(options || {});
     this.months = this.options.get('months');
     this.selectionType = 'loue';
     this.weekdayNames = Locale.get('dayNames');
     this.monthNames   = Locale.get('monthNames');
-    this.hebPk        = this.options.get('hebPk');
+    this.hebsPks      = this.options.get('hebsPks');
+    this.hebsNames    = this.options.get('hebsNames');
     this.format       = this.options.get('format')     || Locale.get('format');
     this.weekOffset   = this.options.get('weekOffset') || Locale.get('weekOffset');
     this.maxRange = 99999;
+    this.daysNumber = 35;
 
     this.buttons = $H({
       previous: $H({ label: '&nbsp;', element: $(this.options.get('previousButton')) }),
@@ -64,78 +68,98 @@ var Timeframe = Class.create({
     });
     //this.fields = $H({ start: $(this.options.get('startField')), end: $(this.options.get('endField')) });
 
-   this.range = $H({});
+    this.date = new Date();
+    this.range = $H({});
     this._buildButtons()._buildFields();
     this.earliest = Date.parseToObject(this.options.get('earliest'));
     this.latest   = Date.parseToObject(this.options.get('latest'));
 
-    this.calendars = [];
-    this.element.insert(new Element('div', { id: this.element.id + '_container' }));
-    this.months.times(function(month) { this.createCalendar(month); }.bind(this));
-
-    this.register().populate().refreshRange();
+    this.register().populate().refreshRange(true);
+    this.element.down('div#' + this.element.id + '_container').setOpacity(1);
     $('select_loue').addClassName('selectedType');
   },
 
   // Scaffolding
 
-  createCalendar: function() {
+  createCalendarsHeader: function() {
     var calendar = new Element('table', {
-      id: this.element.id + '_calendar_' + this.calendars.length, border: 0, cellspacing: 0, cellpadding: 5
+      id: this.element.id + '_calendar_header', border: 0, cellspacing: 0, cellpadding: 5
     });
     calendar.insert(new Element('caption'));
+    var caption = calendar.select('caption').first();
 
     var head = new Element('thead');
     var row  = new Element('tr');
-    this.weekdayNames.length.times(function(column) {
-      var weekday = this.weekdayNames[(column + this.weekOffset) % 7];
+    var iterator = new Date(this.date);
+    var displayedMonths;
+    if (iterator.getDate() == 1) displayedMonths = 0;
+    else displayedMonths = 1;
+
+    this.daysNumber.times(function(dayNum) {
+      var weekday = this.weekdayNames[iterator.getDay()];
       var cell = new Element('th', { scope: 'col', abbr: weekday }).update(weekday.substring(0,1));
+      if (iterator.getDate() == 1) {
+          cell.addClassName('newmonth');
+          displayedMonths += 1;
+      }
+      if (iterator.neutral().toString() === new Date().neutral().toString()) cell.addClassName('today');
       row.insert(cell);
+      iterator.setDate(iterator.getDate() + 1);
     }.bind(this));
     head.insert(row);
-    calendar.insert(head);
 
-    var body = new Element('tbody');
-    (6).times(function(rowNumber) {
-      var row = new Element('tr');
-      this.weekdayNames.length.times(function(column) {
-        var cell = new Element('td');
-        row.insert(cell);
-      });
-      body.insert(row);
+    var refDate = new Date(this.date);
+    var captionStr = '';
+    displayedMonths.times(function(month) {
+        if (captionStr != '') captionStr += '&nbsp; <strong><font color="Red">|</font></strong> &nbsp;';
+        var monthCaption = this.monthNames[refDate.getMonth()] + ' ' + refDate.getFullYear();
+        captionStr += monthCaption;
+        refDate.setMonth(refDate.getMonth() + 1);
     }.bind(this));
-    calendar.insert(body);
+    caption.update(captionStr);
 
+    var row2  = new Element('tr');
+    iterator = new Date(this.date);
+    this.daysNumber.times(function(dayNum) {
+      day = iterator.getDate();
+      var cell = new Element('th', { scope: 'col', abbr: day, 'class': '' }).update(day);
+      if (iterator.getDate() == 1) cell.addClassName('newmonth');
+      if (iterator.neutral().toString() === new Date().neutral().toString()) cell.addClassName('today');
+      row2.insert(cell);
+      iterator.setDate(iterator.getDate() + 1);
+    }.bind(this));
+    head.insert(row2);
+
+    calendar.insert(head);
     this.element.down('div#' + this.element.id + '_container').insert(calendar);
-    this.calendars.push(calendar);
-    this.months = this.calendars.length;
+
+    // this.calendars.push(calendar);
+    // this.months = this.calendars.length;
+    this.calendarHeader = calendar;
     return this;
   },
 
-  destroyCalendar: function() {
-    this.calendars.pop().remove();
-    this.months = this.calendars.length;
-    return this;
-  },
+  createCalendar: function(index) {
+    var hebPk = this.hebsPks[index];
+    var hebName = this.hebsNames[index];
+    var calendar = new Element('table', {
+      id: this.element.id + '_calendar_' + hebPk, border: 1, cellspacing: 0, cellpadding: 5
+    });
+    var body = new Element('tbody');
 
-  populate: function() {
-    var month = this.date.neutral();
-    month.setDate(1);
-    this.calendars.each(function(calendar) {
-      var caption = calendar.select('caption').first();
-      caption.update(this.monthNames[month.getMonth()] + ' ' + month.getFullYear());
-      var iterator = new Date(month);
-      var offset = (iterator.getDay() - this.weekOffset) % 7;
-      var inactive = offset > 0 ? 'pre beyond' : false;
-      iterator.setDate(iterator.getDate() - offset);
-      if (iterator.getDate() > 1 && !inactive) {
-        iterator.setDate(iterator.getDate() - 7);
-        if (iterator.getDate() > 1) inactive = 'pre beyond';
-      }
+    var title = new Element('div');
+    title.addClassName('gitename');
+    if (this.hebsPks.length > 1) title.update('┌ ' + hebName);
+    this.element.down('div#' + this.element.id + '_container').insert(title);
+    this.titles.push(title);
 
-      calendar.select('td').each(function(day) {
-        day.date = new Date(iterator); // Is this expensive (we unload these later)? We could store the epoch time instead.
-        day.update(day.date.getDate()).writeAttribute('class', '');
+    var row = new Element('tr');
+    var iterator = new Date(this.date);
+    this.daysNumber.times(function(dayNum) {
+        var day = new Element('td');
+        day.date = new Date(iterator);
+        day.hebPk = hebPk;
+        day.writeAttribute('class', '');
 
         if (day.hasClassName('active')) day.removeClassName('active');
         if (day.hasClassName('inactive')) day.removeClassName('inactive');
@@ -147,19 +171,40 @@ var Timeframe = Class.create({
         if (day.hasClassName('beyond')) day.removeClassName('beyond');
         if (day.hasClassName('indisp')) day.removeClassName('indisp');
         if (day.hasClassName('loue')) day.removeClassName('loue');
-        
-        if (inactive) day.addClassName(inactive);
-        else day.addClassName('active');
+        day.addClassName('active');
         day.addClassName('selectable');
+
         if (iterator.toString() === new Date().neutral().toString()) day.addClassName('today');
         day.baseClass = day.readAttribute('class');
-
+        row.insert(day);
         iterator.setDate(iterator.getDate() + 1);
-        if (iterator.getDate() == 1) inactive = inactive ? false : 'post beyond';
-      }.bind(this));
-
-      month.setMonth(month.getMonth() + 1);
     }.bind(this));
+
+    body.insert(row);
+    calendar.insert(body);
+
+    this.element.down('div#' + this.element.id + '_container').insert(calendar);
+    this.calendars.push(calendar);
+    // this.months = this.calendars.length;
+    return this;
+  },
+
+  destroyCalendar: function() {
+    this.calendarHeader.remove();
+    this.titles.each(function(title) { title.remove(); }.bind(this));
+    this.calendars.each(function(calendar) { calendar.remove(); }.bind(this));
+    // this.months = this.calendars.length;
+    return this;
+  },
+
+  populate: function() {
+    this.calendars = [];
+    this.titles = [];
+    this.element.insert(new Element('div', { id: this.element.id + '_container' }));
+    this.element.down('div#' + this.element.id + '_container').setOpacity(0.4);
+
+    this.createCalendarsHeader();
+    this.hebsPks.length.times(function(index) { this.createCalendar(index); }.bind(this));
     return this;
   },
 
@@ -237,28 +282,27 @@ var Timeframe = Class.create({
   // Event registration
 
   selectPreviousMonth: function() {
-    var movement = this.months > 1 ? this.months : 1;
-    this.date.setMonth(this.date.getMonth() - movement);
-    this.populate().refreshRange();
+    this.element.down('div#' + this.element.id + '_container').setOpacity(0.4);
+    this.date.setDate(this.date.getDate() - this.daysNumber);
+    this.destroyCalendar();
+    this.populate().refreshRange(false);
+    this.element.down('div#' + this.element.id + '_container').setOpacity(1);
   },
 
   selectToday: function() {
-    today = new Date();
-    month = today.getMonth();
-    year = today.getYear();
-    existingMonth = this.date.getMonth();
-    existingYear = this.date.getYear();
-    if (month != existingMonth || year != existingYear)
-      this.date = today;
-    else
-      return ;
-    this.populate().refreshRange();
+    this.element.down('div#' + this.element.id + '_container').setOpacity(0.4);
+    this.date = new Date();
+    this.destroyCalendar();
+    this.populate().refreshRange(false);
+    this.element.down('div#' + this.element.id + '_container').setOpacity(1);
   },
 
   selectNextMonth: function() {
-    var movement = this.months > 1 ? this.months : 1;
-    this.date.setMonth(this.date.getMonth() + movement);
-    this.populate().refreshRange();
+    this.element.down('div#' + this.element.id + '_container').setOpacity(0.4);
+    this.date.setDate(this.date.getDate() + this.daysNumber);
+    this.destroyCalendar();
+    this.populate().refreshRange(false);
+    this.element.down('div#' + this.element.id + '_container').setOpacity(1);
   },
 
   register: function() {
@@ -393,10 +437,10 @@ var Timeframe = Class.create({
     } else if (this.maxRange != 1) {
       this.stuck = false;
     }
-    this.getPoint(element.date);
+    this.getPoint(element.date, element.hebPk);
   },
 
-  getPoint: function(date) {
+  getPoint: function(date, hebPk) {
     if (this.range.get('start') && this.range.get('start').toString() == date && this.range.get('end'))
       this.startdrag = this.range.get('end');
     else {
@@ -404,6 +448,7 @@ var Timeframe = Class.create({
         this.startdrag = this.range.get('start');
       else
         this.startdrag = this.range.set('start', this.range.set('end', date));
+        this.range.set('hebPk', hebPk);
     }
   },
 
@@ -413,7 +458,7 @@ var Timeframe = Class.create({
       this.toggleClearButton(event);
     else if (event.findElement('span.clear span.active'));
     else if (el = event.findElement('td.selectable'))
-      this.extendRange(el.date);
+      this.extendRange(el.date, el.hebPk);
     else this.toggleClearButton(event);
   },
 
@@ -428,7 +473,8 @@ var Timeframe = Class.create({
       this.clearButton.hide();
   },
 
-  extendRange: function(date) {
+  extendRange: function(date, hebPk) {
+    if (this.range.get('hebPk') != hebPk) return;
     var start, end;
     this.clearButton.hide();
     if (date > this.startdrag) {
@@ -440,7 +486,7 @@ var Timeframe = Class.create({
     } else
       start = end = date;
     this.validateRange(start, end);
-    this.refreshRange();
+    this.refreshRange(true, this.range.get('hebPk'));
   },
 
   validateRange: function(start, end) {
@@ -465,14 +511,17 @@ var Timeframe = Class.create({
     var start;
     var end;
     var selectionType;
+    var hebPk;
     start = this.range.get('start').strftime('%Y-%m-%d');
     end = this.range.get('end').strftime('%Y-%m-%d');
+    hebPk = this.range.get('hebPk');
     selectionType = this.selectionType;
     if (start && end && selectionType){
         var parameters;
         parameters = {'start': start,
                       'end': end,
-                      'type': selectionType
+                      'type': selectionType,
+                      'hebPk': hebPk
                       };
         var request;
         request = new Ajax.Request('addRange',
@@ -492,51 +541,79 @@ var Timeframe = Class.create({
         this.clearRange();
     }
     this.mousedown = false;
+    var rangePk = this.range.get('hebPk');
+    this.element.down('div#' + this.element.id + '_container').setOpacity(0.4);
     this.addDateRange();
     this.checkSelectedDay();
-    this.refreshRange();
+    this.refreshRange(true, rangePk);
+    this.element.down('div#' + this.element.id + '_container').setOpacity(1);
   },
   clearRange: function() {
     this.clearButton.hide().select('span').first().removeClassName('active');
     this.range.set('start', this.range.set('end', null));
+    this.range.set('hebPk', null);
     this.refreshField('start').refreshField('end');
   },
   checkSelectedDay: function() {
-    new Ajax.Request(
-          'selectedDays',
-        {method: 'get',
-         asynchronous: false,
-         parameters: {hebPk:this.hebPk},
-         onSuccess: function(transport) {
-              Rented.clear();
-              RentedTypes.clear();
-              var json = transport.responseText.evalJSON();
-              for (i=0;i<json.rented.length;++i){
-                  Rented.push(json.rented[i]);
-                  RentedTypes.push(json.type[i]);
-              };
-         }});
+    if (this.range.get('hebPk') != null) toRefreshPks = [this.range.get('hebPk')];
+    else toRefreshPks = this.hebsPks;
+    toRefreshPks.each(function(hebPk) {
+        new Ajax.Request(
+              'selectedDays',
+            {method: 'get',
+             asynchronous: false,
+             parameters: {hebPk: hebPk},
+             onSuccess: function(transport) {
+                  var json = transport.responseText.evalJSON();
+                  var rented = [];
+                  var types = [];
+                  for (i=0;i<json.rented.length;++i){
+                      rented.push(json.rented[i]);
+                      types.push(json.type[i]);
+                  };
+                  Rented.set(hebPk, rented);
+                  RentedTypes.set(hebPk, types);
+             }});
+    });
   },
 
-  refreshRange: function() {
-    if (this.mousedown != true) this.checkSelectedDay();
-    this.element.select('td').each(function(day) {
+  refreshRange: function(refresh, refreshPk) {
+    if (this.mousedown != true && refresh == true) this.checkSelectedDay();
+
+    if (refreshPk) {
+        tableId = this.element.id + '_calendar_' + refreshPk;
+        this.element.select('#' + tableId + ' td').each(function(day) {
+            this.refreshCalendarRange(day);
+        }.bind(this));
+    }
+    else {
+        this.element.select('td').each(function(day) {
+            this.refreshCalendarRange(day);
+        }.bind(this));
+        
+    }
+    if (this.dragging) this.refreshField('start').refreshField('end');
+  },
+
+  refreshCalendarRange: function(day) {
       // day.writeAttribute('class', '');
       // day.addClassName(day.baseClass);
-      if (Rented.contains(day.date.strftime('%Y-%m-%d'))){
-        if (!day.hasClassName(RentedTypes[Rented.indexOf(day.date.strftime('%Y-%m-%d'))])) {
-          day.addClassName(RentedTypes[Rented.indexOf(day.date.strftime('%Y-%m-%d'))]);
+      rented = Rented.get(day.hebPk);
+      types = RentedTypes.get(day.hebPk);
+      if (rented.contains(day.date.strftime('%Y-%m-%d'))){
+        if (!day.hasClassName(types[rented.indexOf(day.date.strftime('%Y-%m-%d'))])) {
+          day.addClassName(types[rented.indexOf(day.date.strftime('%Y-%m-%d'))]);
         }
       }
-      if (this.range.get('start') && this.range.get('end') && this.range.get('start') <= day.date && day.date <= this.range.get('end')) {
+      if (this.range.get('start') && this.range.get('end') && day.hebPk == this.range.get('hebPk') && this.range.get('start') <= day.date && day.date <= this.range.get('end')) {
         var baseClass = day.hasClassName('beyond') ? 'beyond_' : day.hasClassName('today') ? 'today_' : null;
         // var state = this.stuck || this.mousedown ? 'stuck' : this.selectionType;
         // if (baseClass) day.addClassName(baseClass + state);
         if (!day.hasClassName(this.selectionType)) {
           day.addClassName(this.selectionType);
         }
-        for(var i = 0; i < RentedTypes.length; i++) {
-          var selection = RentedTypes[i];
+        for(var i = 0; i < types.length; i++) {
+          var selection = types[i];
           if (selection != this.selectionType && day.hasClassName(selection)) {
             day.removeClassName(selection);
           }
@@ -550,8 +627,6 @@ var Timeframe = Class.create({
         day.unselectable = 'on'; // Trick Opera into refreshing the selection (FIXME)
         day.unselectable = null;
       }
-    }.bind(this));
-    if (this.dragging) this.refreshField('start').refreshField('end');
   },
 
   handleMouseMove: function(event) {
