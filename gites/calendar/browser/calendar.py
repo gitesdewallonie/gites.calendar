@@ -130,6 +130,8 @@ class CalendarAndDateRanges(grok.CodeView):
 
     def __call__(self):
         hebPk = self.request.SESSION.get('cal-selected-heb')
+        if not hebPk:
+            hebPk = self.request.get('hebPk')
         gitesPkAvailables = [item.token for item in \
                              getUtility(IVocabularyFactory,
                                         name='proprio.hebergements')(self.context)]
@@ -239,6 +241,8 @@ class CalendarSelectedDays(grok.CodeView):
         wrapper = getSAWrapper('gites_wallons')
         ReservationProprio = wrapper.getMapper('reservation_proprio')
         hebPk = self.request.SESSION.get('cal-selected-heb')
+        if not hebPk:
+            hebPk = self.request.get('hebPk')
         query = select([ReservationProprio.res_date,
                         ReservationProprio.res_type])
         query.append_whereclause(ReservationProprio.heb_fk == int(hebPk))
