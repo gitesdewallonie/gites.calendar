@@ -448,8 +448,8 @@ var Timeframe = Class.create({
         this.startdrag = this.range.get('start');
       else
         this.startdrag = this.range.set('start', this.range.set('end', date));
-        this.range.set('hebPk', hebPk);
     }
+    this.range.set('hebPk', hebPk);
   },
 
   eventMouseOver: function(event) {
@@ -526,7 +526,7 @@ var Timeframe = Class.create({
         var request;
         request = new Ajax.Request('addRange',
                         {method: 'get',
-                         asynchronous: true,
+                         asynchronous: false,
                          parameters: parameters
                          });
     };
@@ -538,15 +538,20 @@ var Timeframe = Class.create({
     if (!this.stuck) {
       this.dragging = false;
       if (event.findElement('span.clear span.active'))
+       {
+        // console.log('Clearing range !');
         this.clearRange();
+       };
     }
     this.mousedown = false;
     var rangePk = this.range.get('hebPk');
     this.element.down('div#' + this.element.id + '_container').setOpacity(0.4);
     this.addDateRange();
-    this.checkSelectedDay();
+
     this.refreshRange(true, rangePk);
     this.element.down('div#' + this.element.id + '_container').setOpacity(1);
+    // console.log('Clearing range !');
+    this.clearRange();
   },
   clearRange: function() {
     this.clearButton.hide().select('span').first().removeClassName('active');
@@ -558,6 +563,7 @@ var Timeframe = Class.create({
     if (this.range.get('hebPk') != null) toRefreshPks = [this.range.get('hebPk')];
     else toRefreshPks = this.hebsPks;
     toRefreshPks.each(function(hebPk) {
+        // console.log("AJAX requesting " + hebPk);
         new Ajax.Request(
               'selectedDays',
             {method: 'get',
@@ -581,12 +587,14 @@ var Timeframe = Class.create({
     if (this.mousedown != true && refresh == true) this.checkSelectedDay();
 
     if (refreshPk) {
+        // console.log("Refresh pk " + refreshPk);
         tableId = this.element.id + '_calendar_' + refreshPk;
         this.element.select('#' + tableId + ' td').each(function(day) {
             this.refreshCalendarRange(day);
         }.bind(this));
     }
     else {
+        // console.log("Refresh all");
         this.element.select('td').each(function(day) {
             this.refreshCalendarRange(day);
         }.bind(this));
