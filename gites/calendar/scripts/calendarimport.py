@@ -5,7 +5,7 @@ gites.calendar
 Licensed under the GPL license, see LICENCE.txt for more details.
 Copyright by Affinitic sprl
 """
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from sqlalchemy import select
 from sqlalchemy.orm import mapper
 from zope.component import getUtility
@@ -55,7 +55,7 @@ def removeSelection(session, hebPk, start, end):
 def updateLastUpdateDate(session, hebPk):
     query = session.query(Hebergement)
     query = query.filter(Hebergement.heb_pk == hebPk)
-    query.update({"heb_calendrier_proprio_date_maj": datetime.date.today()},
+    query.update({"heb_calendrier_proprio_date_maj": date.today()},
                  synchronize_session=False)
 
 
