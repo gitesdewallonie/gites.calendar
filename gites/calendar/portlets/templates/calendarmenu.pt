@@ -4,7 +4,9 @@
 <body>
 <div metal:define-macro="portlet">
    <div id="portlet-calendrier"
-        tal:define="portal_url context/@@plone_portal_state/portal_url">
+        tal:define="portal_url context/@@plone_portal_state/portal_url;
+                    hasActiveConfiguration view/hasActiveConfiguration;
+                    isBlocked view/isBlocked">
       <dl class="portlet">
          <dt class="portletHeader"
              tal:content="view/title">
@@ -12,7 +14,7 @@
          </dt>
 
          <dd class="portletItemSingle"
-             tal:condition="python: view.hasActiveConfiguration() and not view.isBlocked()"
+             tal:condition="python: hasActiveConfiguration and not isBlocked"
              tal:repeat="gite view/getGitesForProprio">
               <b>
                     <a href="#"
@@ -25,7 +27,8 @@
             </a></b>
          </dd>
 
-         <dd class="portletItemSingle">
+         <dd class="portletItemSingle"
+             tal:condition="python: hasActiveConfiguration and not isBlocked">
              <b>
                  <a href="#"
                     class="tile"
