@@ -69,8 +69,8 @@ class MultiCalView(MonthView):
         """
         gites = self.getGitesForProprio()
         hebPks = [int(gite.token) for gite in gites]
-        hebNames = [str(gite.title) for gite in gites]
-        return """
+        hebNames = [gite.title for gite in gites]
+        return ("""
         //<![CDATA[
         calsetup = function() {
           jQuery.noConflict();
@@ -84,7 +84,7 @@ class MultiCalView(MonthView):
                 hebsNames: %s,
                 earliest: new Date()});}
         registerPloneFunction(calsetup);
-        //]]>""" % (hebPks, hebNames)
+        //]]>""" % (hebPks, hebNames)).replace("[u'", "['").replace(", u'", ", '")
 
     @memoize
     def getGitesForProprio(self):
