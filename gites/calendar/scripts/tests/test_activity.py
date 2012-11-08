@@ -23,7 +23,7 @@ class NotifyProprietairesTest(BaseTestCase):
             return date(2010, 1, 1)
         self.checker.now = now
         def sendMail(pk, majDate):
-            print 'Sending fake mail!'
+            pass
         self.checker.sendFirstMail = sendMail
         self.checker.sendSecondMail = sendMail
 

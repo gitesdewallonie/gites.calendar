@@ -47,7 +47,7 @@ class ExportCalendarActivityTest(BaseTestCase):
         res.heb_fk = 1
         session.add(res)
         res = ReservationProprio()
-        res.res_date = date(2012, 1, 1)
+        res.res_date = date(2015, 1, 1)
         res.res_type = 'loue'
         res.heb_fk = 2
         session.add(res)
@@ -70,9 +70,9 @@ class ExportCalendarActivityTest(BaseTestCase):
                           'end': datetime(2020, 1, 2, 0, 0)})
         self.assertEqual(_BOOKINGS[1],
                          {'typeOfSelection': u'loue',
-                          'start': datetime(2012, 1, 1, 0, 0),
+                          'start': datetime(2015, 1, 1, 0, 0),
                           'hebPk': 2,
-                          'end': datetime(2012, 1, 1, 0, 0)})
+                          'end': datetime(2015, 1, 1, 0, 0)})
 
 
 def test_suite():
