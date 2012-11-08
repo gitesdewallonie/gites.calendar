@@ -14,7 +14,7 @@ from plone.portlets.interfaces import IPortletDataProvider
 from zope import schema
 from zope.formlib import form
 from zope.component import getUtility
-from zope.app.schema.vocabulary import IVocabularyFactory
+from zope.schema.interfaces import IVocabularyFactory
 from plone.memoize.instance import memoize
 from gites.calendar.vocabulary import getHebergementsForProprio
 from z3c.sqlalchemy import getSAWrapper

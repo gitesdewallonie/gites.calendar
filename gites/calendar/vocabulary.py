@@ -8,7 +8,7 @@ Copyright by Affinitic sprl
 $Id: event.py 67630 2006-04-27 00:54:03Z jfroche $
 """
 from five import grok
-from zope.app.schema.vocabulary import IVocabularyFactory
+from zope.schema.interfaces import IVocabularyFactory
 from z3c.sqlalchemy import getSAWrapper
 from sqlalchemy import and_
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm

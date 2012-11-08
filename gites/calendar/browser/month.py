@@ -11,7 +11,7 @@ from plone.memoize.instance import memoize
 from dateable.chronos.browser.month import MonthView
 from z3c.sqlalchemy import getSAWrapper
 import plone.z3cform.z2
-from zope.app.schema.vocabulary import IVocabularyFactory
+from zope.schema.interfaces import IVocabularyFactory
 from zope.component import getUtility
 
 

@@ -17,7 +17,7 @@ from time import strptime
 import datetime
 from dateutil.relativedelta import relativedelta
 from Products.CMFCore.utils import getToolByName
-from zope.app.schema.vocabulary import IVocabularyFactory
+from zope.schema.interfaces import IVocabularyFactory
 from zope.component import getUtility
 from zope.interface import implements
 from zope.event import notify
