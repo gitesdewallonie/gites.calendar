@@ -26,11 +26,18 @@ setup(name='gites.calendar',
           'affinitic.zamqp',
           'zope.app.testing>=3.5',
           'setuptools',
+          'collective.z3cform.datepicker',
           'gites.skin',
           'gites.core',
           'affinitic.db',
           'dateutil',
           'simplejson',
+          'five.megrok.z3cform',
+          'p4a.calendar',
+          'p4a.plonecalendar',
+          'p4a.ploneevent',
+          'p4a.subtyper',
+          'zope.app.i18n'
       ],
       entry_points={
             'console_scripts':
