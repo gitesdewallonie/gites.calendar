@@ -8,7 +8,6 @@
     <include package="p4a.calendar"/>
     <include package="p4a.plonecalendar"/>
     <include package="p4a.ploneevent"/>
-    <include package="collective.z3cform.datepicker"/>
 
     <include package=".browser"/>
     <include package=".portlets"/>
