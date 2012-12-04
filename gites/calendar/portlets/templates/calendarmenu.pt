@@ -19,7 +19,7 @@
               <b>
                     <a href="#"
            class="tile"
-           tal:attributes="href string:${portal_url}/zone-membre/calendrier/month.html?pk=${gite/token};
+           tal:attributes="href string:${context/@@plone_portal_state/portal_url}/zone-membre/calendrier/month.html?pk=${gite/token};
                            title gite/title">
            <b tal:replace="gite/title">
              Hebergement
@@ -33,7 +33,7 @@
                  <a href="#"
                     class="tile"
                     title="Affichage mensuel"
-                    tal:attributes="href string:${portal_url}/zone-membre/calendrier/multical.html">
+                    tal:attributes="href string:${context/@@plone_portal_state/portal_url}/zone-membre/calendrier/multical.html">
                      Affichage mensuel
                  </a>
              </b>
@@ -42,7 +42,7 @@
          <dd class="portletItemSingle">
               <a href=""
                   tal:condition="not: view/isBlocked"
-                  tal:attributes="href string:$portal_url/zone-membre/calendrier/configuration"
+                  tal:attributes="href string:${context/@@plone_portal_state/portal_url}/zone-membre/calendrier/configuration"
                   class="tile"><span>Configuration</span>
                </a>
                <span tal:condition="view/isBlocked">
@@ -52,7 +52,7 @@
 
          <dd class="portletItemSingle">
              <a href=""
-                  tal:attributes="href string:$portal_url/zone-membre/calendrier/aide"
+                  tal:attributes="href string:${context/@@plone_portal_state/portal_url}/zone-membre/calendrier/aide"
                   class="tile"><span>Aide</span>
                </a>
          </dd>
