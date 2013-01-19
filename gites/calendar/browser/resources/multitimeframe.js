@@ -109,6 +109,7 @@ var Timeframe = Class.create({
     head.insert(row);
 
     var refDate = new Date(this.date);
+    refDate.setDate(1);
     var captionStr = '';
     displayedMonths.times(function(month) {
         if (captionStr != '') captionStr += '&nbsp; <strong><font color="Red">|</font></strong> &nbsp;';
