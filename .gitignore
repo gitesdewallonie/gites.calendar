@@ -1,2 +1,12 @@
 *.egg-info
 *.pyc
+.installed.cfg
+.mr.developer.cfg
+bin/
+devel/
+develop-eggs/
+include/
+lib/
+local/
+parts/
+versions-picked.cfg
