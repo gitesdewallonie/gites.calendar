@@ -65,6 +65,7 @@ class CalendarConfigForm(z3cform.EditForm):
         session = wrapper.session
         config = data.get('calendarConfig')
         for heb in getHebergementsForProprio(self.context, session):
+            heb = session.merge(heb)
             oldConfig = heb.heb_calendrier_proprio
             heb.heb_calendrier_proprio = config
             # mise à jour dernière date de modification du calendrier
@@ -84,7 +85,7 @@ class CalendarConfigForm(z3cform.EditForm):
                         blockHist.heb_blockhistory_days = blockedDate.days
                         session.add(blockHist)
         session.flush()
-        session.clear()
+        session.expunge_all()
         self.status = self.successMessage
 
 
