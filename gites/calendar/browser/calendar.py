@@ -132,7 +132,7 @@ class CalendarAndDateRanges(grok.CodeView):
         hebPk = self.request.get('hebPk', None)
         if not hebPk:
             hebPk = self.request.SESSION.get('cal-selected-heb')
-        gitesPkAvailables = [item.token for item in \
+        gitesPkAvailables = [item.token for item in
                              getUtility(IVocabularyFactory,
                                         name='proprio.hebergements')(self.context)]
         assert(hebPk in gitesPkAvailables)
@@ -147,9 +147,9 @@ class CalendarAndDateRanges(grok.CodeView):
         session.flush()
         ReservationProprio = wrapper.getMapper('reservation_proprio')
         start = datetime.datetime(*strptime(self.request.get('start'),
-                                   "%Y-%m-%d")[0:6])
+                                  "%Y-%m-%d")[0:6])
         end = datetime.datetime(*strptime(self.request.get('end'),
-                                   "%Y-%m-%d")[0:6])
+                                "%Y-%m-%d")[0:6])
         typeOfSelection = self.request.get('type')
         self._removeSelection(session, wrapper, hebPk, start, end)
         notify(CalendarUpdateEvent(hebPk, start, end, typeOfSelection))
@@ -202,7 +202,7 @@ class GiteCalendarSelectedDays(grok.CodeView):
         month = self.request.form.get('month')
         monthRange = self.request.form.get('range')
         if hebPk == None or year == None or month == None or \
-           monthRange == None:
+                monthRange == None:
             return
         minDate = datetime.datetime(int(year), int(month), 1)
         now = datetime.datetime.now()
@@ -213,9 +213,9 @@ class GiteCalendarSelectedDays(grok.CodeView):
         wrapper = getSAWrapper('gites_wallons')
         ReservationProprio = wrapper.getMapper('reservation_proprio')
         query = select([ReservationProprio.res_date])
-        minDate = minDate + relativedelta(days=-1) # 'between' SQL clause is
-                                                   # exclusive, excluding
-                                                   # TODAY day
+        minDate = minDate + relativedelta(days=-1)  # 'between' SQL clause is
+                                                    # exclusive, excluding
+                                                    # TODAY day
         query.append_whereclause(ReservationProprio.res_date.between(minDate, maxDate))
         query.append_whereclause(ReservationProprio.heb_fk == int(hebPk))
         dateList = []
