@@ -10,25 +10,30 @@
    <include package="p4a.z2utils" />
    <include package="dateable.chronos" />
 
+    <browser:resourceDirectory
+        directory="resources/js/"
+        name="gites.calendar.js"
+        />
+
     <browser:resource
-        file="resources/timeframe.css"
+        file="resources/js/timeframe.css"
         name="timeframe.css"
         />
 
     <!-- Displaying the read-only calendar on hebergement detail -->
     <browser:resource
-        file="resources/gitetimeframe.js"
+        file="resources/js/gitetimeframe.js"
         name="gitetimeframe.js"
         />
 
     <browser:resource
-        file="resources/prototype.js"
+        file="resources/js/prototype.js"
         name="prototype16.js"
         />
 
     <!-- Editing single calendar in member area -->
     <browser:resource
-        file="resources/timeframe.js"
+        file="resources/js/timeframe.js"
         name="timeframe.js"
         />
 
@@ -42,7 +47,7 @@
         />
 
     <browser:resource
-        file="resources/multitimeframe.js"
+        file="resources/js/multitimeframe.js"
         name="multitimeframe.js"
         />
 
