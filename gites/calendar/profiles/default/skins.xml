@@ -6,8 +6,7 @@
          meta_type="Filesystem Directory View"
          directory="gites.calendar:skins/gites_calendar"/>
 
- <skin-path name="GitesSkin"
-            based-on="Plone Default">
+ <skin-path name="Gites theme">
   <layer name="gites_calendar"
          insert-after="gites_templates"/>
  </skin-path>
