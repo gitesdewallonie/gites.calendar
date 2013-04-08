@@ -8,16 +8,13 @@ Copyright by Affinitic sprl
 $Id: event.py 67630 2006-04-27 00:54:03Z jfroche $
 """
 from datetime import date
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from five import grok
-from gites.calendar.interfaces import IProprioCalendar
 from z3c.form import field, button
 from z3c.form.form import EditForm
-from z3c.form import widget
+from z3c.form import widget, form
 from zope.interface import Interface
 from zope.schema import Choice
-from five.megrok import z3cform
-from plone.z3cform.layout import FormWrapper
+from plone.z3cform.layout import wrap_form
 from Products.CMFCore.utils import getToolByName
 from z3c.sqlalchemy import getSAWrapper
 from sqlalchemy import desc
@@ -34,19 +31,10 @@ class ICalendarConfiguration(Interface):
         required=True)
 
 
-class MyCoolFormWrapper(FormWrapper):
-    index = ViewPageTemplateFile('templates/selectheb.pt')
-
-
-class CalendarConfigForm(z3cform.EditForm):
+class CalendarConfigForm(form.Form):
     fields = field.Fields(ICalendarConfiguration)
     label = u"Configurer votre calendrier"
     ignoreContext = True
-    wrap = True
-    z3cform.wrapper(MyCoolFormWrapper)
-    grok.context(IProprioCalendar)
-    grok.name('configuration')
-    grok.require('zope2.View')
 
     def getBlockedInfo(self, session, heb_pk):
         query = session.query(HebergementBlockingHistory)
@@ -87,6 +75,8 @@ class CalendarConfigForm(z3cform.EditForm):
         session.flush()
         session.expunge_all()
         self.status = self.successMessage
+
+CalendarConfigFormView = wrap_form(CalendarConfigForm)
 
 
 def getConfig(data):

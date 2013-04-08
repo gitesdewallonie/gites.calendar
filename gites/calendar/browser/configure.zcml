@@ -4,11 +4,17 @@
            i18n_domain="gites">
 
    <grok:grok package=".calendar"/>
-   <grok:grok package=".configuration"/>
    <grok:grok package=".messaging"/>
 
    <include package="p4a.z2utils" />
    <include package="dateable.chronos" />
+
+    <browser:page
+        for="gites.calendar.interfaces.IProprioCalendar"
+        name="configuration"
+        class=".configuration.CalendarConfigFormView"
+        permission="zope2.View"
+        />
 
     <browser:resourceDirectory
         directory="resources/js/"
