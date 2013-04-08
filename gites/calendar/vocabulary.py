@@ -49,6 +49,7 @@ def getHebergementsForProprio(context, session=None):
     userPk = user.getProperty('pk')
     if userPk:
         return getHebergementsForProprioId(userPk, session)
+    return []
 
 
 class CalendarConfiguration(grok.GlobalUtility):
