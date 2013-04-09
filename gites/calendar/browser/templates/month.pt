@@ -1,8 +1,11 @@
 <html metal:use-macro="here/main_template/macros/master">
 <metal:block fill-slot="style_slot">
-  <link rel="stylesheet" href="++resource++timeframe.css" type="text/css" media="screen" title="timeframe" charset="utf-8"/>
-  <script type="text/javascript" charset="utf-8" src="++resource++prototype16.js"></script>
-  <script type="text/javascript" charset="utf-8" src="++resource++timeframe.js"></script>
+  <link rel="stylesheet" href="" type="text/css" media="screen" title="timeframe" charset="utf-8"
+          tal:attributes="href string:${context/@@plone_portal_state/portal_url}/++resource++timeframe.css"/>
+  <script type="text/javascript" charset="utf-8" src=""
+          tal:attributes="src string:${context/@@plone_portal_state/portal_url}/++resource++prototype16.js"></script>
+  <script type="text/javascript" charset="utf-8" src=""
+          tal:attributes="src string:${context/@@plone_portal_state/portal_url}/++resource++timeframe.js"></script>
   <script type="text/javascript" charset="utf-8"
           tal:content="view/calendarJS"/>
 </metal:block>

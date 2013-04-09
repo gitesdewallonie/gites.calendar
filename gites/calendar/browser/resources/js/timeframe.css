@@ -13,6 +13,7 @@ text-shadow: none;
 clear:both;
 }
 
+#content #timeframe_ul,
 #timeframe_ul {
 margin-top: 45px;
 margin-left: 0px;
@@ -21,6 +22,16 @@ margin-left: 0px;
 #calendars_container {
 margin-top: 40px;
 }
+
+#calendars_container table {
+text-align: center;
+}
+
+#calendars_container table tbody {
+text-align: center;
+margin-bottom: 15px;
+}
+
 
 /* Menu */
 
@@ -193,7 +204,7 @@ text-decoration:none;
 /**** CALENDAR ****/
 div.timeframe_calendar table {
 border-collapse: collapse;
-display: inline;
+display: inline-block;
 font-size: 15px;
 margin: 0 6px 12px;
 }
@@ -418,7 +429,7 @@ div.multicalendar table {
 div.multicalendar thead th {
     border-left: 2px solid gray;
     padding: 0px;
-    width: 30px;
+    width: 28px;
 	font-size: 80%;
 	text-align: center;
 }
@@ -432,7 +443,7 @@ div.multicalendar tbody td {
     border-left: 2px solid #CDCDCD;
     padding: 0px;
 	height: 25px;
-    width: 30px;
+    width: 28px;
 	font-size: 80%;
 }
 

@@ -125,7 +125,7 @@ class CalendarAndDateRanges(grok.CodeView):
         subquery.append_whereclause(ReservationProprio.heb_fk == hebPk)
         query = session.query(ReservationProprio)
         query = query.filter(ReservationProprio.res_id.in_(subquery))
-        query.delete()
+        query.delete(synchronize_session=False)
         session.flush()
 
     def __call__(self):
