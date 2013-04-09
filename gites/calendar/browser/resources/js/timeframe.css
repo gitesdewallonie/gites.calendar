@@ -420,6 +420,7 @@ div.multicalendar thead th {
     padding: 0px;
     width: 30px;
 	font-size: 80%;
+	text-align: center;
 }
 
 div.multicalendar thead th.today {

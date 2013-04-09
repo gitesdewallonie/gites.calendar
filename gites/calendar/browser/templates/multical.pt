@@ -1,25 +1,28 @@
-<html metal:use-macro="context/@@standard_macros/page" i18n:domain="chronos">
+<html metal:use-macro="here/main_template/macros/master">
 <metal:block fill-slot="style_slot">
   <link rel="stylesheet" href="++resource++timeframe.css" type="text/css" media="screen" title="timeframe" charset="utf-8"/>
-  <script type="text/javascript" charset="utf-8" src="++resource++multitimeframe.js"></script>
   <script type="text/javascript" charset="utf-8" src="++resource++prototype16.js"></script>
+  <script type="text/javascript" charset="utf-8" src="++resource++multitimeframe.js"></script>
   <script type="text/javascript" charset="utf-8"
           tal:content="view/calendarJS"/>
-
 </metal:block>
 
-<metal:block fill-slot="body" tal:define="dummy view/calcInfo">
 
-<h1 class="documentFirstHeading">
+<metal:block fill-slot="main">
+
+  <h1 class="documentFirstHeading" tal:define="dummy view/calcInfo">
     Affichage mensuel de vos calendriers
-</h1>
+  </h1>
 
-  <div id="gitescal" class="multical">
-    <div id="calendars"></div>
-      <input type="hidden" id="reset"/>
-      <input type="hidden" name="start" value="" id="start"/>
-      <input type="hidden" name="end" value="" id="end"/>
+  <div id="content-core">
+    <div id="gitescal" class="multical">
+      <div id="calendars"></div>
+        <input type="hidden" id="reset"/>
+        <input type="hidden" name="start" value="" id="start"/>
+        <input type="hidden" name="end" value="" id="end"/>
+    </div>
   </div>
 
 </metal:block>
+
 </html>

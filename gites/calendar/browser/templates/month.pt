@@ -1,49 +1,53 @@
-<html metal:use-macro="context/@@standard_macros/page" i18n:domain="chronos">
+<html metal:use-macro="here/main_template/macros/master">
 <metal:block fill-slot="style_slot">
   <link rel="stylesheet" href="++resource++timeframe.css" type="text/css" media="screen" title="timeframe" charset="utf-8"/>
-  <script type="text/javascript" charset="utf-8" src="++resource++timeframe.js"></script>
   <script type="text/javascript" charset="utf-8" src="++resource++prototype16.js"></script>
+  <script type="text/javascript" charset="utf-8" src="++resource++timeframe.js"></script>
   <script type="text/javascript" charset="utf-8"
           tal:content="view/calendarJS"/>
-
 </metal:block>
 
-<metal:block fill-slot="body" tal:define="dummy view/calcInfo">
+<metal:block fill-slot="main">
 
-<h1 class="documentFirstHeading" tal:content="view/title">
+  <h1 class="documentFirstHeading" tal:define="dummy view/calcInfo" tal:content="view/title">
     Title
-</h1>
-<div class="documentByLine" id="plone-document-byline">
-  <span class="documentModified"
-        tal:define="infoView nocall:context/@@calendarInfo">
-    <span>Dernière modification le </span>
-    <span tal:define="date python: infoView.getLastModification(request.get('pk'))"
-          tal:condition="date"
-          tal:replace="python: date.strftime('%d/%m/%Y')" />
-  </span>
-</div>
+  </h1>
 
-  <div id="gitescal">
-    <div id="calendars"></div>
-      <input type="hidden" id="reset"/>
-      <input type="hidden" name="start" value="" id="start"/>
-      <input type="hidden" name="end" value="" id="end"/>
+  <div id="plone-document-byline" class="documentByLine">
+    <span class="documentModified"
+          tal:define="infoView nocall:context/@@calendarInfo">
+      <span>Dernière modification le </span>
+      <span tal:define="date python: infoView.getLastModification(request.get('pk'))"
+            tal:condition="date"
+            tal:replace="python: date.strftime('%d/%m/%Y')" />
+    </span>
   </div>
 
-<div id="extern-help">
-    <h2>Ce calendrier sur votre site ?</h2>
-    <img src="extern-calendar.png">
-    <p>
-        Insérez simplement les lignes suivantes sur la page de votre site
-        (dans le code HTML), à l'endroit où vous le désirez,
-        pour y faire apparaître ce calendrier de disponibilité.<br/>
-        N'hésitez pas à contacter votre développeur Web pour toute question.
-        <pre>&lt;iframe id=&quot;calframe&quot;
-        src=&quot;http://www.gitesdewallonie.be/extern-calendar?pk=<span tal:replace="python: request.get('pk')" />&quot;
-        width=&quot;185&quot; height=&quot;230&quot;
-        scrolling=&quot;auto&quot; frameborder=&quot;0&quot; allowtransparency=&quot;true&quot;&gt;
+  <div id="content-core">
+    <div id="gitescal">
+      <div id="calendars"></div>
+        <input type="hidden" id="reset"/>
+        <input type="hidden" name="start" value="" id="start"/>
+        <input type="hidden" name="end" value="" id="end"/>
+    </div>
+  
+    <div id="extern-help">
+      <h2>Ce calendrier sur votre site ?</h2>
+      <img src="extern-calendar.png">
+      <p>
+          Insérez simplement les lignes suivantes sur la page de votre site
+          (dans le code HTML), à l'endroit où vous le désirez,
+          pour y faire apparaître ce calendrier de disponibilité.<br/>
+          N'hésitez pas à contacter votre développeur Web pour toute question.
+          <pre>&lt;iframe id=&quot;calframe&quot;
+          src=&quot;http://www.gitesdewallonie.be/extern-calendar?pk=<span tal:replace="python: request.get('pk')" />&quot;
+          width=&quot;185&quot; height=&quot;230&quot;
+          scrolling=&quot;auto&quot; frameborder=&quot;0&quot; allowtransparency=&quot;true&quot;&gt;
 &lt;/iframe&gt;</pre>
-    </p>
-</div>
+      </p>
+    </div>
+  </div>
+
 </metal:block>
+
 </html>
