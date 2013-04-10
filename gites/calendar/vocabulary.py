@@ -47,7 +47,7 @@ def getHebergementsForProprio(context, session=None):
     pm = getToolByName(context, 'portal_membership')
     user = pm.getAuthenticatedMember()
     userPk = user.getProperty('pk')
-    if userPk:
+    if userPk and userPk != 'unset':
         return getHebergementsForProprioId(userPk, session)
     return []
 
