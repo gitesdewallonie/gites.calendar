@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <object name="portal_skins" allow_any="False" cookie_persistence="False"
-   default_skin="GitesSkin">
+   default_skin="Gites theme">
 
  <object name="gites_calendar"
          meta_type="Filesystem Directory View"
