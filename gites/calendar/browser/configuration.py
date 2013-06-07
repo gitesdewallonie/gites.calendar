@@ -34,6 +34,7 @@ class ICalendarConfiguration(Interface):
 class CalendarConfigForm(form.Form):
     fields = field.Fields(ICalendarConfiguration)
     label = u"Configurer votre calendrier"
+    id = u"proprio-config-calendrier"
     ignoreContext = True
 
     def getBlockedInfo(self, session, heb_pk):

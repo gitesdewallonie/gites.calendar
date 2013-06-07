@@ -34,7 +34,9 @@ def setupgites(context):
         return
     logger.debug('Setup gites calendar')
     portal = context.getSite()
-    zoneMembreFolder = getattr(portal, 'zone-membre')
+    zoneMembreFolder = getattr(portal, 'zone-membre', None)
+    if zoneMembreFolder is None:
+        return
     setupPortletsInZoneMembre(zoneMembreFolder)
     createFolder(zoneMembreFolder, "calendrier", "Calendrier", True)
     calendrier = zoneMembreFolder.calendrier
