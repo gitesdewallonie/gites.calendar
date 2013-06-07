@@ -289,6 +289,13 @@ var GiteTimeframe = Class.create({
     this.buttonNext.observe('click', this.selectNextMonth.bind(this));
     this.buttonNextYear.observe('click', this.selectNextYear.bind(this));
 
+    // Custom events
+    this.buttonPrevious.observe('custom:click', this.selectPreviousMonth.bind(this));
+    this.buttonPreviousYear.observe('custom:click', this.selectPreviousYear.bind(this));
+    this.buttonToday.observe('custom:click', this.selectToday.bind(this));
+    this.buttonNext.observe('custom:click', this.selectNextMonth.bind(this));
+    this.buttonNextYear.observe('custom:click', this.selectNextYear.bind(this));
+
     // mousemove listener for Opera in _disableTextSelection
     return this._disableTextSelection();
   },
