@@ -72,35 +72,35 @@ margin-right:6px;
 #btn_previousYear_public{
 width:19px;
 height:19px;
-background-image:url('btn_calendar_prev_year_public.png');
+background-image:url('btn_calendar_prev_year.png');
 padding:0;
 }
 
 #btn_previous_public{ 
 width:19px;
 height:19px;
-background-image:url('btn_calendar_prev_public.png');
+background-image:url('btn_calendar_prev.png');
 padding:0;
 }
 
 #btn_next_public{
 width:19px;
 height:19px;
-background-image:url('btn_calendar_next_public.png');
+background-image:url('btn_calendar_next.png');
 padding:0;
 }
 
 #btn_nextYear_public{
 width:19px;
 height:19px;
-background-image:url('btn_calendar_next_year_public.png');
+background-image:url('btn_calendar_next_year.png');
 padding:0;
 }
 
 #btn_today_public{
 width:19px;
 height:19px;
-background-image:url('btn_calendar_today_public.png');
+background-image:url('btn_calendar_today.png');
 padding:0;
 }
 
@@ -154,47 +154,50 @@ margin-right:6px;
 }
 
 #btn_previous{ 
-width:29px;
-height:26px;
+width:19px;
+height:19px;
 background-image:url('btn_calendar_prev.png');
 padding:0;
 }
 
 #btn_next{
-width:29px;
-height:26px;
+width:19px;
+height:19px;
 background-image:url('btn_calendar_next.png');
 padding:0;
 }
 
 #btn_today{
-width:29px;
-height:26px;
+width:19px;
+height:19px;
 background-image:url('btn_calendar_today.png');
 padding:0;
 }
 
-#btn_previous a {
+#content #btn_previous a {
 display:inline-block;
-width:29px;
-height:26px;
+width:19px;
+height:19px;
 text-decoration:none;
+border-bottom:none;
 }
 
-#btn_next a {
+#content #btn_next a {
 display:inline-block;
-width:29px;
-height:26px;
+width:19px;
+height:19px;
 text-decoration:none;
+border-bottom:none;
 }
 
 
-#btn_today a {
+#content #btn_today a {
 display:inline-block;
-width:29px;
-height:26px;
+width:19px;
+height:19px;
 padding:0;
 text-decoration:none;
+border-bottom:none;
 }
 
 #btn_today a:hover {
@@ -356,9 +359,16 @@ padding:8px;
 cursor:pointer;
 }
 
-.selectedType {
-font-weight:bold;
-border:2px solid black;
+#select_loue,
+#select_indisp,
+#select_libre {
+border:3px solid #E2E4E2;
+}
+
+#select_loue.selectedType,
+#select_indisp.selectedType,
+#select_libre.selectedType {
+border:3px solid black;
 }
 
 td.libre {
