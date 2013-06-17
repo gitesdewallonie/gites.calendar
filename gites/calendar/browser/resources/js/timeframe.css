@@ -416,8 +416,9 @@ margin-top:12px;
 	margin-bottom: 40px;
 }
 
-#calendars_calendar_header {
+#content #calendars_calendar_header {
 	border: 1px solid transparent;
+	margin-bottom: 0px;
 }
 
 #calendars_calendar_header caption {
