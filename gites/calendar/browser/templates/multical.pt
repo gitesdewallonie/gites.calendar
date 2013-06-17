@@ -8,16 +8,14 @@
           tal:attributes="src string:${context/@@plone_portal_state/portal_url}/++resource++multitimeframe.js"></script>
   <script type="text/javascript" charset="utf-8"
           tal:content="view/calendarJS"/>
-  <script type="text/javascript" charset="utf-8"
-          tal:content="view/calendarJS"/>
 </metal:block>
 
 
 <metal:block fill-slot="main">
 
-  <h1 class="documentFirstHeading" tal:define="dummy view/calcInfo">
+  <h2 class="documentFirstHeading" tal:define="dummy view/calcInfo">
     Affichage mensuel de vos calendriers
-  </h1>
+  </h2>
 
   <div id="content-core">
     <div id="gitescal" class="multical">
