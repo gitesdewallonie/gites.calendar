@@ -2,7 +2,6 @@
 
 div.timeframe_calendar {
 background-color:transparent;                   /*#f9e7c6;*/
-display: inline-block;
 margin:0;
 padding: 0;
 text-align: center;
@@ -406,7 +405,11 @@ margin-top:12px;
 
 /*  MULTI - CALENDAR  */
 #gitescal.multical {
-    width: 1230px;
+    width: 1060px;
+}
+
+#calendars.multicalendar {
+	margin:auto;
 }
 
 .multicalendar #calendars_container {
