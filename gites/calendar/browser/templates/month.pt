@@ -36,7 +36,7 @@
   
     <div id="extern-help">
       <h2>Ce calendrier sur votre site ?</h2>
-      <img src="extern-calendar.png">
+      <img alt="Calendrier externe" src="extern-calendar.png">
       <p>
           Insérez simplement les lignes suivantes sur la page de votre site
           (dans le code HTML), à l'endroit où vous le désirez,
