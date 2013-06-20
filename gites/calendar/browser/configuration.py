@@ -54,7 +54,6 @@ class CalendarConfigForm(form.Form):
         session = wrapper.session
         config = data.get('calendarConfig')
         for heb in getHebergementsForProprio(self.context, session):
-            heb = session.merge(heb)
             oldConfig = heb.heb_calendrier_proprio
             heb.heb_calendrier_proprio = config
             # mise à jour dernière date de modification du calendrier
@@ -75,7 +74,7 @@ class CalendarConfigForm(form.Form):
                         session.add(blockHist)
         session.flush()
         session.expunge_all()
-        self.status = self.successMessage
+        self.status = ""
 
 CalendarConfigFormView = wrap_form(CalendarConfigForm)
 
