@@ -4,6 +4,7 @@
            i18n_domain="gites">
 
    <grok:grok package=".calendar"/>
+   <grok:grok package=".configuration"/>
    <grok:grok package=".messaging"/>
 
    <include package="p4a.z2utils" />
