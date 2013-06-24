@@ -4,16 +4,21 @@ gites.calendar
 
 Licensed under the GPL license, see LICENCE.txt for more details.
 Copyright by Affinitic sprl
-
-$Id: event.py 67630 2006-04-27 00:54:03Z jfroche $
 """
-from zope.interface import alsoProvides
-from gites.core.utils import (createFolder, createPage, getManager)
-from gites.calendar.interfaces import IProprioCalendar
-from zope.component import getMultiAdapter
-from plone.portlets.interfaces import IPortletAssignmentMapping
 import logging
+
+from zope.interface import alsoProvides
+from zope.component import getMultiAdapter
+
+from plone.portlets.interfaces import IPortletAssignmentMapping
+
+from p4a.subtyper.interfaces import ISubtyped
+from dateable.chronos.interfaces import ICalendarEnhanced
+
+from gites.core.utils import createFolder, createPage, getManager
 from gites.calendar.portlets import calendarmenu
+from gites.calendar.interfaces import IProprioCalendar
+
 logger = logging.getLogger('gites.calendar')
 
 
@@ -41,6 +46,8 @@ def setupgites(context):
     createFolder(zoneMembreFolder, "calendrier", "Calendrier", True)
     calendrier = zoneMembreFolder.calendrier
     alsoProvides(calendrier, IProprioCalendar)
+    alsoProvides(calendrier, ISubtyped)
+    alsoProvides(calendrier, ICalendarEnhanced)
     createPage(calendrier, "transfert", "Transfert", True)
     createPage(calendrier, "aide", "Aide", True)
     setupCalendar(calendrier)
