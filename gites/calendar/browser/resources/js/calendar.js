@@ -1800,14 +1800,14 @@ Date.prototype.print = function (str) {
 	return str;
 };
 
-Date.prototype.__msh_oldSetFullYear = Date.prototype.setFullYear;
-Date.prototype.setFullYear = function(y) {
-	var d = new Date(this);
-	d.__msh_oldSetFullYear(y);
-	if (d.getMonth() != this.getMonth())
-		this.setDate(28);
-	this.__msh_oldSetFullYear(y);
-};
+//Date.prototype.__msh_oldSetFullYear = Date.prototype.setFullYear;
+//Date.prototype.setFullYear = function(y) {
+//    var d = new Date(this);
+//    d.__msh_oldSetFullYear(y);
+//    if (d.getMonth() != this.getMonth())
+//        this.setDate(28);
+//    this.__msh_oldSetFullYear(y);
+//};
 
 // END: DATE OBJECT PATCHES
 
