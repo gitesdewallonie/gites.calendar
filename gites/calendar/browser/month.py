@@ -63,6 +63,11 @@ class CalMonthView(MonthView):
 
 class MultiCalView(MonthView):
 
+    def cleanupUnicodeForJS(self, text):
+        text = text.replace("[u'", "['").replace(", u'", ", '")
+        text = text.replace('[u"', '["').replace(', u"', ', "')
+        return text
+
     def calendarJS(self):
         """
         Calendar javascript
@@ -70,7 +75,7 @@ class MultiCalView(MonthView):
         gites = self.getGitesForProprio()
         hebPks = [int(gite.token) for gite in gites]
         hebNames = [gite.title for gite in gites]
-        return ("""
+        return self.cleanupUnicodeForJS("""
         //<![CDATA[
         calsetup = function() {
           jQuery.noConflict();
@@ -84,7 +89,7 @@ class MultiCalView(MonthView):
                 hebsNames: %s,
                 earliest: new Date()});}
         registerPloneFunction(calsetup);
-        //]]>""" % (hebPks, hebNames)).replace("[u'", "['").replace(", u'", ", '")
+        //]]>""" % (hebPks, hebNames))
 
     @memoize
     def getGitesForProprio(self):
