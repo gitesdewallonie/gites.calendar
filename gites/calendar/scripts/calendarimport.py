@@ -7,15 +7,13 @@ Copyright by Affinitic sprl
 """
 from datetime import date, datetime, timedelta
 from sqlalchemy import select
-from sqlalchemy.orm import mapper
 from zope.component import getUtility
 import grokcore.component as grok
 from affinitic.db.interfaces import IDatabase
 from affinitic.zamqp.consumer import Consumer
-from gites.db.tables import (getReservationProprio, getHebergementTable, getCommune,
-                             getProvinces, getMaisonTourisme, getTypeHebergementTable,
-                             getCharge, getProprio, getCivilite)
+from affinitic.db.utils import initialize_declarative_mappers, initialize_defered_mappers
 from gites.db.content import ReservationProprio, Hebergement
+from gites.db import DeclarativeBase
 from gites.calendar.zcml import parseZCML
 
 
@@ -28,28 +26,15 @@ class WalhebCalendarImportConsumer(Consumer):
     connection_id = 'walhebcalendar'
 
 
-def setPGMappers(metadata, event):
-    reservationProprioTable = getReservationProprio(metadata)
-    getCommune(metadata)
-    getProvinces(metadata)
-    getMaisonTourisme(metadata)
-    getCharge(metadata)
-    getTypeHebergementTable(metadata)
-    getCivilite(metadata)
-    getProprio(metadata)
-    mapper(ReservationProprio, reservationProprioTable)
-    hebergementTable = getHebergementTable(metadata)
-    mapper(Hebergement, hebergementTable)
-
-
 def removeSelection(session, hebPk, start, end):
-    subquery = select([ReservationProprio.res_id])
-    subquery.append_whereclause(ReservationProprio.res_date.between(start,
-                                                                    end))
-    subquery.append_whereclause(ReservationProprio.heb_fk == hebPk)
-    query = session.query(ReservationProprio)
-    query = query.filter(ReservationProprio.res_id.in_(subquery))
-    query.delete()
+    subquery = session.query(ReservationProprio.res_id)
+    subquery = subquery.filter(ReservationProprio.res_date.between(start,
+                                                                   end))
+    subquery = subquery.filter(ReservationProprio.heb_fk == hebPk)
+    resIds = subquery.all()
+    if resIds:
+        query = session.query(ReservationProprio)
+        query.filter(ReservationProprio.res_id.in_(resIds)).delete(synchronize_session='fetch')
 
 
 def updateLastUpdateDate(session, hebPk):
@@ -93,6 +78,10 @@ def handleNewBookingFromWalhebCalendar(bookingInfo, msg):
 def main():
     import gites.calendar.scripts
     parseZCML(gites.calendar.scripts, 'calendar_import.zcml')
+    pg = getUtility(IDatabase, 'postgres')
+    pg.session
+    initialize_declarative_mappers(DeclarativeBase, pg.metadata)
+    initialize_defered_mappers(pg.metadata)
     consumer = WalhebCalendarImportConsumer()
     consumer.connection
     consumer.backend
