@@ -11,10 +11,16 @@ import random
 import smtplib
 from datetime import date
 from email.MIMEText import MIMEText
+from zope.component import getUtility
 from sqlalchemy import select, and_, func
 
+from affinitic.db.interfaces import IDatabase
+from affinitic.db.utils import initialize_declarative_mappers, initialize_defered_mappers
+from gites.db import session
+from gites.db import DeclarativeBase
 from gites.db.content import Proprio, Hebergement, HebergementBlockingHistory
-from gites.calendar.scripts.pg import PGDB
+from gites.calendar.zcml import parseZCML
+
 
 FIRST_MAIL = """Cher Membre,\n
 Nous avons constaté que le calendrier de disponibilités de votre hébergement sur www.gitesdewallonie.be n'a pas été modifié depuis 30 jours.\n
@@ -42,9 +48,9 @@ class CalendarActivity(object):
         self.pg = pg
 
     def connect(self):
-        self.pg.connect()
-        self.pg.setMappers()
-        self.session = self.pg.session()
+        initialize_declarative_mappers(DeclarativeBase, self.pg.metadata)
+        initialize_defered_mappers(self.pg.metadata)
+        self.session = session()
 
     def insertProprioHash(self, proprio):
         # On récupère ou on génère un hash (dans Postgres) réutilisable par
@@ -182,7 +188,11 @@ class CalendarActivity(object):
 
 
 def main():
-    pg = PGDB('jfroche', 'xxxxxx', 'localhost', 5432, 'gites_wallons')
+    import gites.calendar.scripts
+    parseZCML(gites.calendar.scripts, 'activity.zcml')
+    #pg = PGDB('jfroche', 'xxxxxx', 'localhost', 5432, 'gites_wallons')
+    pg = getUtility(IDatabase, 'postgres')
+    pg.session
     checker = CalendarActivity(pg)
     checker.connect()
     checker.checkCalendarActivity()

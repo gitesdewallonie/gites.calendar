@@ -1,0 +1,17 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:grok="http://namespaces.zope.org/grok"
+           xmlns:passmgr="http://affinitic.be/passmgr"
+           i18n_domain="gites">
+
+  <include package="zope.component" file="meta.zcml"/>
+  <include package="zope.component"/>
+  <include package="grokcore.component" file="meta.zcml"/>
+  <include package="affinitic.pwmanager"/>
+
+  <grok:grok package="gites.db.pg"/>
+  <passmgr:pwdfile
+      name="pg"
+      filename="pgpass"/>
+
+</configure>
+
