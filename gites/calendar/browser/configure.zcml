@@ -34,6 +34,11 @@
         />
 
     <browser:resource
+        file="resources/js/gitemultitimeframe.js"
+        name="gitemultitimeframe.js"
+        />
+
+    <browser:resource
         file="resources/js/prototype.js"
         name="prototype16.js"
         />
