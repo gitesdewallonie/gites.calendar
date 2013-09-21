@@ -13,6 +13,7 @@ from z3c.sqlalchemy import getSAWrapper
 import plone.z3cform.z2
 from zope.schema.interfaces import IVocabularyFactory
 from zope.component import getUtility
+from Products.CMFCore.utils import getToolByName
 
 
 class CalMonthView(MonthView):
@@ -94,3 +95,21 @@ class MultiCalView(MonthView):
     @memoize
     def getGitesForProprio(self):
         return getUtility(IVocabularyFactory, name='proprio.hebergements')(self.context)
+
+    def getFrameHeight(self):
+        """
+        Calculate frame height based on hebergements count
+        """
+        hebs = self.getGitesForProprio()
+        hebCount = len(hebs)
+        height = 135
+        if hebCount > 1:
+            baseHeight = 100
+            height = baseHeight + (hebCount * 50)
+        return height
+
+    def getProprioPk(self):
+        pm = getToolByName(self.context, 'portal_membership')
+        user = pm.getAuthenticatedMember()
+        userPk = user.getProperty('pk')
+        return userPk
