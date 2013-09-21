@@ -214,7 +214,8 @@ var GiteMultiTimeframe = Class.create({
   populate: function() {
     this.calendars = [];
     this.titles = [];
-    this.element.insert(new Element('div', { id: this.element.id + '_container' }));
+    if (!this.element.down('div#' + this.element.id + '_container'))
+        this.element.insert(new Element('div', { id: this.element.id + '_container' }));
     this.element.down('div#' + this.element.id + '_container').setOpacity(0.4);
 
     this.createCalendarsHeader();
