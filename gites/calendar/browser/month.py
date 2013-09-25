@@ -105,7 +105,7 @@ class MultiCalView(MonthView):
         height = 135
         if hebCount > 1:
             baseHeight = 100
-            height = baseHeight + (hebCount * 50)
+            height = baseHeight + (hebCount * 55)
         return height
 
     def getProprioPk(self):
