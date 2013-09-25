@@ -390,8 +390,11 @@ margin-left:auto;
 margin-right:auto;
 padding:10px;
 width:800px;
-height:265px;
 border:1px solid #000000;
+}
+
+#extern-help.fixedheight {
+height:265px;
 }
 
 #extern-help img {
@@ -412,7 +415,7 @@ margin-top:12px;
 	margin:auto;
 }
 
-.multicalendar #calendars_container {
+.multicalendar.proprio #calendars_container {
 	margin-bottom: 40px;
 }
 

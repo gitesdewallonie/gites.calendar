@@ -18,11 +18,27 @@
   </h2>
 
   <div id="content-core">
-    <div id="gitescal" class="multical">
+    <div id="gitescal" class="multical proprio">
       <div id="calendars"></div>
         <input type="hidden" id="reset"/>
         <input type="hidden" name="start" value="" id="start"/>
         <input type="hidden" name="end" value="" id="end"/>
+    </div>
+
+    <div id="extern-help">
+      <h2>Ce calendrier mensuel sur votre site ?</h2>
+      <p tal:define="height view/getFrameHeight;
+                     proprioPk view/getProprioPk">
+          Insérez simplement les lignes suivantes sur la page de votre site
+          (dans le code HTML), à l'endroit où vous le désirez,
+          pour y faire apparaître ce calendrier mensuel de disponibilité.<br/>
+          N'hésitez pas à contacter votre développeur Web pour toute question.
+          <pre>&lt;iframe id=&quot;calframe&quot;
+        src=&quot;http://www.gitesdewallonie.be/extern-monthly-calendar?pk=<span tal:replace="proprioPk" />&quot;
+        width=&quot;1065&quot; height=&quot;<span tal:replace="height" />&quot;
+        scrolling=&quot;auto&quot; frameborder=&quot;0&quot; allowtransparency=&quot;true&quot;&gt;
+&lt;/iframe&gt;</pre>
+      </p>
     </div>
   </div>
 
