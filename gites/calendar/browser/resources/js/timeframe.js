@@ -465,14 +465,17 @@ var Timeframe = Class.create({
     var start;
     var end;
     var selectionType;
+    var hebPk;
     start = this.range.get('start').strftime('%Y-%m-%d');
     end = this.range.get('end').strftime('%Y-%m-%d');
+    hebPk = this.hebPk;
     selectionType = this.selectionType;
     if (start && end && selectionType){
         var parameters;
         parameters = {'start': start,
                       'end': end,
-                      'type': selectionType
+                      'type': selectionType,
+                      'hebPk': hebPk
                       };
         var request;
         request = new Ajax.Request('addRange',
