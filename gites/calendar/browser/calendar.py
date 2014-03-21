@@ -135,6 +135,7 @@ class CalendarAndDateRanges(grok.CodeView):
         gitesPkAvailables = [item.token for item in
                              getUtility(IVocabularyFactory,
                                         name='proprio.hebergements')(self.context)]
+        assert(hebPk)
         assert(hebPk in gitesPkAvailables)
         wrapper = getSAWrapper('gites_wallons')
         session = wrapper.session
