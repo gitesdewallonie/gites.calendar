@@ -60,3 +60,9 @@ Si RabbitMQ est coupé, le daemon **bin/importCalendarEventsFromWalhebCalendarDa
 De plus, le webservice walhebcalendar continuera de fonctionner à moitié: il enregistrera les changements dans la DB walhebcalendar, mais il n'enverra pas de message à RabbitMQ et il renverra un message d'erreur au client.
 
 L'instance des webservice doit etre relancée après un reboot de RabbitMQ, elle ne se reconnecte pas automatiquement à celui ci.
+
+
+Schéma
+------
+
+![Walhebcalendar workflow](https://www.lucidchart.com/publicSegments/view/55706155-0af0-4db6-9278-59a90a0050c0/image.png)
