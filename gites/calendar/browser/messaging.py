@@ -12,7 +12,7 @@ from affinitic.zamqp.publisher import Publisher
 
 
 def getBrokerHost():
-    return os.environ.get('AMQP_BROKER_HOST', 'gauss.interne.affinitic.be')
+    return os.environ.get('AMQP_BROKER_HOST', 'euclide.interne.affinitic.be')
 
 
 class WalhebCalendarConnection(BrokerConnection):
