@@ -57,7 +57,7 @@ class CalendarActivity(object):
         # propriétaire sans référence à la pk pour plus de sécurité
         if proprio.pro_reactivation_hash:
             return proprio.pro_reactivation_hash
-        key = "".join([random.choice(string.letters+string.digits) for x in range(32)])
+        key = "".join([random.choice(string.letters + string.digits) for x in range(32)])
         proprio.pro_reactivation_hash = key
         self.session.add(proprio)
         self.session.flush()
@@ -192,7 +192,6 @@ class CalendarActivity(object):
 def main():
     import gites.calendar.scripts
     parseZCML(gites.calendar.scripts, 'activity.zcml')
-    #pg = PGDB('jfroche', 'xxxxxx', 'localhost', 5432, 'gites_wallons')
     pg = getUtility(IDatabase, 'postgres')
     pg.session
     checker = CalendarActivity(pg)
