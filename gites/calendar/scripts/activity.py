@@ -22,7 +22,7 @@ from gites.db.content import Proprio, Hebergement, HebergementBlockingHistory
 from gites.calendar.zcml import parseZCML
 
 
-FIRST_MAIL = """Cher Membre,\n
+FIRST_MAIL = u"""Cher Membre,\n
 Nous avons constaté que le calendrier de disponibilités de votre hébergement sur www.gitesdewallonie.be n'a pas été modifié depuis 30 jours.\n
 Si aucune modification n'est intervenue depuis un mois, nous vous invitons simplement à cliquer sur ce lien pour nous le signaler : %s.\n
 S'il s'agit d'un simple oubli de votre part, nous vous remercions de le mettre à jour très rapidement.\n
@@ -31,7 +31,7 @@ Nous restons à votre entière disposition et nous vous remercions, cher Membre,
 Les Gîtes de Wallonie.
 """
 
-BLOCKING_MAIL = """Madame, Monsieur,\n
+BLOCKING_MAIL = u"""Madame, Monsieur,\n
 Malgré notre mail précédent, nous constatons qu’aucune mise à jour de votre calendrier de disponibilités sur www.gitesdewallonie.be n’a été réalisée.\n
 Afin de garantir une information correcte et à jour aux touristes utilisant notre site, nous sommes au regret de vous informer que votre calendrier a été désactivé. Cliquez sur ce lien pour le réactiver : %s.\n
 Nous restons à votre entière disposition pour tout renseignement complémentaire.\n
@@ -61,6 +61,7 @@ class CalendarActivity(object):
         proprio.pro_reactivation_hash = key
         self.session.add(proprio)
         self.session.flush()
+        self.session.commit()
         return key
 
     def getProprio(self, proprioPk):
@@ -99,7 +100,7 @@ class CalendarActivity(object):
 
         key = self.insertProprioHash(proprio)
         linkUrl = "http://www.gitesdewallonie.be/reactivation-calendrier?key=%s" % key
-        mail = MIMEText(FIRST_MAIL % linkUrl)
+        mail = MIMEText((FIRST_MAIL % linkUrl).encode('utf-8'))
         mail['From'] = mailFrom
         mail['Subject'] = subject
         mail['To'] = proprioMail
@@ -127,7 +128,7 @@ class CalendarActivity(object):
 
         key = self.insertProprioHash(proprio)
         linkUrl = "http://www.gitesdewallonie.be/reactivation-calendrier?key=%s" % key
-        mail = MIMEText(BLOCKING_MAIL % linkUrl)
+        mail = MIMEText((BLOCKING_MAIL % linkUrl).encode('utf-8'))
         mail['From'] = mailFrom
         mail['Subject'] = subject
         mail['To'] = proprioMail
@@ -163,6 +164,7 @@ class CalendarActivity(object):
             hebBlockHist.heb_blockhistory_heb_pk = hebergement.heb_pk
             self.session.add(hebBlockHist)
             self.session.flush()
+        self.session.commit()
 
     def checkCalendarActivity(self):
         calendars = self.getActiveCalendars()
