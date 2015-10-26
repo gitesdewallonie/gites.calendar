@@ -21,7 +21,7 @@ setup(name='gites.calendar',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          'affinitic.zamqp',
+          'collective.zamqp',
           'zope.app.testing>=3.5',
           'setuptools',
           'gites.core',

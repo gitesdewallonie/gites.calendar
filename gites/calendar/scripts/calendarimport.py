@@ -5,16 +5,26 @@ gites.calendar
 Licensed under the GPL license, see LICENCE.txt for more details.
 Copyright by Affinitic sprl
 """
+import asyncore
 from datetime import date, datetime, timedelta
 from sqlalchemy import select
 from zope.component import getUtility
+from zope.interface import Interface
 import grokcore.component as grok
 from affinitic.db.interfaces import IDatabase
-from affinitic.zamqp.consumer import Consumer
+from collective.zamqp.consumer import Consumer
+from collective.zamqp.connection import connect_all
+from collective.zamqp.server import ConsumingServer
 from affinitic.db.utils import initialize_declarative_mappers, initialize_defered_mappers
 from gites.db.content import ReservationProprio, Hebergement
 from gites.db import DeclarativeBase
 from gites.calendar.zcml import parseZCML
+
+
+class IMessage(Interface):
+    """
+    Marker interface
+    """
 
 
 class WalhebCalendarImportConsumer(Consumer):
@@ -24,6 +34,8 @@ class WalhebCalendarImportConsumer(Consumer):
     exchange_type = 'direct'
     routing_key = 'gdw'
     connection_id = 'walhebcalendar'
+    auto_declare = True
+    marker = IMessage
 
 
 def removeSelection(session, hebPk, start, end):
@@ -44,7 +56,8 @@ def updateLastUpdateDate(session, hebPk):
                  synchronize_session=False)
 
 
-def handleNewBookingFromWalhebCalendar(bookingInfo, msg):
+def handleNewBookingFromWalhebCalendar(msg):
+    bookingInfo = msg.body
     print bookingInfo
     db = getUtility(IDatabase, 'postgres')
     session = db.session
@@ -75,6 +88,12 @@ def handleNewBookingFromWalhebCalendar(bookingInfo, msg):
     msg.ack()
 
 
+class WalhebConsumingServer(ConsumingServer):
+
+    def on_message_received(self, message):
+        handleNewBookingFromWalhebCalendar(message)
+
+
 def main():
     import gites.calendar.scripts
     parseZCML(gites.calendar.scripts, 'calendar_import.zcml')
@@ -82,8 +101,6 @@ def main():
     pg.session
     initialize_declarative_mappers(DeclarativeBase, pg.metadata)
     initialize_defered_mappers(pg.metadata)
-    consumer = WalhebCalendarImportConsumer()
-    consumer.connection
-    consumer.backend
-    consumer.register_callback(handleNewBookingFromWalhebCalendar)
-    consumer.wait()
+    WalhebConsumingServer('walhebcalendar', '')
+    connect_all()
+    asyncore.loop()

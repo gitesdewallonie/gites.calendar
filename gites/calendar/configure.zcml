@@ -9,6 +9,8 @@
     <include package="p4a.plonecalendar"/>
     <include package="p4a.ploneevent"/>
 
+    <include package="collective.zamqp"/>
+
     <include package=".browser"/>
     <include package=".portlets"/>
     <include file="profiles.zcml" />

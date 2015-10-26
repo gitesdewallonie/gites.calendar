@@ -7,8 +7,9 @@ Copyright by Affinitic sprl
 """
 import os
 import grokcore.component as grok
-from affinitic.zamqp.connection import BrokerConnection
-from affinitic.zamqp.publisher import Publisher
+
+from collective.zamqp.connection import BrokerConnection
+from collective.zamqp.producer import Producer
 
 
 def getBrokerHost():
@@ -24,7 +25,7 @@ class WalhebCalendarConnection(BrokerConnection):
     password = "tototo"
 
 
-class GitesWalhebcalendarPublisher(Publisher):
+class GitesWalhebcalendarProducer(Producer):
     grok.name('walhebcalendar.gdw')
     connection_id = 'walhebcalendar'
     exchange = 'booking.update.gdw'

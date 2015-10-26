@@ -173,8 +173,8 @@ class CalendarAndDateRanges(grok.CodeView):
 
 
 def notifyUpdate(event):
-    from affinitic.zamqp.interfaces import IPublisher
-    publisher = getUtility(IPublisher, name="walhebcalendar.gdw")
+    from collective.zamqp.interfaces import IProducer
+    producer = getUtility(IProducer, name="walhebcalendar.gdw")
     wrapper = getSAWrapper('gites_wallons')
     Hebergement = wrapper.getMapper('hebergement')
     query = select([Hebergement.heb_code_cgt])
@@ -183,7 +183,7 @@ def notifyUpdate(event):
     if cgtId and event.start >= datetime.datetime.now():
         infos = event.__dict__
         infos['cgtId'] = cgtId
-        publisher.send(infos)
+        producer.publish(infos)
 
 
 class GiteCalendarSelectedDays(grok.CodeView):
