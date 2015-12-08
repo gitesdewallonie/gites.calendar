@@ -31,6 +31,7 @@ setup(name='gites.calendar',
           'affinitic.db',
           'dateutil',
           'simplejson',
+          'five.megrok.z3cform',
       ],
       entry_points={
             'console_scripts':
