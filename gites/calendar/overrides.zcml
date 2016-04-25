@@ -6,7 +6,7 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IDate"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory="zc.datetimewidget.datetimewidget.DateWidget"
+      factory=".datetimewidget.GitesDateWidget"
       permission="zope.Public"
       />
 
