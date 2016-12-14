@@ -272,10 +272,10 @@ var GiteMultiTimeframe = Class.create({
   selectPreviousMonth: function() {
     today = new Date();
     today.setHours(0, 0, 0, 0);
-    newDate = this.date;
+    newDate = new Date(this.date);
     newDate.setDate(this.date.getDate() - this.daysNumber);
     newDate.setHours(0, 0, 0, 0);
-    if (newDate <= today)
+    if (newDate < today)
         return;
     this.element.down('div#' + this.element.id + '_container').setOpacity(0.4);
     this.date.setDate(this.date.getDate() - this.daysNumber);
