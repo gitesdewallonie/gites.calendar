@@ -281,7 +281,7 @@ var GiteMultiTimeframe = Class.create({
     this.date.setDate(this.date.getDate() - this.daysNumber);
     console.log("this.date " + this.date);
     this.destroyCalendar();
-    this.populate().refreshRange(false);
+    this.populate().refreshRange(true);
     this.element.down('div#' + this.element.id + '_container').setOpacity(1);
   },
 
@@ -289,7 +289,7 @@ var GiteMultiTimeframe = Class.create({
     this.element.down('div#' + this.element.id + '_container').setOpacity(0.4);
     this.date = new Date();
     this.destroyCalendar();
-    this.populate().refreshRange(false);
+    this.populate().refreshRange(true);
     this.element.down('div#' + this.element.id + '_container').setOpacity(1);
   },
 
@@ -297,7 +297,7 @@ var GiteMultiTimeframe = Class.create({
     this.element.down('div#' + this.element.id + '_container').setOpacity(0.4);
     this.date.setDate(this.date.getDate() + this.daysNumber);
     this.destroyCalendar();
-    this.populate().refreshRange(false);
+    this.populate().refreshRange(true);
     this.element.down('div#' + this.element.id + '_container').setOpacity(1);
   },
 
