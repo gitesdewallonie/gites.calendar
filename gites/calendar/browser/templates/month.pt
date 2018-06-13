@@ -43,7 +43,7 @@
           pour y faire apparaître ce calendrier de disponibilité.<br/>
           N'hésitez pas à contacter votre développeur Web pour toute question.
           <pre>&lt;iframe id=&quot;calframe&quot;
-        src=&quot;http://www.gitesdewallonie.be/extern-calendar?pk=<span tal:replace="python: request.get('pk')" />&quot;
+        src=&quot;https://www.gitesdewallonie.be/extern-calendar?pk=<span tal:replace="python: request.get('pk')" />&quot;
         width=&quot;185&quot; height=&quot;230&quot;
         scrolling=&quot;auto&quot; frameborder=&quot;0&quot; allowtransparency=&quot;true&quot;&gt;
 &lt;/iframe&gt;</pre>
