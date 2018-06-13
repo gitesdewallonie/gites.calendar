@@ -99,7 +99,7 @@ class CalendarActivity(object):
         subject = "Votre calendrier sur le site des Gîtes de Wallonie"
 
         key = self.insertProprioHash(proprio)
-        linkUrl = "http://www.gitesdewallonie.be/reactivation-calendrier?key=%s" % key
+        linkUrl = "https://www.gitesdewallonie.be/reactivation-calendrier?key=%s" % key
         mail = MIMEText((FIRST_MAIL % linkUrl).encode('utf-8'))
         mail['From'] = mailFrom
         mail['Subject'] = subject
@@ -127,7 +127,7 @@ class CalendarActivity(object):
         subject = "Désactivation de votre calendrier"
 
         key = self.insertProprioHash(proprio)
-        linkUrl = "http://www.gitesdewallonie.be/reactivation-calendrier?key=%s" % key
+        linkUrl = "https://www.gitesdewallonie.be/reactivation-calendrier?key=%s" % key
         mail = MIMEText((BLOCKING_MAIL % linkUrl).encode('utf-8'))
         mail['From'] = mailFrom
         mail['Subject'] = subject

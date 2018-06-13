@@ -34,7 +34,7 @@
           pour y faire apparaître ce calendrier mensuel de disponibilité.<br/>
           N'hésitez pas à contacter votre développeur Web pour toute question.
           <pre>&lt;iframe id=&quot;calframe&quot;
-        src=&quot;http://www.gitesdewallonie.be/extern-monthly-calendar?pk=<span tal:replace="proprioPk" />&quot;
+        src=&quot;https://www.gitesdewallonie.be/extern-monthly-calendar?pk=<span tal:replace="proprioPk" />&quot;
         width=&quot;1065&quot; height=&quot;<span tal:replace="height" />&quot;
         scrolling=&quot;auto&quot; frameborder=&quot;0&quot; allowtransparency=&quot;true&quot;&gt;
 &lt;/iframe&gt;</pre>
