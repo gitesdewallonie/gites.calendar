@@ -90,6 +90,8 @@ def getConfig(data):
         Proprio = wrapper.getMapper('proprio')
         proprietaire = session.query(Proprio).get(int(userPk))
         for heb in proprietaire.hebergements:
+            if heb.heb_site_public == '0':
+                continue
             return heb.heb_calendrier_proprio
 
 Defaultconfig = widget.ComputedWidgetAttribute(
