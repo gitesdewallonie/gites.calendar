@@ -53,7 +53,12 @@ class CalendarConfigForm(form.Form):
         wrapper = getSAWrapper('gites_wallons')
         session = wrapper.session
         config = data.get('calendarConfig')
-        for heb in getHebergementsForProprio(self.context, session):
+        all_hebs = getHebergementsForProprio(
+            self.context,
+            session,
+            only_active=False,
+        )
+        for heb in all_hebs:
             oldConfig = heb.heb_calendrier_proprio
             heb.heb_calendrier_proprio = config
             # mise à jour dernière date de modification du calendrier

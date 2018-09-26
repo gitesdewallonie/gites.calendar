@@ -20,12 +20,12 @@ CONFIG = {'actif': "Calendrier visible par tous (recherches et page d'hebergemen
           'non actif': "Calendrier non activé"}
 
 
-def cacheKey(meth, propioPk, session):
-    return (propioPk,)
+def cacheKey(meth, propioPk, session, only_active):
+    return (propioPk, only_active)
 
 
 @cache(cacheKey, lifetime=10)
-def getHebergementsForProprioId(proprioPk, session):
+def getHebergementsForProprioId(proprioPk, session, only_active=True):
     wrapper = getSAWrapper('gites_wallons')
     if session is None:
         session = wrapper.session
@@ -38,17 +38,21 @@ def getHebergementsForProprioId(proprioPk, session):
     hebs.sort(key=lambda x: x.heb_pk)
     publicHebs = []
     for heb in hebs:
-        if heb.heb_site_public == '1':
+        if not only_active or (only_active and heb.heb_site_public == '1'):
             publicHebs.append(heb)
     return publicHebs
 
 
-def getHebergementsForProprio(context, session=None):
+def getHebergementsForProprio(context, session=None, only_active=True):
     pm = getToolByName(context, 'portal_membership')
     user = pm.getAuthenticatedMember()
     userPk = user.getProperty('pk')
     if userPk and userPk != 'unset':
-        return getHebergementsForProprioId(userPk, session)
+        return getHebergementsForProprioId(
+            userPk,
+            session,
+            only_active=only_active,
+        )
     return []
 
 
